@@ -1,0 +1,28 @@
+{
+    "version": 2,
+    "id": "ar-icon-solar",
+    "name": "Solar affinity",
+    "assetPath": "Assets/CardForgeData/demo/astral-rift/icons/solar.png",
+    "layers": [
+        {
+            "visible": true,
+            "opacity": 1.0,
+            "shape": "Circle",
+            "color": "#F3A43BFF",
+            "x": 0.5,
+            "y": 0.5,
+            "size": 0.8799999952316284,
+            "rotation": 0.0
+        },
+        {
+            "visible": true,
+            "opacity": 1.0,
+            "shape": "Star",
+            "color": "#F8FBFFFF",
+            "x": 0.5,
+            "y": 0.5,
+            "size": 0.47999998927116394,
+            "rotation": 0.0
+        }
+    ]
+}

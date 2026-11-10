@@ -1,0 +1,134 @@
+{
+    "version": 1,
+    "id": "2e6ea4dcae74434999809b0552f33a31",
+    "name": "New action",
+    "triggerId": "",
+    "causeTriggerIds": [],
+    "resolution": "Resolve immediately",
+    "effect": "",
+    "condition": "",
+    "cost": "",
+    "targets": "",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "graphNodes": [
+        {
+            "id": "a8d32963ef36435f94b32ec46fd8d6c6",
+            "title": "Viability trigger",
+            "detail": "No trigger gate",
+            "tone": "trigger",
+            "x": 60.0,
+            "y": 170.0
+        },
+        {
+            "id": "49b2971f867f46aab0f06abcf40e7f6c",
+            "title": "Declare action",
+            "detail": "New action",
+            "tone": "process",
+            "x": 310.0,
+            "y": 30.0
+        },
+        {
+            "id": "6da8a5f43cda47e3a6472f79cb3c3e64",
+            "title": "Check condition",
+            "detail": "",
+            "tone": "process",
+            "x": 540.0,
+            "y": 230.0
+        },
+        {
+            "id": "27bcf63af5ad43e18c1c4afa5b1b9fb3",
+            "title": "Pay cost",
+            "detail": "",
+            "tone": "effect",
+            "x": 800.0,
+            "y": 110.0
+        },
+        {
+            "id": "50a4dffff2494440a4ccdb6bae12a7f9",
+            "title": "Choose targets",
+            "detail": "",
+            "tone": "process",
+            "x": 1050.0,
+            "y": 110.0
+        },
+        {
+            "id": "5333e5ac7a0b41f196a4cd0bc3c9a411",
+            "title": "Orient card",
+            "detail": "No orientation change",
+            "tone": "process",
+            "x": 1300.0,
+            "y": 110.0
+        },
+        {
+            "id": "a0ec1171a2f3411f989cc9163d59ef19",
+            "title": "Apply effect",
+            "detail": "",
+            "tone": "process",
+            "x": 1550.0,
+            "y": 110.0,
+            "causesStateChange": true,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ce0f0a4c7d1247cf9fcfbd1d6d8a5e90",
+            "title": "Emit trigger outputs",
+            "detail": "No trigger outputs",
+            "tone": "effect",
+            "x": 1800.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": true
+        },
+        {
+            "id": "592ee6dbf2284a99b6a1f8ef50550faf",
+            "title": "Complete",
+            "detail": "Resolve immediately",
+            "tone": "process",
+            "x": 2050.0,
+            "y": 110.0
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "a8d32963ef36435f94b32ec46fd8d6c6",
+            "to": "49b2971f867f46aab0f06abcf40e7f6c",
+            "label": "next"
+        },
+        {
+            "from": "49b2971f867f46aab0f06abcf40e7f6c",
+            "to": "6da8a5f43cda47e3a6472f79cb3c3e64",
+            "label": "next"
+        },
+        {
+            "from": "6da8a5f43cda47e3a6472f79cb3c3e64",
+            "to": "27bcf63af5ad43e18c1c4afa5b1b9fb3",
+            "label": "next"
+        },
+        {
+            "from": "27bcf63af5ad43e18c1c4afa5b1b9fb3",
+            "to": "50a4dffff2494440a4ccdb6bae12a7f9",
+            "label": "next"
+        },
+        {
+            "from": "50a4dffff2494440a4ccdb6bae12a7f9",
+            "to": "5333e5ac7a0b41f196a4cd0bc3c9a411",
+            "label": "next"
+        },
+        {
+            "from": "5333e5ac7a0b41f196a4cd0bc3c9a411",
+            "to": "a0ec1171a2f3411f989cc9163d59ef19",
+            "label": "next"
+        },
+        {
+            "from": "a0ec1171a2f3411f989cc9163d59ef19",
+            "to": "ce0f0a4c7d1247cf9fcfbd1d6d8a5e90",
+            "label": "next"
+        },
+        {
+            "from": "ce0f0a4c7d1247cf9fcfbd1d6d8a5e90",
+            "to": "592ee6dbf2284a99b6a1f8ef50550faf",
+            "label": "next"
+        }
+    ]
+}

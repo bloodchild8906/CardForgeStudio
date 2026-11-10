@@ -1,0 +1,23 @@
+{
+  "name": "CardForge.CreatorTools.Tests",
+  "rootNamespace": "CardForge.CreatorTools.Tests",
+  "references": [
+    "CardForge.Runtime",
+    "CardForge.Editor",
+    "CardForge.DesignLogic",
+    "CardForge.ImageProcessing.Editor",
+    "CardForge.Ollama.Editor",
+    "CardForge.GoogleFonts.Editor",
+    "CardForge.IconSets.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "autoReferenced": false
+}

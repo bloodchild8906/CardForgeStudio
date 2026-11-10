@@ -1,0 +1,61 @@
+{
+    "version": 1,
+    "id": "ar-ability-record",
+    "name": "Whispered Coordinates",
+    "cardId": "ar-card-whisper-agent",
+    "activationTriggerId": "ar-trigger-signal",
+    "actionId": "ar-record",
+    "phaseId": "ar-main",
+    "condition": "The linked card is the source of the matching action when a source is required.",
+    "operation": "Emit an authoritative ability event",
+    "effect": "The agent records the chosen navigation beacon.",
+    "priority": 20,
+    "scope": "Source card and game state",
+    "responseTiming": "Immediately after the action",
+    "responseResolution": "Resolve in authored priority order",
+    "responseActionIds": [
+        "ar-signal"
+    ],
+    "causeTriggerIds": [
+        "ar-trigger-signal"
+    ],
+    "rules": [
+        {
+            "id": "ar-ability-record-rule",
+            "target": "Game event log",
+            "property": "ability",
+            "operation": "Append",
+            "value": "Whispered Coordinates",
+            "condition": "The trigger matched."
+        }
+    ],
+    "graphNodes": [
+        {
+            "id": "ar-ability-record-listen",
+            "title": "Listen",
+            "detail": "Match the authored action trigger.",
+            "tone": "event",
+            "x": 70.0,
+            "y": 80.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-ability-record-resolve",
+            "title": "Resolve",
+            "detail": "The agent records the chosen navigation beacon.",
+            "tone": "process",
+            "x": 350.0,
+            "y": 80.0,
+            "causesStateChange": true,
+            "emitsTriggers": true
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-ability-record-listen",
+            "to": "ar-ability-record-resolve",
+            "label": "matched"
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "CardForge.Client.Editor",
+  "rootNamespace": "TcgServer.Client.Editor",
+  "references": [
+    "CardForge.Client.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

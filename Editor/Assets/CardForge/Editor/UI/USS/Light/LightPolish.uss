@@ -1,0 +1,8 @@
+/* Light-theme colours for rules in StudioPolish.uss that use literal dark colours. Edit freely. */
+.cf-theme-light .cf-root .design-toolbar {
+    background-color: #cadcea;
+}
+.cf-theme-light .cf-root .list-entry-selected {
+    background-color: #ceebe9;
+    border-color: #2bab95;
+}

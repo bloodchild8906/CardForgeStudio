@@ -1,0 +1,198 @@
+# Communications protocol
+
+## Transport overview
+
+TcgULtimateServer exposes two communication styles:
+
+| Transport | Use | Development endpoint |
+|---|---|---|
+| HTTPS REST | Authentication, content, player data, matchmaking, game creation, administration, reports | `https://localhost:5001/api/...` |
+| WSS SignalR | Live game state, game chat, server announcements, workflow state | `https://localhost:5001/hubs/...` |
+
+The root path intentionally returns `404`. A successful root response is not a health requirement; use `GET /api/health`.
+
+## Authentication modes
+
+### Public
+
+Public endpoints require no token. Examples include health, registration, login, rule-pack discovery, rankings, enabled matchmaking queues, and the public online-player count.
+
+### Player bearer session
+
+Registration and login return an opaque token and a public user record:
+
+```json
+{
+  "token": "opaque-session-token",
+  "user": {
+    "id": "player-id",
+    "handle": "atlas",
+    "rating": 1000,
+    "role": "user",
+    "disabled": false
+  }
+}
+```
+
+Send the token on protected REST calls:
+
+```http
+Authorization: Bearer opaque-session-token
+```
+
+The server updates player presence whenever a valid token is resolved. A player is considered online when their session was active during the last two minutes.
+
+### Local management session
+
+The WinUI console obtains an administrator session from `POST /api/auth/local-management` using `X-Tcg-Management-Key`. The endpoint accepts only loopback connections and compares the key in constant time.
+
+This session is for the desktop server console. Do not use it as a remote administration mechanism and do not ship the management key in a game client.
+
+## REST conventions
+
+- JSON request and response bodies use UTF-8.
+- Date/time values use ISO 8601 and should be sent in UTC.
+- IDs are opaque strings unless a feature explicitly asks the operator to choose one.
+- `PUT` management routes create or replace a named configuration.
+- `PATCH` routes update a limited part of an existing record.
+- `DELETE` routes return `204 No Content` when successful unless the route returns a result object.
+- Protected routes reject missing or invalid sessions with `401 Unauthorized`.
+- Authenticated users without the required role receive `403 Forbidden`.
+- Validation failures generally return `400 Bad Request` with a readable message.
+- Missing records return `404 Not Found`.
+
+## Response compression and caching
+
+REST responses can use Brotli or GZIP when the client advertises support. Addressable assets preserve their original identity and SHA-256 hash regardless of transfer compression.
+
+Asset clients should:
+
+1. Request `GET /api/assets/manifest`.
+2. Store the asset ID, URL, content type, length, and SHA-256 hash.
+3. Download with an authenticated bearer session.
+4. Honor `Content-Encoding` automatically through the HTTP stack.
+5. Cache using the returned ETag and validate the original uncompressed asset hash.
+
+## SignalR hubs
+
+### Game hub
+
+Endpoint: `/hubs/game`
+
+Client-to-server methods:
+
+| Method | Arguments | Purpose |
+|---|---|---|
+| `JoinGame` | `token`, `gameId` | Joins the SignalR group and immediately sends the current `gameState` to the caller. |
+| `ChatMessage` | `token`, `gameId`, `compressedMessage`, `packetId`, `sentAtUnixMs`, `signature` | Validates and broadcasts a game-chat message. |
+| `PlayCard` | `token`, `gameId`, `compressedCardInstanceId`, `packetId`, `sentAtUnixMs`, `signature` | Validates and applies a card play, then broadcasts updated game state. |
+| `ExecuteAction` | `token`, `gameId`, `compressedActionJson`, `packetId`, `sentAtUnixMs`, `signature` | Validates a generic `ExecuteGameActionRequest`, enforces the active ruleset, and broadcasts updated game state. |
+
+Server-to-client events:
+
+| Event | Payload | Purpose |
+|---|---|---|
+| `gameState` | Game state object | Initial and updated authoritative game state. |
+| `chatMessage` | String | A formatted `handle: message` game-chat entry. |
+| `serverAnnouncement` | String | Administrator broadcast sent to all connected game clients. |
+
+### State-machine hub
+
+Endpoint: `/hubs/state-machine`
+
+Client-to-server methods:
+
+| Method | Arguments | Purpose |
+|---|---|---|
+| `Join` | `token`, `instanceId` | Joins the instance group and sends its current `stateMachineState`. |
+| `Transition` | `token`, `instanceId`, `eventName`, `compressedData`, `packetId`, `sentAtUnixMs`, `signature` | Validates a secure event packet and applies a legal state transition. |
+
+Server-to-client event:
+
+| Event | Payload | Purpose |
+|---|---|---|
+| `stateMachineState` | State-machine instance | Initial and updated workflow state. |
+
+## Secure state-changing packets
+
+Game chat, card play, and SignalR workflow transitions require a compressed and signed packet.
+
+### Packet fields
+
+| Field | Description |
+|---|---|
+| `compressedPayload` | UTF-8 payload compressed with GZIP and Base64 encoded. |
+| `packetId` | A unique ID generated by the client for this action. Reuse is rejected. |
+| `sentAtUnixMs` | Current Unix time in milliseconds. |
+| `signature` | Base64 HMAC-SHA256 signature. |
+
+### Signature input
+
+Create this exact UTF-8 string:
+
+```text
+{scope}.{packetId}.{sentAtUnixMs}.{compressedPayload}
+```
+
+Sign it with HMAC-SHA256 using the session token's UTF-8 bytes as the key, then Base64 encode the signature.
+
+Scopes are:
+
+- Game chat: `chat:{gameId}`
+- Card play: `play:{gameId}`
+- Workflow transition: `transition:{instanceId}:{eventName}`
+
+### Enforced limits
+
+- The packet timestamp must be within 30 seconds of server time.
+- Every packet ID is one-time use.
+- Each user is limited to 60 secure actions per minute.
+- Decompressed payloads are limited to 2 KB.
+- Card-instance IDs are limited to 256 decompressed bytes.
+
+## Connection lifecycle
+
+Recommended player-client sequence:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant REST as HTTPS API
+    participant Hub as SignalR game hub
+
+    Client->>REST: POST /api/auth/login
+    REST-->>Client: token + user
+    Client->>REST: GET /api/matchmaking/queues
+    Client->>REST: POST /api/matchmaking/join (Bearer)
+    Client->>REST: GET /api/matchmaking/me (Bearer)
+    REST-->>Client: queue entry or matched game information
+    Client->>Hub: Connect /hubs/game
+    Client->>Hub: JoinGame(token, gameId)
+    Hub-->>Client: gameState
+    Client->>Hub: PlayCard(signed packet)
+    Hub-->>Client: gameState
+```
+
+## Reconnection
+
+- Enable automatic SignalR reconnect in clients.
+- After reconnecting, call `JoinGame` or `Join` again because group membership belongs to the connection.
+- Treat REST state and the server's `gameState` event as authoritative.
+- Generate a new packet ID and timestamp for every retry of a state-changing action. Never resend a packet that may already have reached the server.
+- If a session is rejected, stop reconnecting, return to sign-in, and obtain a new token.
+
+## Time synchronization
+
+Secure packets use a 30-second acceptance window. Client devices should maintain system time through normal operating-system time synchronization. The health endpoint includes `serverTime` and can be used to identify major clock drift, but clients should not silently alter system time.
+
+## Production network requirements
+
+- Expose HTTPS only.
+- Use a certificate trusted by all game clients.
+- Use WSS for SignalR by connecting to an HTTPS hub URL.
+- Restrict CORS to approved game-client origins instead of broad development settings.
+- Keep the local management endpoint loopback-only.
+- Apply reverse-proxy request-size, rate, and timeout policies that do not conflict with SignalR upgrades.
+- Preserve the client address correctly when using forwarded headers and a trusted proxy.
+
+See [Security and deployment](security-and-deployment.md) for the full production checklist.

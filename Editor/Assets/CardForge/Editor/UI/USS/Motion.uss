@@ -1,0 +1,19 @@
+/* Short transitions and visible keyboard focus for the navigation, gallery tiles and quick open rows. */
+.cf-navigation__item {
+    transition-property: background-color, border-left-color, color;
+    transition-duration: var(--cf-duration-fast);
+    transition-timing-function: ease-out;
+}
+.cf-navigation__item:focus {
+    border-left-color: var(--cf-color-accent);
+}
+.cf-gallery-card {
+    transition-property: background-color, border-color;
+    transition-duration: var(--cf-duration-fast);
+    transition-timing-function: ease-out;
+}
+.cf-quick__row {
+    transition-property: background-color;
+    transition-duration: var(--cf-duration-fast);
+    transition-timing-function: ease-out;
+}

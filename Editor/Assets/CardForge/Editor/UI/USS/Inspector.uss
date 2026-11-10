@@ -1,0 +1,50 @@
+.cf-inspector {
+    min-width: 260px;
+    padding: var(--cf-space-4);
+    background-color: var(--cf-color-surface);
+    border-left-width: 1px;
+    border-left-color: var(--cf-color-border);
+}
+.cf-app .cf-inspector__title { font-size: var(--cf-font-size-lg); -unity-font-style: bold; }
+.cf-app .cf-inspector__subtitle {
+    margin-bottom: var(--cf-space-3);
+    font-size: var(--cf-font-size-sm);
+    color: var(--cf-color-text-muted);
+}
+.cf-app .cf-inspector__empty {
+    margin-top: var(--cf-space-5);
+    -unity-text-align: middle-center;
+    white-space: normal;
+    color: var(--cf-color-text-muted);
+}
+.cf-kv {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--cf-color-border);
+}
+.cf-app .cf-kv__key { color: var(--cf-color-text-muted); }
+.cf-inspector__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: var(--cf-space-4);
+}
+.cf-inspector__actions .cf-button { margin: 0 var(--cf-space-2) var(--cf-space-2) 0; }
+
+
+.cf-inspector { padding: 18px; min-height: 0; }
+.cf-inspector__top { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cf-app .cf-inspector__eyebrow { font-size: 9px; letter-spacing: 1.5px; color: var(--cf-color-text-muted); }
+.cf-inspector__close { margin: 0; width: 26px; height: 26px; border-width: 0; border-radius: 5px; background-color: transparent; color: var(--cf-color-text-muted); font-size: 19px; }
+.cf-inspector__close:hover { background-color: var(--cf-color-row-hover); color: var(--cf-color-text); }
+.cf-app .cf-inspector__title { font-size: 19px; white-space: normal; }
+.cf-app .cf-inspector__subtitle { margin-top: 4px; margin-bottom: 18px; }
+.cf-inspector .cf-live-preview { margin-bottom: 18px; height: 240px; }
+.cf-kv { padding: 11px 0; }
+.cf-app .cf-kv__key { flex-shrink: 0; margin-right: 12px; font-size: 11px; }
+.cf-app .cf-kv__value { flex-shrink: 1; white-space: normal; -unity-text-align: middle-right; }
+.cf-inspector__actions { margin-top: 22px; }
+.cf-inspector__actions .cf-button--primary { width: 100%; margin-bottom: 12px; min-height: 34px; }
+.cf-inspector__actions .cf-button--danger { background-color: transparent; color: var(--cf-color-danger); }

@@ -1,0 +1,40 @@
+/* Light-theme colours for rules in Shell.uss that use literal dark colours. Edit freely. */
+.cf-theme-light.cf-library-mode .cf-grid {
+    background-color: #ecf1f6;
+    border-color: #c8d7e1;
+}
+.cf-theme-light.cf-library-mode .cf-inspector {
+    background-color: #ecf1f6;
+}
+.cf-theme-light .cf-navigation {
+    background-color: #e9eff5;
+}
+.cf-theme-light .cf-navigation__icon {
+    color: #566f84;
+}
+.cf-theme-light.cf-app .cf-navigation__label {
+    color: #4e6679;
+}
+.cf-theme-light .cf-navigation__item:hover .cf-navigation__label {
+    color: #1a2630;
+}
+.cf-theme-light .cf-navigation__item--active .cf-navigation__label {
+    color: #8b6422;
+}
+.cf-theme-light .cf-navigation__item--active .cf-navigation__icon {
+    color: #8b6422;
+}
+.cf-theme-light .cf-file-menu,
+.cf-theme-light .cf-settings-menu {
+    border-color: #cdd8e3;
+}
+.cf-theme-light.cf-app .cf-workspace-header__status {
+    color: #486c59;
+    background-color: rgba(109, 155, 133, 0.1);
+}
+.cf-theme-light.cf-library-mode .cf-grid .unity-multi-column-header {
+    background-color: #cbdce9;
+}
+.cf-theme-light.cf-library-mode .cf-grid .unity-multi-column-header__column {
+    background-color: #cbdce9;
+}

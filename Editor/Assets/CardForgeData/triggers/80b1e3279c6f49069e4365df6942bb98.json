@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "id": "80b1e3279c6f49069e4365df6942bb98",
+    "name": "New trigger",
+    "eventType": "State changed",
+    "source": "Any object",
+    "fromZone": "",
+    "toZone": "",
+    "orientation": "",
+    "rules": [
+        {
+            "id": "f2fdf6a86b8a4f7a9d7f38a2d3d1a101",
+            "subject": "Card",
+            "property": "Health",
+            "comparison": "Less than or equal",
+            "expectedValue": "0",
+            "condition": ""
+        }
+    ],
+    "condition": "",
+    "responseWindow": "Immediate response window",
+    "priority": 0,
+    "causeActionIds": [],
+    "causeAbilityIds": [],
+    "responseActionIds": []
+}

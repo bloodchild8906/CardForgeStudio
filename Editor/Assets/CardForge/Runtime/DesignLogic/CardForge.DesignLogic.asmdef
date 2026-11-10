@@ -1,0 +1,9 @@
+{
+  "name": "CardForge.DesignLogic",
+  "rootNamespace": "CardForge.DesignLogic",
+  "references": [
+    "CardForge.Runtime"
+  ],
+  "includePlatforms": [],
+  "autoReferenced": true
+}

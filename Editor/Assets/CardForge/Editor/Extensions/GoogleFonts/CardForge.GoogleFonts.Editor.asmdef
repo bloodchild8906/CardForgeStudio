@@ -1,0 +1,14 @@
+{
+  "name": "CardForge.GoogleFonts.Editor",
+  "rootNamespace": "CardForge.EditorUI",
+  "references": [
+    "CardForge.StudioTheme.Editor",
+    "CardForge.ImageProcessing.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

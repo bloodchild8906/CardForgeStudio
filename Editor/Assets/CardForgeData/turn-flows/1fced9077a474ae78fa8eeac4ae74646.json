@@ -1,0 +1,101 @@
+{
+    "version": 1,
+    "id": "1fced9077a474ae78fa8eeac4ae74646",
+    "name": "Standard turn",
+    "description": "The default turn sequence and its checks.",
+    "nodes": [
+        {
+            "id": "03bb6f903d6346bc9c60bfff506a0731",
+            "name": "Untap",
+            "phase": "Untap",
+            "check": "Ready cards and refresh resources",
+            "resolution": "Resolve actions",
+            "x": 40.0,
+            "y": 50.0,
+            "optional": false,
+            "actionRules": []
+        },
+        {
+            "id": "0a2ca30f98294e7f81c8f555922fbcc3",
+            "name": "Upkeep",
+            "phase": "Upkeep",
+            "check": "Resolve upkeep triggers",
+            "resolution": "Resolve actions",
+            "x": 340.0,
+            "y": 50.0,
+            "optional": false,
+            "actionRules": []
+        },
+        {
+            "id": "77c4217b80db4a34a99d4c1d41008d1d",
+            "name": "Draw",
+            "phase": "Draw",
+            "check": "Draw one card",
+            "resolution": "Resolve actions",
+            "x": 660.0,
+            "y": 50.0,
+            "optional": false,
+            "actionRules": []
+        },
+        {
+            "id": "b8ca7f93689b42dda136c8213074f262",
+            "name": "Main",
+            "phase": "Main",
+            "check": "Check action permissions",
+            "resolution": "Resolve actions",
+            "x": 40.0,
+            "y": 260.0,
+            "optional": false,
+            "actionRules": []
+        },
+        {
+            "id": "8aba3f6cbbd647f8aebdf98572bcb6ed",
+            "name": "Combat",
+            "phase": "Combat",
+            "check": "Declare attackers, blockers, then damage",
+            "resolution": "Resolve actions",
+            "x": 350.0,
+            "y": 260.0,
+            "optional": false,
+            "actionRules": []
+        },
+        {
+            "id": "7b5a9bb112b84b0ea55ebb7fd983e551",
+            "name": "End",
+            "phase": "End",
+            "check": "Discard to hand limit and pass priority",
+            "resolution": "Resolve actions",
+            "x": 660.0,
+            "y": 260.0,
+            "optional": false,
+            "actionRules": []
+        }
+    ],
+    "links": [
+        {
+            "from": "03bb6f903d6346bc9c60bfff506a0731",
+            "to": "0a2ca30f98294e7f81c8f555922fbcc3",
+            "label": "continue"
+        },
+        {
+            "from": "0a2ca30f98294e7f81c8f555922fbcc3",
+            "to": "77c4217b80db4a34a99d4c1d41008d1d",
+            "label": "continue"
+        },
+        {
+            "from": "77c4217b80db4a34a99d4c1d41008d1d",
+            "to": "b8ca7f93689b42dda136c8213074f262",
+            "label": "continue"
+        },
+        {
+            "from": "b8ca7f93689b42dda136c8213074f262",
+            "to": "8aba3f6cbbd647f8aebdf98572bcb6ed",
+            "label": "continue"
+        },
+        {
+            "from": "8aba3f6cbbd647f8aebdf98572bcb6ed",
+            "to": "7b5a9bb112b84b0ea55ebb7fd983e551",
+            "label": "continue"
+        }
+    ]
+}

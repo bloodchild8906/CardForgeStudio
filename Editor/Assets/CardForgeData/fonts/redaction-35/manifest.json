@@ -1,0 +1,10 @@
+{
+    "family": "Redaction 35",
+    "source": "Google Fonts (github.com/google/fonts)",
+    "licenseAssetPath": "Assets/CardForgeData/fonts/redaction-35/OFL.txt",
+    "fontAssets": [
+        "Assets/CardForgeData/fonts/redaction-35/Redaction35-Bold.ttf",
+        "Assets/CardForgeData/fonts/redaction-35/Redaction35-Italic.ttf",
+        "Assets/CardForgeData/fonts/redaction-35/Redaction35-Regular.ttf"
+    ]
+}

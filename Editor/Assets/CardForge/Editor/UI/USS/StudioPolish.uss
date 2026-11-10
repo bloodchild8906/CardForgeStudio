@@ -1,0 +1,337 @@
+/* CardForge Studio / Digital-first UI. Shared between editor assemblies via CardForge.uss. */
+.cf-app {
+    --cf-radius-md: 9px;
+    --cf-radius-lg: 12px;
+}
+.cf-theme-dark {
+    --cf-color-bg: #0e1927;
+    --cf-color-surface: #172738;
+    --cf-color-surface-raised: #22384b;
+    --cf-color-border: #355067;
+    --cf-color-text: #edf5fa;
+    --cf-color-text-muted: #9cb3c2;
+    --cf-color-accent: #71dec8;
+    --cf-color-accent-soft: rgba(113, 222, 200, .12);
+    --cf-color-accent-strong: #286f67;
+    --cf-color-row-hover: rgba(113, 222, 200, .06);
+    --cf-color-row-selected: rgba(113, 222, 200, .14);
+}
+.cf-theme-light {
+    --cf-color-bg: #eef3f8;
+    --cf-color-surface: #ffffff;
+    --cf-color-surface-raised: #e9f0f7;
+    --cf-color-border: #cfdae5;
+    --cf-color-text: #1c3044;
+    --cf-color-text-muted: #637b90;
+    --cf-color-accent: #0a8475;
+    --cf-color-accent-soft: rgba(10, 132, 117, .11);
+    --cf-color-accent-strong: #b9e7de;
+}
+.cf-studio .cf-navigation {
+    width: 210px;
+    min-width: 210px;
+    background-color: var(--cf-color-surface);
+    border-right-width: 1px;
+    border-right-color: var(--cf-color-border);
+}
+.cf-brand {
+    padding: 21px 16px 17px 16px;
+}
+.cf-brand .brand-mark {
+    width: 39px;
+    height: 39px;
+}
+.cf-studio .cf-navigation__links {
+    padding: 8px 11px;
+}
+.cf-studio .cf-navigation__group {
+    margin-top: 18px;
+    margin-left: 12px;
+    color: var(--cf-color-text-muted);
+    letter-spacing: 1px;
+}
+.cf-studio .cf-navigation__item {
+    min-height: 39px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding: 8px 11px;
+    border-radius: 7px;
+    border-left-width: 3px;
+    border-left-color: transparent;
+}
+.cf-studio .cf-navigation__item:hover {
+    background-color: var(--cf-color-row-hover);
+}
+.cf-studio .cf-navigation__item--active {
+    background-color: var(--cf-color-accent-soft);
+    border-left-color: var(--cf-color-accent);
+}
+.cf-studio .cf-navigation__tool {
+    color: var(--cf-color-text-muted);
+    background-color: transparent;
+    border-width: 0;
+    -unity-text-align: middle-left;
+    font-size: 12px;
+}
+.cf-studio .cf-navigation__tool:hover {
+    background-color: var(--cf-color-accent-soft);
+    color: var(--cf-color-accent);
+}
+.cf-studio .cf-workspace-header {
+    min-height: 64px;
+    background-color: var(--cf-color-surface);
+    border-bottom-color: var(--cf-color-border);
+    padding: 10px 22px;
+}
+.cf-studio .cf-workspace-header__status {
+    color: var(--cf-color-accent);
+    background-color: var(--cf-color-accent-soft);
+    padding: 7px 10px;
+    border-radius: 6px;
+}
+.cf-studio .cf-art-banner {
+    height: 132px;
+    padding: 22px 27px;
+}
+.cf-studio .cf-art-banner__title {
+    font-size: 27px;
+}
+.cf-studio .cf-toolbar {
+    min-height: 54px;
+    padding: 10px 19px;
+}
+.cf-studio .cf-search .unity-base-text-field__input {
+    min-height: 34px;
+    padding: 7px 12px;
+    background-color: var(--cf-color-surface);
+    border-radius: 8px;
+}
+.cf-studio .cf-grid {
+    background-color: var(--cf-color-surface);
+    margin: 11px 18px;
+    border-radius: 9px;
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+}
+.cf-studio .cf-gallery-card {
+    border-radius: 12px;
+    background-color: var(--cf-color-surface);
+    border-color: var(--cf-color-border);
+}
+.cf-studio .cf-gallery-card:hover {
+    border-color: var(--cf-color-accent);
+    background-color: var(--cf-color-surface-raised);
+}
+.cf-studio .cf-gallery-card--selected {
+    border-color: var(--cf-color-accent);
+}
+.cf-studio .cf-inspector {
+    background-color: var(--cf-color-surface);
+}
+.cf-studio .cf-button--primary {
+    border-color: var(--cf-color-accent);
+}
+.cf-project-health-button {
+    min-height: 36px;
+    background-color: var(--cf-color-accent-soft);
+    border-color: var(--cf-color-accent);
+    color: var(--cf-color-accent);
+}
+.cf-root .design-toolbar {
+    min-height: 48px;
+    background-color: #192e3e;
+}
+.cf-root .design-toolbar .design-primary-menu {
+    background-color: #267c70;
+    border-color: #65d6bf;
+}
+.cf-root .list-entry-selected {
+    background-color: #21534e;
+    border-color: #5ad5c0;
+}
+.cf-card-position {
+    align-self: center;
+    margin: 0 9px;
+    font-size: 11px;
+}
+/* Modular creator-tool workspaces */
+.cf-tool-window {
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+    background-color: var(--cf-color-bg);
+}
+.cf-tool-header {
+    padding: 20px 25px 17px 25px;
+    flex-shrink: 0;
+    background-color: var(--cf-color-surface);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--cf-color-border);
+}
+.cf-tool-kicker {
+    font-size: 10px;
+    letter-spacing: 1.6px;
+    color: var(--cf-color-accent);
+    -unity-font-style: bold;
+    margin-bottom: 6px;
+}
+.cf-tool-title {
+    font-size: 24px;
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+.cf-tool-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 15px;
+}
+.cf-tool-controls > Button, .cf-tool-preview-bar > Button {
+    min-height: 32px;
+    margin-right: 8px;
+    margin-bottom: 5px;
+    padding: 7px 13px;
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: 7px;
+    background-color: var(--cf-color-surface-raised);
+    color: var(--cf-color-text);
+}
+.cf-tool-controls > Button:hover, .cf-tool-preview-bar > Button:hover {
+    border-color: var(--cf-color-accent);
+}
+.cf-tool-primary, .cf-tool-controls > .cf-tool-primary {
+    background-color: #227d71;
+    border-color: #64deca;
+    border-width: 1px;
+    border-radius: 7px;
+    color: #f2fffc;
+    -unity-font-style: bold;
+}
+.cf-tool-asset {
+    min-width: 230px;
+    max-width: 430px;
+    flex-grow: 1;
+    margin-right: 12px;
+}
+.cf-tool-status { margin-top: 8px; color: var(--cf-color-accent); }
+.cf-tool-body {
+    flex-direction: row;
+    flex-grow: 1;
+    min-height: 0;
+}
+.cf-tool-preview-pane {
+    flex-grow: 1;
+    min-width: 350px;
+    min-height: 0;
+    background-color: var(--cf-color-bg);
+}
+.cf-tool-preview-bar {
+    flex-direction: row;
+    align-items: center;
+    min-height: 45px;
+    padding: 7px 15px;
+    background-color: var(--cf-color-surface-raised);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--cf-color-border);
+}
+.cf-tool-state {
+    flex-grow: 1;
+    font-size: 11px;
+    color: var(--cf-color-text-muted);
+}
+.cf-tool-inspector {
+    width: 315px;
+    min-width: 315px;
+    padding: 18px 16px;
+    background-color: var(--cf-color-surface);
+    border-left-width: 1px;
+    border-left-color: var(--cf-color-border);
+}
+.cf-tool-heading {
+    margin-top: 10px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    -unity-font-style: bold;
+}
+.cf-tool-inspector .unity-base-field { margin-bottom: 7px; }
+.cf-tool-inspector .unity-base-field__label { min-width: 105px; }
+.cf-tool-inspector > Button {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    min-height: 33px;
+    padding: 7px 12px;
+    background-color: var(--cf-color-surface-raised);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: 7px;
+    color: var(--cf-color-text);
+}
+.cf-tool-inspector > .cf-tool-primary {
+    background-color: #247b70;
+    border-color: #64deca;
+    color: #f2fffc;
+}
+.cf-tool-zone-editor {
+    padding: 12px;
+    margin-top: 12px;
+    background-color: var(--cf-color-surface-raised);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: 9px;
+}
+.cf-frame-canvas { flex-grow: 1; min-height: 0; }
+.cf-tool-icon-scroll { flex-grow: 1; padding: 16px; }
+.cf-tool-icon-grid { flex-direction: row; flex-wrap: wrap; }
+.cf-tool-icon-tile {
+    width: 118px;
+    height: 144px;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    margin: 5px;
+    background-color: var(--cf-color-surface);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: 9px;
+}
+.cf-tool-icon-tile--selected { border-color: var(--cf-color-accent); border-width: 2px; }
+.cf-tool-icon-tile--disabled { opacity: .4; }
+.cf-tool-icon-thumb { width: 90px; height: 90px; }
+.cf-tool-icon-label {
+    font-size: 10px;
+    margin-top: 7px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+.cf-font-main { flex-grow: 1; flex-direction: row; padding: 20px; min-height: 0; }
+.cf-font-featured { flex-grow: 1; padding: 18px; margin-right: 14px;
+    background-color: var(--cf-color-surface); border-radius: 10px; }
+.cf-font-suggestions { flex-direction: row; flex-wrap: wrap; }
+.cf-font-suggestions > Button {
+    min-height: 32px; margin: 5px; padding: 7px 12px;
+    border-radius: 7px; background-color: var(--cf-color-surface-raised);
+    border-width: 1px; border-color: var(--cf-color-border);
+    color: var(--cf-color-text);
+}
+.cf-font-suggestions > Button:hover { border-color: var(--cf-color-accent); }
+.cf-font-sample {
+    font-size: 25px;
+    margin: 15px 0;
+    padding: 20px;
+    background-color: var(--cf-color-bg);
+    border-radius: 9px;
+    white-space: normal;
+}
+.cf-font-installed {
+    width: 280px; min-width: 280px;
+    padding: 15px; background-color: var(--cf-color-surface);
+    border-radius: 10px;
+}
+.cf-font-entry {
+    padding: 12px; margin-bottom: 9px;
+    background-color: var(--cf-color-surface-raised);
+    border-radius: 8px;
+}
+.cf-font-entry-title { -unity-font-style: bold; }
+.cf-font-entry-sample { font-size: 14px; white-space: normal; margin: 10px 0; }

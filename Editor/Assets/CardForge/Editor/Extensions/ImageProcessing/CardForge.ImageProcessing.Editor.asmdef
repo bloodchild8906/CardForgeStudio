@@ -1,0 +1,15 @@
+{
+  "name": "CardForge.ImageProcessing.Editor",
+  "rootNamespace": "CardForge.EditorUI",
+  "references": [
+    "CardForge.Runtime",
+    "CardForge.Editor",
+    "CardForge.DesignLogic"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

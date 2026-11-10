@@ -1,0 +1,41 @@
+# Keep text files consistent across Windows, macOS, and Linux.
+* text=auto eol=lf
+
+# Unity YAML and project text formats.
+*.asset text eol=lf
+*.asmdef text eol=lf
+*.asmref text eol=lf
+*.compute text eol=lf
+*.controller text eol=lf
+*.cs text eol=lf diff=csharp
+*.inputactions text eol=lf
+*.json text eol=lf
+*.lighting text eol=lf
+*.mat text eol=lf
+*.meta text eol=lf
+*.prefab text eol=lf
+*.shader text eol=lf
+*.unity text eol=lf
+*.uxml text eol=lf
+*.uss text eol=lf
+
+# Binary assets.
+*.dll binary
+*.exr binary
+*.gif binary
+*.ico binary
+*.jpeg binary
+*.jpg binary
+*.mp3 binary
+*.ogg binary
+*.otf binary
+*.pdf binary
+*.png binary
+*.psd binary
+*.tga binary
+*.tif binary
+*.tiff binary
+*.ttf binary
+*.wav binary
+*.xls binary
+*.xlsx binary

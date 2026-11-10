@@ -1,0 +1,14 @@
+{
+  "name": "CardForge.Editor",
+  "rootNamespace": "CardForge.Editor",
+  "references": ["CardForge.Runtime", "CardForge.DesignLogic", "CardForge.GamePackages"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

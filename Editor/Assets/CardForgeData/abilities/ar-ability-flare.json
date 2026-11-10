@@ -1,0 +1,61 @@
+{
+    "version": 1,
+    "id": "ar-ability-flare",
+    "name": "Overcharge Flare",
+    "cardId": "ar-card-ember-fox",
+    "activationTriggerId": "ar-trigger-strike",
+    "actionId": "ar-strike",
+    "phaseId": "ar-main",
+    "condition": "The linked card is the source of the matching action when a source is required.",
+    "operation": "Emit an authoritative ability event",
+    "effect": "The strike releases a visible solar flare.",
+    "priority": 20,
+    "scope": "Source card and game state",
+    "responseTiming": "Immediately after the action",
+    "responseResolution": "Resolve in authored priority order",
+    "responseActionIds": [
+        "ar-signal"
+    ],
+    "causeTriggerIds": [
+        "ar-trigger-strike"
+    ],
+    "rules": [
+        {
+            "id": "ar-ability-flare-rule",
+            "target": "Game event log",
+            "property": "ability",
+            "operation": "Append",
+            "value": "Overcharge Flare",
+            "condition": "The trigger matched."
+        }
+    ],
+    "graphNodes": [
+        {
+            "id": "ar-ability-flare-listen",
+            "title": "Listen",
+            "detail": "Match the authored action trigger.",
+            "tone": "event",
+            "x": 70.0,
+            "y": 80.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-ability-flare-resolve",
+            "title": "Resolve",
+            "detail": "The strike releases a visible solar flare.",
+            "tone": "process",
+            "x": 350.0,
+            "y": 80.0,
+            "causesStateChange": true,
+            "emitsTriggers": true
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-ability-flare-listen",
+            "to": "ar-ability-flare-resolve",
+            "label": "matched"
+        }
+    ]
+}

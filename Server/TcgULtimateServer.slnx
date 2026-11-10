@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TcgULtimateServer.App/TcgULtimateServer.App.csproj" />
+    <Project Path="src/TcgULtimateServer.Api/TcgULtimateServer.Api.csproj" />
+  </Folder>
+</Solution>

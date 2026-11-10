@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "id": "ar-keyword-reclaim",
+    "name": "Reclaim",
+    "rulesText": "This card reacts when a discarded card returns.",
+    "reminderText": "Salvage demonstrates cross-zone movement.",
+    "abilityIds": [
+        "ar-ability-salvage"
+    ],
+    "tags": [
+        "discard",
+        "zone"
+    ]
+}

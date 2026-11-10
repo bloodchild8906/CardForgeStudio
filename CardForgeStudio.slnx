@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Shared/">
+    <Project Path="Shared/CardForge.GamePackages/CardForge.GamePackages.csproj" />
+  </Folder>
+  <Folder Name="/Server/">
+    <Project Path="Server/src/TcgULtimateServer.Api/TcgULtimateServer.Api.csproj" />
+    <Project Path="Server/src/TcgULtimateServer.App/TcgULtimateServer.App.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/CardForgeStudio.IntegrationTests/CardForgeStudio.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/Demo/">
+    <Project Path="Demo/CardForgeStudio.DemoRunner/CardForgeStudio.DemoRunner.csproj" />
+  </Folder>
+</Solution>

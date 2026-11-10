@@ -1,0 +1,20 @@
+{
+  "name": "CardForge.EditorUI",
+  "rootNamespace": "CardForge.EditorUI",
+  "references": [
+    "CardForge.Runtime",
+    "CardForge.Editor",
+    "CardForge.StudioTheme.Editor",
+    "CardForge.FrameComposer.Editor",
+    "CardForge.IconSets.Editor",
+    "CardForge.GoogleFonts.Editor",
+    "CardForge.Ollama.Editor",
+    "CardForge.ImageProcessing.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

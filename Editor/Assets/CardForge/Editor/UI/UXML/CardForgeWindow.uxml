@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="../USS/CardForge.uss" />
+    <ui:VisualElement name="app-root" class="cf-app cf-studio">
+        <ui:VisualElement name="navigation-sidebar" class="cf-navigation">
+            <ui:VisualElement name="brand" class="cf-brand">
+                <ui:VisualElement class="cf-brand__text">
+                    <ui:Label text="CARDFORGE" class="cf-brand__title" />
+                    <ui:Label text="CONTENT STUDIO" class="cf-brand__subtitle" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="file-menu" class="cf-navigation__file" />
+            <ui:VisualElement name="block-context" class="cf-block-context" />
+            <ui:ScrollView name="navigation" class="cf-navigation__links" />
+            <ui:VisualElement name="preferences" class="cf-navigation__preferences" />
+        </ui:VisualElement>
+        <ui:VisualElement name="workspace" class="cf-workspace">
+            <ui:VisualElement name="workspace-header" class="cf-workspace-header">
+                <ui:Button name="editor-back" text="Back to library" class="cf-button cf-workspace-header__back cf-hidden" />
+                <ui:VisualElement class="cf-workspace-header__heading">
+                    <ui:Label name="workspace-title" class="cf-workspace-header__title" />
+                    <ui:Label name="workspace-context" class="cf-workspace-header__context" />
+                </ui:VisualElement>
+                <ui:Label name="status-label" text="Ready" class="cf-workspace-header__status" />
+            </ui:VisualElement>
+            <ui:VisualElement name="screen-host" class="cf-screen-host" />
+        </ui:VisualElement>
+        <ui:VisualElement name="modal-layer" class="cf-modal-layer" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

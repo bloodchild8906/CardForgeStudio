@@ -1,0 +1,248 @@
+/* Light-theme colours for rules in CardForgeWindow.uss that use literal dark colours. Edit freely. */
+.cf-theme-light .cf-root {
+    background-color: #e3e8f0;
+    color: #212e3d;
+}
+.cf-theme-light .app-header {
+    background-color: #edf1f6;
+    border-bottom-color: #ced8e5;
+}
+.cf-theme-light #brand-text {
+    color: #151c28;
+}
+.cf-theme-light #brand-sub {
+    color: #4c6780;
+}
+.cf-theme-light .tab {
+    color: #526b82;
+}
+.cf-theme-light .tab:hover {
+    background-color: #cfdae8;
+    color: #1a1a1a;
+}
+.cf-theme-light .tab-active {
+    color: #207969;
+    border-bottom-color: #2caa93;
+    background-color: #f4f6f9;
+}
+.cf-theme-light #status-text {
+    color: #427567;
+}
+.cf-theme-light .sidebar {
+    background-color: #ecf0f6;
+    border-right-color: #c9d3e0;
+}
+.cf-theme-light .center-pane {
+    background-color: #e3e9f1;
+}
+.cf-theme-light .inspector {
+    background-color: #eff3f7;
+    border-left-color: #c5d2de;
+}
+.cf-theme-light .section-title {
+    color: #161e29;
+}
+.cf-theme-light .section-kicker {
+    color: #37776d;
+}
+.cf-theme-light .muted {
+    color: #586f84;
+}
+.cf-theme-light .ghost-button {
+    background-color: #d0dbe8;
+    border-color: #beccda;
+    color: #233442;
+}
+.cf-theme-light .ghost-button:hover {
+    background-color: #d5dfe9;
+}
+.cf-theme-light .small-button {
+    background-color: #d0dde9;
+    border-color: #bdcedb;
+    color: #2c4752;
+}
+.cf-theme-light .list-entry {
+    background-color: #f3f6f9;
+    border-color: #cdd8e4;
+    color: #263647;
+}
+.cf-theme-light .list-entry:hover {
+    background-color: #d4dee8;
+}
+.cf-theme-light .list-entry-selected {
+    background-color: #cee9eb;
+    border-color: #36a08d;
+    color: #203b35;
+}
+.cf-theme-light .form-group {
+    background-color: #f1f5f8;
+    border-color: #c6d3e0;
+}
+.cf-theme-light .content-bar {
+    border-bottom-color: #d2dbe6;
+}
+.cf-theme-light .data-form {
+    background-color: #edf1f6;
+    border-right-color: #c6d1dd;
+}
+.cf-theme-light .icon-list {
+    background-color: #ebeff5;
+    border-right-color: #c6d2e0;
+}
+.cf-theme-light .catalog-row {
+    border-bottom-color: #ced9e5;
+}
+.cf-theme-light .catalog-row Label {
+    color: #22333f;
+}
+.cf-theme-light #warning-text {
+    color: #a15317;
+}
+.cf-theme-light #success-text {
+    color: #227763;
+}
+.cf-theme-light .footer {
+    background-color: #e6ecf3;
+    border-top-color: #c9d5e2;
+}
+.cf-theme-light .footer Label {
+    color: #546d83;
+}
+.cf-theme-light .ui-surface {
+    background-color: #f1f5f8;
+    border-color: #c6d3e0;
+}
+.cf-theme-light .ui-divider {
+    background-color: #d5dfe9;
+}
+.cf-theme-light .content-bar {
+    background-color: #edf2f7;
+}
+.cf-theme-light .list-entry-selected {
+    border-left-color: #2caa93;
+}
+.cf-theme-light .ui-empty-state {
+    background-color: #eff3f7;
+    border-color: #bfd1dc;
+}
+.cf-theme-light .design-toolbar {
+    background-color: #f0f4f8;
+    border-bottom-color: #bfd1dc;
+}
+.cf-theme-light .cf-root .center-pane {
+    background-color: rgba(13, 23, 34, 0.65);
+}
+.cf-theme-light .cf-root .section-kicker {
+    color: #866628;
+}
+.cf-theme-light .cf-root .design-toolbar {
+    border-bottom-color: #dcd2be;
+}
+.cf-theme-light .design-toolbar ToolbarMenu {
+    background-color: #d0dde9;
+    color: #212e3d;
+}
+.cf-theme-light .cf-root Foldout > Toggle {
+    color: #866628;
+}
+.cf-theme-light .designer-layer {
+    background-color: #f1f5f8;
+}
+.cf-theme-light .cf-root {
+    background-color: #e6ecf3;
+}
+.cf-theme-light .cf-root .inspector,
+.cf-theme-light .cf-root .data-form {
+    background-color: #eff3f7;
+    border-color: #cad5e0;
+}
+.cf-theme-light .cf-root .form-group {
+    background-color: #ecf1f6;
+    border-color: #cbd7e2;
+}
+.cf-theme-light .cf-root .unity-base-field__label {
+    color: #3e5469;
+}
+.cf-theme-light .cf-root .unity-base-text-field__input,
+.cf-theme-light .cf-root .unity-base-popup-field__input,
+.cf-theme-light .cf-root .unity-enum-field__input,
+.cf-theme-light .cf-root .unity-object-field__input {
+    background-color: #e7eef4;
+    border-color: #c5d2dd;
+    color: #1a2731;
+}
+.cf-theme-light .cf-root .unity-base-text-field__input:focus,
+.cf-theme-light .cf-root .unity-base-popup-field__input:focus {
+    border-color: #9b793c;
+}
+.cf-theme-light .cf-root .unity-toggle__checkmark {
+    background-color: #e7eef4;
+    border-color: #bbc9d4;
+}
+.cf-theme-light .cf-root .unity-foldout__toggle {
+    border-bottom-color: #cbd7e2;
+}
+.cf-theme-light .cf-root .unity-foldout__text {
+    color: #22313f;
+}
+.cf-theme-light .cf-root .list-entry {
+    background-color: #ccdce9;
+    border-color: #c9d7e2;
+}
+.cf-theme-light .cf-root .list-entry-selected {
+    background-color: #fcfdfd;
+    border-color: #947842;
+    border-left-color: #a57f31;
+}
+.cf-theme-light .cf-root .zone-layer-row__name {
+    color: #22313f;
+}
+.cf-theme-light .cf-root .zone-layer-row__kind {
+    color: #4f6a7d;
+}
+.cf-theme-light .cf-root .design-toolbar {
+    background-color: #f0f4f8;
+    border-bottom-color: #c9d6e0;
+}
+.cf-theme-light .cf-root .design-toolbar ToolbarMenu {
+    background-color: #cfdee9;
+    border-color: #c4d3df;
+}
+.cf-theme-light .zone-layer-row {
+    background-color: #f1f5f8;
+    border-left-color: #adc0cc;
+}
+.cf-theme-light .zone-layer-row:hover {
+    background-color: #d0e2ea;
+    border-left-color: #2bab95;
+}
+.cf-theme-light .requirement-row {
+    background-color: #ebf1f5;
+    border-color: #c9d9e2;
+}
+.cf-theme-light .requirement-row {
+    background-color: #ebf1f5;
+    border-color: #c9d9e2;
+}
+.cf-theme-light .cf-art-catalog {
+    background-color: #e7eef4;
+    border-color: #c8d7e1;
+}
+.cf-theme-light .cf-art-catalog__tile {
+    background-color: #cadce9;
+    border-color: #c8d8e1;
+}
+.cf-theme-light .cf-art-catalog__tile:hover {
+    background-color: #d0e2ea;
+    border-color: #2bab95;
+}
+.cf-theme-light .cf-art-catalog__tile.is-selected {
+    background-color: #fcfcfc;
+    border-color: #a57f31;
+}
+.cf-theme-light .cf-art-catalog__preview {
+    background-color: #e2e9f1;
+}
+.cf-theme-light .cf-art-catalog__label {
+    color: #304452;
+}

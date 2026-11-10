@@ -1,0 +1,31 @@
+# Unity-generated state
+**/Library/
+**/Temp/
+**/Obj/
+**/Logs/
+**/UserSettings/
+**/MemoryCaptures/
+**/Recordings/
+
+# .NET and IDE output
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+**/.vscode/
+artifacts/
+**/bin~/
+**/obj~/
+*.user
+*.suo
+*.log
+
+# Generated Unity IDE files
+Editor/*.csproj
+Editor/*.sln
+Editor/*.slnx
+
+# Package output
+GamePackages/*.cardforge
+Editor/CardForgeExports/
+Editor/CardForgeGamePackages/

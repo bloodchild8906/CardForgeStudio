@@ -1,0 +1,26 @@
+/* Light-theme colours for rules in CardPreview.uss that use literal dark colours. Edit freely. */
+.cf-theme-light .cf-gallery-card {
+    background-color: #c9dbe9;
+    border-color: #c0d1dd;
+}
+.cf-theme-light .cf-gallery-card:hover {
+    background-color: #ccdfeb;
+    border-color: #a77d2f;
+}
+.cf-theme-light .cf-gallery-card--selected,
+.cf-theme-light .cf-gallery-card--selected:hover {
+    border-color: #a77d2f;
+    background-color: #fafbfc;
+}
+.cf-theme-light .cf-gallery-card:focus {
+    border-color: #2bab95;
+}
+.cf-theme-light.cf-app .cf-gallery-card__title {
+    color: #1e2c35;
+}
+.cf-theme-light.cf-app .cf-gallery-card__detail {
+    color: #546f82;
+}
+.cf-theme-light.cf-app .cf-empty-state__eyebrow {
+    color: #866427;
+}

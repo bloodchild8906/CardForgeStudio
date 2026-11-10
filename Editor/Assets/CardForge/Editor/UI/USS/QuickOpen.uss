@@ -1,0 +1,88 @@
+/* Command palette opened with Ctrl/Cmd+K. Token driven, so it follows the active theme. */
+.cf-quick-overlay {
+    justify-content: flex-start;
+    padding-top: 88px;
+}
+.cf-quick {
+    width: 560px;
+    max-width: 92%;
+    max-height: 70%;
+    padding: var(--cf-space-3);
+    background-color: var(--cf-color-surface);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: var(--cf-radius-lg);
+}
+.cf-app .cf-quick__hint {
+    margin: 0 2px var(--cf-space-2) 2px;
+    font-size: var(--cf-font-size-xs);
+    letter-spacing: 0.5px;
+    color: var(--cf-color-text-muted);
+}
+.cf-quick__query .unity-base-text-field__input {
+    min-height: 36px;
+    padding: 6px 12px;
+    font-size: var(--cf-font-size-lg);
+    color: var(--cf-color-text);
+    background-color: var(--cf-color-bg);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: var(--cf-radius-md);
+}
+.cf-quick__query:focus .unity-base-text-field__input {
+    border-color: var(--cf-color-accent);
+}
+.cf-quick__list {
+    flex-shrink: 1;
+    min-height: 0;
+    margin-top: var(--cf-space-2);
+}
+.cf-app .cf-quick__group {
+    margin: 10px 8px 4px 8px;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    -unity-font-style: bold;
+    color: var(--cf-color-text-muted);
+}
+.cf-quick__row {
+    flex-direction: row;
+    align-items: center;
+    min-height: 34px;
+    margin: 1px 0;
+    padding: 6px 10px;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: var(--cf-radius-sm);
+    -unity-text-align: middle-left;
+}
+.cf-quick__row:hover {
+    background-color: var(--cf-color-row-hover);
+}
+.cf-quick__row--active,
+.cf-quick__row--active:hover {
+    background-color: var(--cf-color-accent-soft);
+}
+.cf-app .cf-quick__title {
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 13px;
+    color: var(--cf-color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cf-app .cf-quick__row--active .cf-quick__title {
+    color: var(--cf-color-accent);
+    -unity-font-style: bold;
+}
+.cf-app .cf-quick__detail {
+    flex-shrink: 0;
+    margin-left: var(--cf-space-3);
+    font-size: var(--cf-font-size-sm);
+    color: var(--cf-color-text-muted);
+}
+.cf-app .cf-quick__empty {
+    padding: 18px;
+    -unity-text-align: middle-center;
+    color: var(--cf-color-text-muted);
+}

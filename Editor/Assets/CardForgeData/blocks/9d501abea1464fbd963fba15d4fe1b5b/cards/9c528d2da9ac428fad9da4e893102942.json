@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "id": "9c528d2da9ac428fad9da4e893102942",
+    "name": "New Discovery",
+    "cardNumber": "001",
+    "layoutId": "5435a961e1bf4876b2b233ae723c5f14",
+    "backLayoutId": "82333acefa694a4da489e4bb3d81ff72",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Card",
+    "variantId": "",
+    "values": [
+        {
+            "fieldId": "df11ac1a2d544824abe10686c7bd14ab",
+            "value": "Assets/CardForge/Editor/UI/Artwork/CardForge_AppIcon.png"
+        },
+        {
+            "fieldId": "8b388354a70341a5889318c095e85b45",
+            "value": ""
+        }
+    ],
+    "zoneOverrides": [],
+    "requirements": [],
+    "keywordIds": [],
+    "abilityIds": []
+}

@@ -1,0 +1,48 @@
+.cf-modal-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--cf-color-overlay);
+}
+.cf-dialog {
+    width: 460px;
+    max-width: 90%;
+    padding: 18px;
+    background-color: var(--cf-color-surface);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: var(--cf-radius-lg);
+}
+.cf-app .cf-dialog__title {
+    margin-bottom: var(--cf-space-2);
+    font-size: var(--cf-font-size-lg);
+    -unity-font-style: bold;
+}
+.cf-dialog .unity-base-field__label { color: var(--cf-color-text-muted); }
+.cf-dialog .unity-toggle__text { color: var(--cf-color-text); }
+.cf-dialog .unity-radio-button__label { color: var(--cf-color-text); }
+
+.cf-dropzone {
+    height: 80px;
+    margin: 10px 0;
+    background-color: var(--cf-color-bg);
+    color: var(--cf-color-text-muted);
+    border-width: 2px;
+    border-color: var(--cf-color-border);
+    border-radius: var(--cf-radius-md);
+    transition-property: border-color, color;
+    transition-duration: var(--cf-duration-fast);
+}
+.cf-dropzone:hover { border-color: var(--cf-color-accent); color: var(--cf-color-text); }
+.cf-dropzone--filled { border-color: var(--cf-color-accent); color: var(--cf-color-text); }
+
+.cf-preview-chips { flex-direction: row; margin: var(--cf-space-2) 0; }
+.cf-dialog__actions {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 14px;
+}

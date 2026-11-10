@@ -1,0 +1,46 @@
+/* Lightweight digital-content integrity dashboard. */
+.cf-audit { background-color: var(--cf-color-bg); color: var(--cf-color-text); }
+.cf-audit__header {
+    flex-shrink: 0; padding: 22px 26px 18px 26px;
+    background-color: var(--cf-color-surface);
+    border-bottom-width: 1px; border-bottom-color: var(--cf-color-border);
+}
+.cf-app .cf-audit__eyebrow {
+    font-size: 9px; letter-spacing: 1.5px; color: var(--cf-color-accent);
+    -unity-font-style: bold; margin-bottom: 8px;
+}
+.cf-app .cf-audit__heading { font-size: 25px; -unity-font-style: bold; margin-bottom: 8px; }
+.cf-audit__actions { flex-direction: row; margin-top: 16px; }
+.cf-audit__actions > Button {
+    min-height: 32px; margin-right: 8px; padding: 5px 16px;
+    background-color: var(--cf-color-surface-raised);
+    border-width: 1px; border-color: var(--cf-color-border);
+    border-radius: 7px; color: var(--cf-color-text);
+}
+.cf-audit__actions > Button:hover { border-color: var(--cf-color-accent); }
+.cf-audit__report { padding: 22px 24px; }
+.cf-audit__stats { flex-direction: row; flex-wrap: wrap; margin-bottom: 18px; }
+.cf-audit__stat {
+    min-width: 100px; flex-grow: 1; flex-basis: 0; padding: 12px;
+    margin: 0 8px 8px 0; background-color: var(--cf-color-surface);
+    border-width: 1px; border-color: var(--cf-color-border); border-radius: 8px;
+}
+.cf-app .cf-audit__stat-value { font-size: 22px; -unity-font-style: bold; color: var(--cf-color-accent); }
+.cf-app .cf-audit__stat-label { font-size: 10px; margin-top: 3px; color: var(--cf-color-text-muted); }
+.cf-app .cf-audit__summary { font-size: 15px; margin: 6px 0 14px 0; -unity-font-style: bold; }
+.cf-audit__group {
+    margin: 0 0 12px 0; padding: 14px 16px;
+    background-color: var(--cf-color-surface);
+    border-width: 1px; border-color: var(--cf-color-border); border-left-width: 3px;
+    border-left-color: var(--cf-color-warning); border-radius: 8px;
+}
+.cf-audit__group-head { flex-direction: row; align-items: center; margin-bottom: 10px; }
+.cf-app .cf-audit__group-title { flex-grow: 1; font-size: 13px; -unity-font-style: bold; }
+.cf-audit__group-head Button { margin-left: 8px; padding: 6px 14px; }
+.cf-app .cf-audit__issue { color: var(--cf-color-text-muted); font-size: 11px; margin-top: 4px; white-space: normal; }
+.cf-audit__success {
+    padding: 22px; margin-top: 12px; background-color: var(--cf-color-surface);
+    border-width: 1px; border-color: var(--cf-color-success); border-radius: 9px;
+}
+.cf-audit__success Label { margin-bottom: 7px; white-space: normal; }
+.cf-project-health-button { border-color: var(--cf-color-accent); color: var(--cf-color-text); }

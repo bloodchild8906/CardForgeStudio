@@ -1,0 +1,11 @@
+{
+  "name": "CardForge.StudioTheme.Editor",
+  "rootNamespace": "CardForge.EditorUI",
+  "references": [],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

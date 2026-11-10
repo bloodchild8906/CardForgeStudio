@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:cf="CardForge.EditorUI.Controls">
+    <ui:VisualElement name="overlay" class="cf-modal-overlay">
+        <ui:VisualElement class="cf-dialog">
+            <ui:Label name="dialog-title" class="cf-dialog__title" />
+            <ui:VisualElement name="import-section">
+                <ui:Button name="dropzone" text="Click to choose a .json or .csv file" class="cf-dropzone" />
+                <ui:RadioButtonGroup name="conflict-mode" label="When items already exist" value="0" choices="Merge,Replace all,Skip duplicates" />
+                <ui:VisualElement name="import-preview" class="cf-preview-chips cf-hidden">
+                    <cf:StatusPill name="preview-created" tone="Ok" />
+                    <cf:StatusPill name="preview-changed" tone="Warning" />
+                    <cf:StatusPill name="preview-errors" tone="Danger" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="export-section">
+                <ui:RadioButtonGroup name="export-format" label="Format" value="0" choices="JSON,CSV" />
+                <ui:Toggle name="selected-only" label="Selected only" value="true" />
+                <ui:Toggle name="include-assets" label="Include linked documents" value="true" />
+            </ui:VisualElement>
+            <ui:VisualElement class="cf-dialog__actions">
+                <ui:Button name="cancel-button" text="Cancel" class="cf-button" />
+                <ui:Button name="confirm-button" class="cf-button cf-button--primary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,16 @@
+{
+    "version": 1,
+    "id": "271f8268dc9546599515308aa2c80bc1",
+    "name": "New action",
+    "triggerId": "",
+    "resolution": "Resolve immediately",
+    "effect": "",
+    "condition": "",
+    "cost": "",
+    "targets": "",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [],
+    "graphNodes": [],
+    "graphLinks": []
+}

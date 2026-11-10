@@ -1,0 +1,199 @@
+/* Node graph canvas used by the turn flow, action and ability editors. It is a dark stage in every theme. */
+.cf-graph {
+    --cf-graph-grid: rgba(120, 160, 190, 0.07);
+    --cf-graph-grid-major: rgba(120, 160, 190, 0.14);
+    --cf-graph-edge: #4f8f8a;
+    --cf-graph-edge-active: #63c7ba;
+    --cf-graph-edge-selected: #d4b26e;
+    flex-grow: 1;
+    min-height: 0;
+    overflow: hidden;
+    background-color: #0c141e;
+}
+.cf-graph:focus {
+    border-color: #3f6b78;
+}
+.cf-graph__grid {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+.cf-graph__world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
+}
+.cf-graph__edges {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.cf-graph-node {
+    position: absolute;
+    width: 220px;
+    min-height: 96px;
+    padding: 10px 12px 10px 12px;
+    background-color: #1b3140;
+    border-width: 1px;
+    border-left-width: 4px;
+    border-color: #355367;
+    border-radius: 8px;
+}
+.cf-graph-node--process {
+    border-left-color: #5b86b0;
+}
+.cf-graph-node--trigger {
+    border-left-color: #d4b26e;
+}
+.cf-graph-node--effect {
+    border-left-color: #c9798b;
+}
+.cf-graph-node--phase {
+    border-left-color: #5fc9b6;
+}
+.cf-graph-node--selected {
+    background-color: #21494d;
+    border-color: #64d7c2;
+}
+.cf-graph-node--accepts {
+    border-color: #64d7c2;
+    background-color: #1f4a4a;
+}
+.cf-graph-node--rejects {
+    border-color: #c4566b;
+    background-color: #3a2430;
+}
+.cf-graph-node__kicker {
+    font-size: 9px;
+    letter-spacing: 1px;
+    -unity-font-style: bold;
+    color: #68d5c0;
+}
+.cf-graph-node__title {
+    margin: 4px 0 4px 0;
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: #f3f7fa;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cf-graph-node__detail {
+    max-height: 30px;
+    font-size: 10px;
+    color: #bbccd8;
+    white-space: normal;
+    overflow: hidden;
+}
+.cf-graph-node__badges {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+.cf-graph-badge {
+    max-width: 196px;
+    margin: 0 4px 4px 0;
+    padding: 1px 6px;
+    font-size: 9px;
+    color: #cfe3ea;
+    background-color: #274559;
+    border-radius: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cf-graph-node__footer {
+    margin-top: 4px;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: #8aa3b4;
+}
+.cf-graph-port {
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    background-color: #0c141e;
+    border-width: 2px;
+    border-color: #5fc9b6;
+    border-radius: 6px;
+}
+.cf-graph-port--in {
+    left: -10px;
+}
+.cf-graph-port--out {
+    right: -10px;
+}
+.cf-graph-port--hot {
+    background-color: #64d7c2;
+    scale: 1.25 1.25;
+}
+.cf-graph-node--selected .cf-graph-port {
+    background-color: #64d7c2;
+}
+.cf-graph-edge-label {
+    position: absolute;
+    translate: -50% -50%;
+    padding: 1px 8px;
+    font-size: 9px;
+    color: #9fb6c5;
+    background-color: #12202d;
+    border-width: 1px;
+    border-color: #2c4658;
+    border-radius: 9px;
+}
+.cf-graph-edge-label--active {
+    color: #d5f3ee;
+    border-color: #4f8f8a;
+}
+.cf-graph-edge-label--selected {
+    color: #1b1608;
+    background-color: #d4b26e;
+    border-color: #d4b26e;
+}
+.cf-graph__toolbar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    flex-direction: row;
+    align-items: center;
+    padding: 3px;
+    background-color: rgba(18, 32, 45, 0.92);
+    border-width: 1px;
+    border-color: #2c4658;
+    border-radius: 7px;
+}
+.cf-graph-tool {
+    min-width: 26px;
+    height: 22px;
+    margin: 0 2px;
+    padding: 0 8px;
+    font-size: 11px;
+    color: #cfe3ea;
+    background-color: #1f3547;
+    border-width: 0;
+    border-radius: 5px;
+}
+.cf-graph-tool:hover {
+    background-color: #2b4a60;
+    color: #ffffff;
+}
+.cf-graph__zoom {
+    min-width: 40px;
+    -unity-text-align: middle-center;
+    font-size: 10px;
+    color: #8aa3b4;
+}
+.cf-graph__hint {
+    position: absolute;
+    left: 10px;
+    bottom: 8px;
+    font-size: 10px;
+    color: #62798a;
+}

@@ -1,0 +1,55 @@
+.cf-app {
+    --cf-radius-sm: 4px;
+    --cf-radius-md: 8px;
+    --cf-radius-lg: 12px;
+    --cf-space-1: 4px;
+    --cf-space-2: 8px;
+    --cf-space-3: 12px;
+    --cf-space-4: 16px;
+    --cf-space-5: 24px;
+    --cf-font-size-xs: 10px;
+    --cf-font-size-sm: 11px;
+    --cf-font-size-md: 12px;
+    --cf-font-size-lg: 14px;
+    --cf-font-size-xl: 20px;
+    --cf-font-family: "Inter";
+    --cf-duration-fast: 120ms;
+}
+
+.cf-theme-dark {
+    --cf-color-bg: rgb(14, 22, 33);
+    --cf-color-surface: rgb(22, 33, 47);
+    --cf-color-surface-raised: rgb(28, 42, 59);
+    --cf-color-border: rgb(38, 53, 70);
+    --cf-color-text: rgb(230, 237, 245);
+    --cf-color-text-muted: rgb(138, 155, 176);
+    --cf-color-accent: rgb(84, 214, 191);
+    --cf-color-accent-soft: rgba(84, 214, 191, 0.14);
+    --cf-color-accent-strong: rgb(27, 108, 104);
+    --cf-color-success: rgb(84, 214, 191);
+    --cf-color-warning: rgb(224, 169, 79);
+    --cf-color-danger: rgb(224, 108, 117);
+    --cf-color-info: rgb(106, 166, 240);
+    --cf-color-row-hover: rgba(255, 255, 255, 0.04);
+    --cf-color-row-selected: rgba(216, 181, 112, 0.18);
+    --cf-color-overlay: rgba(0, 0, 0, 0.55);
+}
+
+.cf-theme-light {
+    --cf-color-bg: rgb(243, 246, 249);
+    --cf-color-surface: rgb(255, 255, 255);
+    --cf-color-surface-raised: rgb(238, 242, 246);
+    --cf-color-border: rgb(213, 221, 230);
+    --cf-color-text: rgb(26, 37, 51);
+    --cf-color-text-muted: rgb(91, 107, 126);
+    --cf-color-accent: rgb(15, 127, 103);
+    --cf-color-accent-soft: rgba(15, 127, 103, 0.12);
+    --cf-color-accent-strong: rgb(212, 239, 232);
+    --cf-color-success: rgb(15, 127, 103);
+    --cf-color-warning: rgb(168, 112, 15);
+    --cf-color-danger: rgb(192, 57, 43);
+    --cf-color-info: rgb(42, 111, 192);
+    --cf-color-row-hover: rgba(0, 0, 0, 0.04);
+    --cf-color-row-selected: rgba(15, 127, 103, 0.14);
+    --cf-color-overlay: rgba(0, 0, 0, 0.35);
+}

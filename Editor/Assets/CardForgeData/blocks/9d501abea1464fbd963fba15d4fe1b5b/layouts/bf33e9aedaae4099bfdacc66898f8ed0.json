@@ -1,0 +1,38 @@
+{
+    "version": 1,
+    "id": "bf33e9aedaae4099bfdacc66898f8ed0",
+    "name": "New front",
+    "isBack": false,
+    "width": 360,
+    "height": 504,
+    "backgroundAssetPath": "",
+    "backgroundColor": "#131d2b",
+    "zones": [
+        {
+            "locked": false,
+            "id": "50eb7fae9f0e4c428c58a21e45567c16",
+            "name": "StaticText Zone",
+            "kind": 4,
+            "fieldId": "",
+            "staticText": "STATIC LABEL",
+            "staticAssetPath": "",
+            "x": 32.0,
+            "y": 36.0,
+            "width": 130.0,
+            "height": 42.0,
+            "order": 0,
+            "offsetX": 0.0,
+            "offsetY": 0.0,
+            "fontSize": 21.0,
+            "color": "#F2F0EB",
+            "backgroundColor": "#00000000",
+            "bold": false,
+            "visible": true,
+            "alignment": "MiddleCenter",
+            "layers": [],
+            "variants": []
+        }
+    ],
+    "layoutType": "Standard",
+    "requirements": []
+}

@@ -1,0 +1,82 @@
+{
+    "version": 1,
+    "id": "d2216f6db5344263af79215acf46b8f6",
+    "name": "New ability",
+    "activationTriggerId": "",
+    "actionId": "",
+    "phaseId": "",
+    "condition": "",
+    "operation": "Modify the current action",
+    "effect": "",
+    "priority": 0,
+    "scope": "Game state",
+    "responseTiming": "Immediately",
+    "responseResolution": "Resolve in priority order",
+    "responseActionIds": [],
+    "causeTriggerIds": [],
+    "rules": [],
+    "graphNodes": [
+        {
+            "id": "2b12e546ab1744cb9af0607d9a42bc8a",
+            "title": "Ability intent",
+            "detail": "Define reusable intent",
+            "tone": "trigger",
+            "x": 50.0,
+            "y": 200.0
+        },
+        {
+            "id": "a39ebe38d6f8475293f93c06cb902907",
+            "title": "Condition",
+            "detail": "",
+            "tone": "process",
+            "x": 340.0,
+            "y": 200.0
+        },
+        {
+            "id": "8c7cce4c73254fc0822a61ff75168cd5",
+            "title": "Target",
+            "detail": "Phase or action",
+            "tone": "process",
+            "x": 610.0,
+            "y": 200.0
+        },
+        {
+            "id": "1b2b801388ec4669b46b221d027fa64d",
+            "title": "Operation",
+            "detail": "Modify the current action",
+            "tone": "process",
+            "x": 870.0,
+            "y": 200.0
+        },
+        {
+            "id": "9f1ae1cf162e498aaf0f8389eac6b37c",
+            "title": "Effect",
+            "detail": "",
+            "tone": "effect",
+            "x": 1050.0,
+            "y": 110.0
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "2b12e546ab1744cb9af0607d9a42bc8a",
+            "to": "a39ebe38d6f8475293f93c06cb902907",
+            "label": "next"
+        },
+        {
+            "from": "a39ebe38d6f8475293f93c06cb902907",
+            "to": "8c7cce4c73254fc0822a61ff75168cd5",
+            "label": "next"
+        },
+        {
+            "from": "8c7cce4c73254fc0822a61ff75168cd5",
+            "to": "1b2b801388ec4669b46b221d027fa64d",
+            "label": "next"
+        },
+        {
+            "from": "1b2b801388ec4669b46b221d027fa64d",
+            "to": "9f1ae1cf162e498aaf0f8389eac6b37c",
+            "label": "next"
+        }
+    ]
+}

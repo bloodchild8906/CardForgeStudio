@@ -1,0 +1,18 @@
+{
+    "version": 2,
+    "id": "e7837ef70cb94480b0781e91932d92d8",
+    "name": "Untitled Icon",
+    "assetPath": "",
+    "layers": [
+        {
+            "visible": true,
+            "opacity": 1.0,
+            "shape": "Circle",
+            "color": "#FFFFFF",
+            "x": 0.5,
+            "y": 0.5,
+            "size": 0.699999988079071,
+            "rotation": 0.0
+        }
+    ]
+}

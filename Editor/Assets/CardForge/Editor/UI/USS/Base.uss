@@ -1,0 +1,49 @@
+.cf-fill { flex-grow: 1; }
+.cf-hidden { display: none; }
+
+.cf-app {
+    flex-grow: 1;
+    background-color: var(--cf-color-bg);
+}
+
+.cf-app Label {
+    color: var(--cf-color-text);
+    font-size: var(--cf-font-size-md);
+}
+
+.cf-app .cf-muted { color: var(--cf-color-text-muted); }
+
+.cf-button {
+    margin: 0 0 0 var(--cf-space-2);
+    padding: 5px 12px;
+    background-color: var(--cf-color-surface-raised);
+    color: var(--cf-color-text);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: var(--cf-radius-md);
+    transition-property: background-color, border-color, color;
+    transition-duration: var(--cf-duration-fast);
+    transition-timing-function: ease-out;
+}
+.cf-button:hover {
+    border-color: var(--cf-color-accent);
+    background-color: var(--cf-color-accent-soft);
+}
+.cf-button:active { background-color: var(--cf-color-row-selected); }
+.cf-button:disabled { opacity: 0.45; }
+
+.cf-button--primary {
+    background-color: var(--cf-color-accent-strong);
+    border-color: var(--cf-color-accent);
+    -unity-font-style: bold;
+}
+.cf-button--danger:hover {
+    border-color: var(--cf-color-danger);
+    color: var(--cf-color-danger);
+    background-color: var(--cf-color-surface-raised);
+}
+
+
+.cf-button:focus, .cf-filter-clear:focus { border-color: var(--cf-color-accent); }
+.cf-app .unity-toggle__checkmark { background-color: var(--cf-color-surface); border-width: 1px; border-color: var(--cf-color-border); border-radius: 3px; width: 15px; height: 15px; }
+.cf-app Toggle:checked .unity-toggle__checkmark { background-color: var(--cf-color-accent-strong); border-color: var(--cf-color-accent); }

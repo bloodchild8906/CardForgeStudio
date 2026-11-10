@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "id": "astral-rift-core",
+    "code": "ARFT",
+    "name": "Astral Rift: Convergence",
+    "description": "A complete CardForgeStudio showcase: authored cards, frames, assets, zones, actions, abilities, keywords, triggers, turn flow, resources, and multiple victory paths.",
+    "layoutIds": [
+        "ar-layout-front",
+        "ar-layout-back"
+    ],
+    "cardIds": [
+        "ar-card-dawn-captain",
+        "ar-card-ember-fox",
+        "ar-card-sunwell-engine",
+        "ar-card-tide-oracle",
+        "ar-card-moonlit-archive",
+        "ar-card-rift-manta",
+        "ar-card-verdant-colossus",
+        "ar-card-seedship",
+        "ar-card-moss-memory",
+        "ar-card-void-duelist",
+        "ar-card-event-horizon",
+        "ar-card-whisper-agent"
+    ],
+    "defaultBackLayoutId": "ar-layout-back"
+}

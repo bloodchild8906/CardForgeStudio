@@ -1,0 +1,16 @@
+{
+    "version": 1,
+    "id": "9d501abea1464fbd963fba15d4fe1b5b",
+    "code": "CORE",
+    "name": "Core Set",
+    "description": "",
+    "layoutIds": [
+        "5435a961e1bf4876b2b233ae723c5f14",
+        "82333acefa694a4da489e4bb3d81ff72",
+        "bf33e9aedaae4099bfdacc66898f8ed0"
+    ],
+    "cardIds": [
+        "9c528d2da9ac428fad9da4e893102942"
+    ],
+    "defaultBackLayoutId": "82333acefa694a4da489e4bb3d81ff72"
+}

@@ -1,0 +1,93 @@
+{
+    "version": 1,
+    "id": "eb1539ad2dc440d7b716fb0c4f799f79",
+    "name": "New ability",
+    "cardId": "",
+    "activationTriggerId": "",
+    "actionId": "",
+    "phaseId": "",
+    "condition": "",
+    "operation": "Modify the current action",
+    "effect": "",
+    "priority": 0,
+    "scope": "Game state",
+    "responseTiming": "Immediately",
+    "responseResolution": "Resolve in priority order",
+    "responseActionIds": [],
+    "causeTriggerIds": [],
+    "rules": [],
+    "graphNodes": [
+        {
+            "id": "8c3e26f77eed4d0ba0f25bc3c92c8928",
+            "title": "Ability intent",
+            "detail": "Define reusable intent",
+            "tone": "trigger",
+            "x": 40.0,
+            "y": 0.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "2a8819410cd0406db35b10f95593aa6e",
+            "title": "Condition",
+            "detail": "",
+            "tone": "process",
+            "x": 310.0,
+            "y": 0.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "24b25d88be644af69b164ee217ef6918",
+            "title": "Target",
+            "detail": "Phase or action",
+            "tone": "process",
+            "x": 580.0,
+            "y": 50.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "05db26d6acaa4d8d850e672461237233",
+            "title": "Operation",
+            "detail": "Modify the current action",
+            "tone": "process",
+            "x": 800.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "df135e5e34e940318f67030c03222146",
+            "title": "Effect",
+            "detail": "",
+            "tone": "effect",
+            "x": 1050.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "8c3e26f77eed4d0ba0f25bc3c92c8928",
+            "to": "2a8819410cd0406db35b10f95593aa6e",
+            "label": "next"
+        },
+        {
+            "from": "2a8819410cd0406db35b10f95593aa6e",
+            "to": "24b25d88be644af69b164ee217ef6918",
+            "label": "next"
+        },
+        {
+            "from": "24b25d88be644af69b164ee217ef6918",
+            "to": "05db26d6acaa4d8d850e672461237233",
+            "label": "next"
+        },
+        {
+            "from": "05db26d6acaa4d8d850e672461237233",
+            "to": "df135e5e34e940318f67030c03222146",
+            "label": "next"
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\CardForge.GamePackages\CardForge.GamePackages.csproj" />
+    <ProjectReference Include="..\..\Server\src\TcgULtimateServer.Api\TcgULtimateServer.Api.csproj" />
+  </ItemGroup>
+</Project>

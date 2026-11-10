@@ -1,0 +1,13 @@
+{
+  "name": "CardForge.Ollama.Editor",
+  "rootNamespace": "CardForge.EditorUI",
+  "references": [
+    "CardForge.ImageProcessing.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

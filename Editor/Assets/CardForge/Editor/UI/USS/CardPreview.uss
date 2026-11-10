@@ -1,0 +1,65 @@
+.cf-card {
+    position: relative;
+    width: 150px;
+    height: 210px;
+    margin-bottom: var(--cf-space-4);
+    align-self: center;
+    background-color: var(--cf-color-surface-raised);
+    border-width: 2px;
+    border-color: var(--cf-color-accent);
+    border-radius: 10px;
+}
+.cf-app .cf-card__zone {
+    position: absolute;
+    padding: 1px 3px;
+    font-size: 9px;
+    color: var(--cf-color-text-muted);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: 3px;
+}
+.cf-card__zone--name  { left: 5%; top: 4%;  width: 90%; height: 9%; }
+.cf-card__zone--art   { left: 5%; top: 15%; width: 90%; height: 38%; background-color: var(--cf-color-accent-soft); }
+.cf-card__zone--rules { left: 5%; top: 56%; width: 90%; height: 28%; }
+.cf-card__zone--cost  { left: 5%; top: 87%; width: 30%; height: 9%; }
+.cf-card__zone--stats { left: 65%; top: 87%; width: 30%; height: 9%; }
+
+.cf-card__emblem { display: none; }
+.cf-card--back { justify-content: center; align-items: center; }
+.cf-card--back .cf-card__zone { display: none; }
+.cf-card--back .cf-card__emblem {
+    display: flex;
+    width: 70px;
+    height: 70px;
+    rotate: 45deg;
+    border-width: 2px;
+    border-color: var(--cf-color-accent);
+}
+
+/* Live previews share the document renderer and scale to their viewport. */
+.cf-live-preview { height: 214px; min-height: 214px; flex-shrink: 0; overflow: hidden; background-color: #101d2a; border-width: 1px; border-color: #2d4658; border-radius: 7px; }
+.cf-live-preview .canvas-stage { background-color: transparent; }
+.cf-live-preview .canvas-board { margin: 0; }
+.cf-live-preview .card-surface { border-width: 1px; border-color: #667584; border-radius: 6px; }
+.cf-live-preview .card-zone { border-width: 0; }
+.cf-live-preview .image-placeholder { color: #8e9eac; -unity-text-align: middle-center; background-color: #152331; width: 100%; height: 100%; font-size: 9px; }
+.cf-live-preview > Label { white-space: normal; -unity-text-align: middle-center; margin: 40px 24px; color: #91a8b8; }
+.cf-icon-preview { flex-grow: 1; margin: 34px; }
+.cf-gallery { flex-grow: 1; min-height: 0; margin: 12px 14px; }
+.cf-gallery-row { flex-direction: row; padding: 6px 2px; }
+.cf-gallery-spacer { flex-grow: 1; flex-basis: 0; margin: 0 6px; }
+.cf-gallery-card {
+    flex-grow: 1; flex-basis: 0; min-width: 0; height: 290px; margin: 0 6px; padding: 7px;
+    background-color: #172a39; border-width: 1px; border-color: #355064; border-radius: 10px;
+}
+.cf-gallery-card:hover { background-color: #1d394b; border-color: #d8b574; }
+.cf-gallery-card--selected, .cf-gallery-card--selected:hover { border-color: #d8b574; border-width: 2px; padding: 6px; background-color: #273b45; }
+.cf-gallery-card:focus { border-color: #54d6bf; }
+.cf-gallery-card__body { padding: 12px 7px 5px 7px; }
+.cf-app .cf-gallery-card__title { font-size: 13px; -unity-font-style: bold; color: #e8eef2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-app .cf-gallery-card__detail { font-size: 10px; color: #91a8b8; margin-top: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-empty-state { flex-grow: 1; align-items: center; justify-content: center; padding: 40px; }
+.cf-app .cf-empty-state__eyebrow { font-size: 10px; letter-spacing: 2px; color: #96702c; margin-bottom: 12px; }
+.cf-app .cf-empty-state__title { font-size: 24px; -unity-font-style: bold; margin-bottom: 10px; }
+.cf-app .cf-empty-state__description { font-size: 12px; color: var(--cf-color-text-muted); white-space: normal; -unity-text-align: middle-center; max-width: 380px; margin-bottom: 22px; }
+.cf-empty-state .cf-button { margin: 0; min-height: 34px; padding: 6px 18px; }

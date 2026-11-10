@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "2",
+  "id": "elemental-duel",
+  "name": "Elemental Duel",
+  "version": "1.0.0",
+  "description": "A compact example showing a system-neutral TCG definition.",
+  "gameSystem": "elemental-duel",
+  "minimumPlayers": 2,
+  "maximumPlayers": 4,
+  "startingRules": {
+    "startingHand": 3
+  },
+  "zones": [
+    { "id": "deck", "name": "Deck", "ownerScope": "player", "visibility": "hidden", "ordered": true },
+    { "id": "hand", "name": "Hand", "ownerScope": "player", "visibility": "owner" },
+    { "id": "arena", "name": "Arena", "ownerScope": "player", "visibility": "public", "capacity": 5 },
+    { "id": "discard", "name": "Discard", "ownerScope": "player", "visibility": "public", "ordered": true },
+    { "id": "weather", "name": "Shared Weather", "ownerScope": "game", "visibility": "public", "capacity": 1 }
+  ],
+  "resources": [
+    { "id": "resolve", "name": "Resolve", "scope": "player", "initialValue": 10, "minimumValue": 0, "maximumValue": 10 },
+    { "id": "energy", "name": "Energy", "scope": "player", "initialValue": 3, "minimumValue": 0, "maximumValue": 12 },
+    { "id": "round", "name": "Round", "scope": "game", "initialValue": 1, "minimumValue": 1 }
+  ],
+  "phases": [
+    { "id": "draw", "name": "Draw", "allowedActions": [ "draw_card", "advance_phase" ] },
+    { "id": "command", "name": "Command", "allowedActions": [ "deploy", "end_turn" ] }
+  ],
+  "actions": [
+    {
+      "id": "draw_card",
+      "name": "Draw a card",
+      "requiresActivePlayer": true,
+      "effects": [
+        { "kind": "draw", "fromZone": "deck", "toZone": "hand", "amount": 1 },
+        { "kind": "advance_phase" }
+      ]
+    },
+    {
+      "id": "advance_phase",
+      "name": "Advance phase",
+      "requiresActivePlayer": true,
+      "effects": [ { "kind": "advance_phase" } ]
+    },
+    {
+      "id": "deploy",
+      "name": "Deploy card",
+      "sourceZone": "hand",
+      "destinationZone": "arena",
+      "requiresActivePlayer": true,
+      "costs": { "energy": 1 },
+      "conditions": [
+        { "kind": "active_player" },
+        { "kind": "source_in_zone" }
+      ],
+      "effects": [
+        { "kind": "emit_event", "eventType": "card_deployed", "message": "A card entered the arena." }
+      ]
+    },
+    {
+      "id": "end_turn",
+      "name": "End turn",
+      "requiresActivePlayer": true,
+      "effects": [ { "kind": "end_turn" } ]
+    }
+  ],
+  "cards": [
+    {
+      "id": "ember-fox",
+      "name": "Ember Fox",
+      "type": "companion",
+      "cost": 1,
+      "power": 2,
+      "toughness": 1,
+      "text": "A quick elemental companion.",
+      "tags": [ "fire", "companion" ],
+      "properties": {
+        "rarity": "common",
+        "element": "fire"
+      },
+      "abilities": [
+        {
+          "id": "arrival-spark",
+          "name": "Arrival Spark",
+          "trigger": "on_deploy",
+          "effects": [
+            { "kind": "emit_event", "eventType": "arrival_spark", "message": "Ember Fox sparks on arrival." }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "author": "TcgULtimateServer example"
+  }
+}

@@ -1,0 +1,19 @@
+.cf-pill {
+    align-self: center;
+    margin-left: var(--cf-space-2);
+    padding: 3px 8px;
+    border-width: 1px;
+    border-radius: 4px;
+    font-size: var(--cf-font-size-sm);
+    -unity-text-align: middle-center;
+    border-color: var(--cf-color-text-muted);
+}
+.cf-app .cf-pill--neutral { color: var(--cf-color-text-muted); }
+.cf-app .cf-pill--ok { color: var(--cf-color-success); }
+.cf-app .cf-pill--warning { color: var(--cf-color-warning); }
+.cf-app .cf-pill--danger { color: var(--cf-color-danger); }
+.cf-app .cf-pill--info { color: var(--cf-color-info); }
+.cf-pill--ok { border-color: var(--cf-color-success); }
+.cf-pill--warning { border-color: var(--cf-color-warning); }
+.cf-pill--danger { border-color: var(--cf-color-danger); }
+.cf-pill--info { border-color: var(--cf-color-info); }

@@ -1,0 +1,40 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="screen-root" class="cf-screen">
+        <ui:ScrollView name="sidebar" class="cf-sidebar" />
+        <ui:TwoPaneSplitView orientation="Horizontal" fixed-pane-index="1" fixed-pane-initial-dimension="320" class="cf-fill">
+            <ui:VisualElement name="main-pane" class="cf-main">
+                <ui:VisualElement name="toolbar" class="cf-toolbar">
+                    <ui:Label name="toolbar-title" class="cf-toolbar__title" />
+                    <ui:TextField name="search-field" placeholder-text="Search…" class="cf-search" />
+                    <ui:Button name="filters-button" text="Filters" class="cf-button cf-filters-toggle" />
+                    <ui:VisualElement class="cf-toolbar__spacer" />
+                    <ui:VisualElement name="view-switch" class="cf-view-switch">
+                        <ui:Button name="gallery-view" text="Gallery" />
+                        <ui:Button name="table-view" text="List" />
+                    </ui:VisualElement>
+                    <ui:Button name="import-button" text="Import…" class="cf-button" />
+                    <ui:Button name="export-button" text="Export…" class="cf-button" />
+                    <ui:Button name="add-button" class="cf-button cf-button--primary" />
+                </ui:VisualElement>
+                <ui:VisualElement name="summary" class="cf-summary cf-hidden" />
+                <ui:VisualElement name="bulk-bar" class="cf-bulk-bar cf-hidden">
+                    <ui:Label name="bulk-label" class="cf-bulk-bar__label" />
+                    <ui:Button name="clear-selection" text="Clear selection" class="cf-button" />
+                    <ui:Button name="bulk-duplicate" text="Duplicate" class="cf-button" />
+                    <ui:Button name="bulk-export" text="Export selected" class="cf-button" />
+                    <ui:Button name="bulk-delete" text="Delete" class="cf-button cf-button--danger" />
+                </ui:VisualElement>
+                <ui:MultiColumnListView name="grid" class="cf-grid" selection-type="Multiple" show-alternating-row-backgrounds="None" />
+                <ui:ListView name="gallery" class="cf-gallery cf-hidden" selection-type="None" />
+                <ui:VisualElement name="empty-state" class="cf-empty-state cf-hidden">
+                    <ui:Label text="YOUR LIBRARY" class="cf-empty-state__eyebrow" />
+                    <ui:Label name="empty-title" class="cf-empty-state__title" />
+                    <ui:Label name="empty-description" class="cf-empty-state__description" />
+                    <ui:Button name="empty-action" class="cf-button cf-button--primary" />
+                </ui:VisualElement>
+                <ui:Label name="statusbar" class="cf-statusbar" />
+            </ui:VisualElement>
+            <ui:ScrollView name="inspector" class="cf-inspector" />
+        </ui:TwoPaneSplitView>
+    </ui:VisualElement>
+</ui:UXML>

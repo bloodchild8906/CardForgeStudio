@@ -1,0 +1,148 @@
+{
+    "version": 1,
+    "id": "3932b2099f2847db88148e4cf2ecbca6",
+    "name": "New action",
+    "triggerId": "80b1e3279c6f49069e4365df6942bb98",
+    "resolution": "Resolve immediately",
+    "effect": "",
+    "condition": "",
+    "cost": "",
+    "targets": "",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [],
+    "graphNodes": [
+        {
+            "id": "fc1781861b5648dfb498e44408e7465d",
+            "title": "Viability trigger",
+            "detail": "No trigger gate",
+            "tone": "trigger",
+            "x": 50.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "8bb13df2ea954d04aadf68366103ccb9",
+            "title": "Declare action",
+            "detail": "New action",
+            "tone": "process",
+            "x": 300.0,
+            "y": 110.0,
+            "causesStateChange": true,
+            "emitsTriggers": true
+        },
+        {
+            "id": "09400f5655634aafb1c3be509c963968",
+            "title": "Check condition",
+            "detail": "",
+            "tone": "process",
+            "x": 550.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "b83fca9c1e6948eca7ee1a7edf064b2a",
+            "title": "Pay cost",
+            "detail": "",
+            "tone": "effect",
+            "x": 800.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "4b32146d61b042ee8bc57aadcf416821",
+            "title": "Choose targets",
+            "detail": "",
+            "tone": "process",
+            "x": 1050.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "84ffcea4d8b2466fab1438cd076e93b6",
+            "title": "Orient card",
+            "detail": "No orientation change",
+            "tone": "process",
+            "x": 1300.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "29c8ee378b8e4d77b1da57555dde74c3",
+            "title": "Apply effect",
+            "detail": "",
+            "tone": "process",
+            "x": 1550.0,
+            "y": 110.0,
+            "causesStateChange": true,
+            "emitsTriggers": false
+        },
+        {
+            "id": "12b303473fd84bf099ed6bc84027f390",
+            "title": "Emit trigger outputs",
+            "detail": "0 triggers",
+            "tone": "trigger",
+            "x": 1800.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": true
+        },
+        {
+            "id": "13bf66d420ed4b0b92127d124d329443",
+            "title": "Complete",
+            "detail": "Resolve immediately",
+            "tone": "process",
+            "x": 2050.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "fc1781861b5648dfb498e44408e7465d",
+            "to": "8bb13df2ea954d04aadf68366103ccb9",
+            "label": "next"
+        },
+        {
+            "from": "8bb13df2ea954d04aadf68366103ccb9",
+            "to": "09400f5655634aafb1c3be509c963968",
+            "label": "next"
+        },
+        {
+            "from": "09400f5655634aafb1c3be509c963968",
+            "to": "b83fca9c1e6948eca7ee1a7edf064b2a",
+            "label": "next"
+        },
+        {
+            "from": "b83fca9c1e6948eca7ee1a7edf064b2a",
+            "to": "4b32146d61b042ee8bc57aadcf416821",
+            "label": "next"
+        },
+        {
+            "from": "4b32146d61b042ee8bc57aadcf416821",
+            "to": "84ffcea4d8b2466fab1438cd076e93b6",
+            "label": "next"
+        },
+        {
+            "from": "84ffcea4d8b2466fab1438cd076e93b6",
+            "to": "29c8ee378b8e4d77b1da57555dde74c3",
+            "label": "next"
+        },
+        {
+            "from": "29c8ee378b8e4d77b1da57555dde74c3",
+            "to": "12b303473fd84bf099ed6bc84027f390",
+            "label": "next"
+        },
+        {
+            "from": "12b303473fd84bf099ed6bc84027f390",
+            "to": "13bf66d420ed4b0b92127d124d329443",
+            "label": "next"
+        }
+    ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "CardForge.GamePackages",
+  "rootNamespace": "CardForge.GamePackages",
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": true
+}
