@@ -6,7 +6,7 @@ Related: [README.md](../README.md), [architecture.md](architecture.md), [studio-
 
 ## 1. Open the project
 
-Open the folder as a Unity project with Unity `7000.0.0a16` (pinned in `ProjectSettings/ProjectVersion.txt`). No package installation is required: `Packages/manifest.json` already lists URP, Input System, IDE integration, and built-in modules. The Excel importer is vendored as an editor-only DLL at `Assets/CardForge/Editor/ThirdParty/ExcelDataReader/ExcelDataReader.dll`.
+Open the folder as a Unity project with Unity `7000.0.0a16` (pinned in `ProjectSettings/ProjectVersion.txt`). No package installation is required: `Packages/manifest.json` already lists URP, Input System, IDE integration, and built-in modules. The Excel importer is vendored as an editor-only DLL at `Assets/CardForgeStudio/CardForge/Editor/ThirdParty/ExcelDataReader/ExcelDataReader.dll`.
 
 Let Unity finish the first import (this recreates the ignored `Library/` folder).
 
@@ -14,16 +14,16 @@ Let Unity finish the first import (this recreates the ignored `Library/` folder)
 
 | Tracked in git | Generated / ignored |
 | --- | --- |
-| `Assets/CardForge/**` source code and assets | `Library/`, `Logs/`, `Temp/`, `UserSettings/` |
-| `Assets/CardForgeData/**` JSON and imported art/fonts | `*.csproj`, `*.sln`, `*.slnx`, IDE state |
+| `Assets/CardForgeStudio/CardForge/**` source code and assets | `Library/`, `Logs/`, `Temp/`, `UserSettings/` |
+| `Assets/CardForgeStudio/CardForgeData/**` JSON and imported art/fonts | `*.csproj`, `*.sln`, `*.slnx`, IDE state |
 | `Packages/`, `ProjectSettings/` | `.CardForgeBackups/` |
 | `docs/`, `README.md` | Build output under `CardForgeExports/` is **not** ignored (commit or delete deliberately) |
 
 ## 3. First run: seeded data
 
-Open **CardForge > Open Studio** (or **Window > CardForge Studio**). `CardForgeStore.Reload()` reads `Assets/CardForgeData/`. If `schema.json` is missing, it seeds a starter project and writes it to disk:
+Open **CardForge > Open Studio** (or **Window > CardForge Studio**). `CardForgeStore.Reload()` reads `Assets/CardForgeStudio/CardForgeData/`. If `schema.json` is missing, it seeds a starter project and writes it to disk:
 
-**Schema** (`Assets/CardForgeData/schema.json`) — seven fields:
+**Schema** (`Assets/CardForgeStudio/CardForgeData/schema.json`) — seven fields:
 
 | key | label | kind | default |
 | --- | --- | --- | --- |

@@ -2,7 +2,7 @@
     "version": 2,
     "id": "ar-icon-verdant",
     "name": "Verdant affinity",
-    "assetPath": "Assets/CardForgeData/demo/astral-rift/icons/verdant.png",
+    "assetPath": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/verdant.png",
     "layers": [
         {
             "visible": true,

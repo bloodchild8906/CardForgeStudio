@@ -1,10 +1,5 @@
-# CardForge.GamePackages
+# Shared CardForge package contracts
 
-This is the shared, dependency-free package boundary.
+Shared `.cardforge` manifest, schema and archive contract types remain in this portable package. The Unity editor uses them to validate and export authored games. The native Unity content publisher converts compiled rule entries to `CardForge.Simulation`, which is separately compiled under `Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/Simulation` with an asmdef.
 
-- `Runtime` is compiled as the `CardForge.GamePackages` .NET Standard assembly and as a Unity asmdef through the local UPM package.
-- `GamePackageContracts` defines manifest, content summary, file integrity, and victory contracts.
-- `GamePackageManifestValidator` provides the host-neutral identifier, semantic-version, required-kind, declared-path, and archive-membership checks.
-- `Schemas` documents the JSON wire format used by external tooling.
-
-Archive I/O and executable rule validation remain server responsibilities so the shared assembly does not depend on ASP.NET or a JSON implementation unavailable to Unity.
+This directory contains shared contract code, **not** a legacy server. All gameplay runs in the Unity Dedicated Server.

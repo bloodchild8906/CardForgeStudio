@@ -1,0 +1,72 @@
+{
+    "version": 1,
+    "id": "ar-card-verdant-027",
+    "name": "Echoing Seedbearer",
+    "cardNumber": "153",
+    "layoutId": "ar-layout-front",
+    "backLayoutId": "ar-layout-back",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Unit",
+    "variantId": "common",
+    "values": [
+        {
+            "fieldId": "5aa8e06473ef4906ad1207722c38f824",
+            "value": "Echoing Seedbearer"
+        },
+        {
+            "fieldId": "d3122d6a7a2e455b85aa4159a16b59dd",
+            "value": "3"
+        },
+        {
+            "fieldId": "3fdb6418da2c449cb610ce5ac43a97a2",
+            "value": "Unit — Verdant"
+        },
+        {
+            "fieldId": "1fa832ace0bb4ffd980ff9350beb90ed",
+            "value": "gain 5 shield; gain 1 shield."
+        },
+        {
+            "fieldId": "89c7fee71dd74befaa68a04dd3abceee",
+            "value": "5"
+        },
+        {
+            "fieldId": "ar-field-toughness",
+            "value": "3"
+        },
+        {
+            "fieldId": "a923c2a162ad467899a0e29c0acad459",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-verdant-027.png"
+        },
+        {
+            "fieldId": "ar-field-affinity",
+            "value": "Verdant"
+        },
+        {
+            "fieldId": "ar-field-affinity-icon",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/verdant.png"
+        },
+        {
+            "fieldId": "ar-field-rarity",
+            "value": "Common"
+        },
+        {
+            "fieldId": "ar-field-flavor",
+            "value": "No constellation follows the same course twice."
+        },
+        {
+            "fieldId": "ar-field-collector",
+            "value": "153/240 · ARFT"
+        },
+        {
+            "fieldId": "ar-field-active",
+            "value": "true"
+        }
+    ],
+    "zoneOverrides": [],
+    "requirements": [],
+    "keywordIds": [],
+    "abilityIds": [
+        "ar-ability-unique-ar-card-verdant-027"
+    ]
+}

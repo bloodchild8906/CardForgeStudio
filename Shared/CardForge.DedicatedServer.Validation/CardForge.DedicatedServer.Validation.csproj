@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../CardForge.Simulation/CardForge.Simulation.csproj" />
+    <ProjectReference Include="../CardForge.MongoDependencies/CardForge.MongoDependencies.csproj" />
+    <Reference Include="UnityEngine.CoreModule"><HintPath>C:/Program Files/Unity/Hub/Editor/7000.0.0a16/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.ScriptingModule"><HintPath>C:/Program Files/Unity/Hub/Editor/7000.0.0a16/Editor/Data/Managed/UnityEngine/UnityEngine.ScriptingModule.dll</HintPath></Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule"><HintPath>C:/Program Files/Unity/Hub/Editor/7000.0.0a16/Editor/Data/Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll</HintPath></Reference>
+    <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/INativePersistence.cs" Link="INativePersistence.cs" />
+    <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/JsonNativePersistence.cs" Link="JsonNativePersistence.cs" />
+    <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/MongoNativePersistence.cs" Link="MongoNativePersistence.cs" />
+    <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/NativeAccounts.cs" Link="NativeAccounts.cs" />
+    <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/NativeServerApi.cs" Link="NativeServerApi.cs" />
+    <Reference Include="Newtonsoft.Json"><HintPath>../../Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64/Runtime/Newtonsoft.Json.dll</HintPath></Reference>
+    <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/DedicatedServerHost.cs" Link="DedicatedServerHost.cs" />
+  </ItemGroup>
+</Project>

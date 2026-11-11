@@ -1,0 +1,430 @@
+{
+    "version":  1,
+    "blockId":  "astral-rift-core",
+    "packageId":  "astral-rift-demo",
+    "gameId":  "astral-rift",
+    "packageVersion":  "3.0.0",
+    "gameSystem":  "astral-rift-showcase",
+    "minimumPlayers":  2,
+    "maximumPlayers":  5,
+    "startingHand":  5,
+    "turnFlowId":  "ar-standard-turn",
+    "defaultDeckId":  "ar-deck-solar-starter",
+    "deckRules":  {
+                      "minCards":  40,
+                      "maxCards":  120,
+                      "maxCopiesPerCard":  3,
+                      "allowedCardTypes":  [
+                                               "Creature",
+                                               "Spell",
+                                               "QuickSpell",
+                                               "Commander",
+                                               "ManaSource"
+                                           ],
+                      "typeLimits":  [
+
+                                     ],
+                      "cardLimits":  [
+
+                                     ]
+                  },
+    "zones":  [
+                  {
+                      "id":  "deck",
+                      "name":  "Library",
+                      "ownerScope":  "player",
+                      "visibility":  "hidden",
+                      "ordered":  true,
+                      "allowedCardTypes":  [
+
+                                           ],
+                      "initialCardIds":  [
+
+                                         ],
+                      "deckStartCardType":  "",
+                      "returnOnLeave":  false,
+                      "immovable":  false
+                  },
+                  {
+                      "id":  "hand",
+                      "name":  "Hand",
+                      "ownerScope":  "player",
+                      "visibility":  "owner",
+                      "ordered":  true,
+                      "capacity":  9,
+                      "allowedCardTypes":  [
+
+                                           ],
+                      "initialCardIds":  [
+
+                                         ],
+                      "deckStartCardType":  "",
+                      "returnOnLeave":  false,
+                      "immovable":  false
+                  },
+                  {
+                      "id":  "battlefield",
+                      "name":  "Battlefield",
+                      "ownerScope":  "player",
+                      "visibility":  "public",
+                      "ordered":  false,
+                      "capacity":  6,
+                      "allowedCardTypes":  [
+                                               "Creature",
+                                               "Commander"
+                                           ],
+                      "initialCardIds":  [
+
+                                         ],
+                      "deckStartCardType":  "",
+                      "returnOnLeave":  false,
+                      "immovable":  false
+                  },
+                  {
+                      "id":  "command",
+                      "name":  "Commander",
+                      "ownerScope":  "player",
+                      "visibility":  "public",
+                      "ordered":  false,
+                      "capacity":  1,
+                      "allowedCardTypes":  [
+                                               "Commander"
+                                           ],
+                      "initialCardIds":  [
+
+                                         ],
+                      "deckStartCardType":  "Commander",
+                      "returnOnLeave":  true,
+                      "immovable":  false
+                  },
+                  {
+                      "id":  "mana-source",
+                      "name":  "Mana Source",
+                      "ownerScope":  "player",
+                      "visibility":  "public",
+                      "ordered":  false,
+                      "capacity":  1,
+                      "allowedCardTypes":  [
+                                               "ManaSource"
+                                           ],
+                      "initialCardIds":  [
+
+                                         ],
+                      "deckStartCardType":  "ManaSource",
+                      "returnOnLeave":  false,
+                      "immovable":  true
+                  },
+                  {
+                      "id":  "discard",
+                      "name":  "Discard",
+                      "ownerScope":  "player",
+                      "visibility":  "public",
+                      "ordered":  true,
+                      "allowedCardTypes":  [
+
+                                           ],
+                      "initialCardIds":  [
+
+                                         ],
+                      "deckStartCardType":  "",
+                      "returnOnLeave":  false,
+                      "immovable":  false
+                  },
+                  {
+                      "id":  "void",
+                      "name":  "Exile",
+                      "ownerScope":  "player",
+                      "visibility":  "public",
+                      "ordered":  true,
+                      "allowedCardTypes":  [
+
+                                           ],
+                      "initialCardIds":  [
+
+                                         ],
+                      "deckStartCardType":  "",
+                      "returnOnLeave":  false,
+                      "immovable":  false
+                  }
+              ],
+    "boardLayout":  [
+                        {
+                            "id":  "ar-board-self-units",
+                            "zoneId":  "battlefield",
+                            "side":  "self",
+                            "label":  "Your Frontline (Unit x6)",
+                            "x":  0.2199999988079071,
+                            "y":  0.6100000143051147,
+                            "width":  0.5600000023841858,
+                            "height":  0.14000000059604645,
+                            "order":  0
+                        },
+                        {
+                            "id":  "ar-board-opp-units",
+                            "zoneId":  "battlefield",
+                            "side":  "opponent",
+                            "label":  "Enemy Frontline",
+                            "x":  0.2199999988079071,
+                            "y":  0.11999999731779099,
+                            "width":  0.5600000023841858,
+                            "height":  0.14000000059604645,
+                            "order":  1
+                        },
+                        {
+                            "id":  "ar-board-self-command",
+                            "zoneId":  "command",
+                            "side":  "self",
+                            "label":  "Commander (cast to Frontline)",
+                            "x":  0.800000011920929,
+                            "y":  0.6700000166893005,
+                            "width":  0.17000000178813934,
+                            "height":  0.14000000059604645,
+                            "order":  4
+                        },
+                        {
+                            "id":  "ar-board-self-mana",
+                            "zoneId":  "mana-source",
+                            "side":  "self",
+                            "label":  "Mana Source (permanent)",
+                            "x":  0.8100000023841858,
+                            "y":  0.47999998927116394,
+                            "width":  0.1599999964237213,
+                            "height":  0.11999999731779099,
+                            "order":  7
+                        },
+                        {
+                            "id":  "ar-board-opp-mana",
+                            "zoneId":  "mana-source",
+                            "side":  "opponent",
+                            "label":  "Enemy Mana Source",
+                            "x":  0.019999999552965164,
+                            "y":  0.2800000011920929,
+                            "width":  0.1599999964237213,
+                            "height":  0.11999999731779099,
+                            "order":  8
+                        },
+                        {
+                            "id":  "ar-board-opp-command",
+                            "zoneId":  "command",
+                            "side":  "opponent",
+                            "label":  "Enemy Commander",
+                            "x":  0.019999999552965164,
+                            "y":  0.10000000149011612,
+                            "width":  0.17000000178813934,
+                            "height":  0.14000000059604645,
+                            "order":  5
+                        }
+                    ],
+    "resources":  [
+                      {
+                          "id":  "life",
+                          "name":  "Life",
+                          "scope":  "player",
+                          "initialValue":  25,
+                          "minimumValue":  0,
+                          "maximumValue":  25
+                      },
+                      {
+                          "id":  "energy",
+                          "name":  "Mana",
+                          "scope":  "player",
+                          "initialValue":  0,
+                          "minimumValue":  0,
+                          "maximumValue":  24
+                      },
+                      {
+                          "id":  "shield",
+                          "name":  "Barrier Shield",
+                          "scope":  "player",
+                          "initialValue":  0,
+                          "minimumValue":  0,
+                          "maximumValue":  20
+                      },
+                      {
+                          "id":  "renown",
+                          "name":  "Renown",
+                          "scope":  "player",
+                          "initialValue":  0,
+                          "minimumValue":  0,
+                          "maximumValue":  10
+                      },
+                      {
+                          "id":  "momentum",
+                          "name":  "Rift Momentum",
+                          "scope":  "game",
+                          "initialValue":  0,
+                          "minimumValue":  0,
+                          "maximumValue":  99
+                      }
+                  ],
+    "victoryRules":  [
+                         {
+                             "id":  "ar-life-loss",
+                             "name":  "Life reaches zero",
+                             "kind":  "resource-threshold",
+                             "outcome":  "eliminate",
+                             "scope":  "player",
+                             "resourceId":  "life",
+                             "threshold":  0,
+                             "comparison":  "less-than-or-equal"
+                         }
+                     ],
+    "sampleDecks":  [
+                        {
+                            "id":  "ar-deck-solar-starter",
+                            "name":  "Solar Vanguard",
+                            "description":  "Aggressive creature tempo, radiant shields and burst damage.",
+                            "minimumCards":  40,
+                            "maximumCopiesPerCard":  3,
+                            "cardIds":  [
+                                            "ar-card-solar-001",
+                                            "ar-card-solar-002",
+                                            "ar-card-solar-005",
+                                            "ar-card-solar-006",
+                                            "ar-card-solar-007",
+                                            "ar-card-solar-008",
+                                            "ar-card-solar-009",
+                                            "ar-card-solar-010",
+                                            "ar-card-solar-011",
+                                            "ar-card-solar-012",
+                                            "ar-card-solar-013",
+                                            "ar-card-solar-014",
+                                            "ar-card-solar-015",
+                                            "ar-card-solar-016",
+                                            "ar-card-solar-017",
+                                            "ar-card-solar-018",
+                                            "ar-card-solar-019",
+                                            "ar-card-solar-020",
+                                            "ar-card-solar-021",
+                                            "ar-card-solar-022",
+                                            "ar-card-solar-023",
+                                            "ar-card-solar-024",
+                                            "ar-card-solar-025",
+                                            "ar-card-solar-026",
+                                            "ar-card-solar-027",
+                                            "ar-card-solar-028",
+                                            "ar-card-solar-037",
+                                            "ar-card-solar-038",
+                                            "ar-card-solar-039",
+                                            "ar-card-solar-040",
+                                            "ar-card-solar-041",
+                                            "ar-card-solar-042",
+                                            "ar-card-solar-043",
+                                            "ar-card-solar-044",
+                                            "ar-card-solar-049",
+                                            "ar-card-solar-050",
+                                            "ar-card-solar-051",
+                                            "ar-card-solar-052",
+                                            "ar-card-solar-053",
+                                            "ar-card-solar-054",
+                                            "ar-card-solar-055",
+                                            "ar-card-solar-056"
+                                        ],
+                            "strategy":  "Aggressive creature tempo, radiant shields and burst damage."
+                        },
+                        {
+                            "id":  "ar-deck-tidal-starter",
+                            "name":  "Tidal Archive",
+                            "description":  "Control through quickspells, card flow and resource denial.",
+                            "minimumCards":  40,
+                            "maximumCopiesPerCard":  3,
+                            "cardIds":  [
+                                            "ar-card-tidal-001",
+                                            "ar-card-tidal-002",
+                                            "ar-card-tidal-005",
+                                            "ar-card-tidal-006",
+                                            "ar-card-tidal-007",
+                                            "ar-card-tidal-008",
+                                            "ar-card-tidal-009",
+                                            "ar-card-tidal-010",
+                                            "ar-card-tidal-011",
+                                            "ar-card-tidal-012",
+                                            "ar-card-tidal-013",
+                                            "ar-card-tidal-014",
+                                            "ar-card-tidal-015",
+                                            "ar-card-tidal-016",
+                                            "ar-card-tidal-017",
+                                            "ar-card-tidal-018",
+                                            "ar-card-tidal-019",
+                                            "ar-card-tidal-020",
+                                            "ar-card-tidal-021",
+                                            "ar-card-tidal-022",
+                                            "ar-card-tidal-023",
+                                            "ar-card-tidal-024",
+                                            "ar-card-tidal-025",
+                                            "ar-card-tidal-026",
+                                            "ar-card-tidal-027",
+                                            "ar-card-tidal-028",
+                                            "ar-card-tidal-037",
+                                            "ar-card-tidal-038",
+                                            "ar-card-tidal-039",
+                                            "ar-card-tidal-040",
+                                            "ar-card-tidal-041",
+                                            "ar-card-tidal-042",
+                                            "ar-card-tidal-043",
+                                            "ar-card-tidal-044",
+                                            "ar-card-tidal-049",
+                                            "ar-card-tidal-050",
+                                            "ar-card-tidal-051",
+                                            "ar-card-tidal-052",
+                                            "ar-card-tidal-053",
+                                            "ar-card-tidal-054",
+                                            "ar-card-tidal-055",
+                                            "ar-card-tidal-056"
+                                        ],
+                            "strategy":  "Control through quickspells, card flow and resource denial."
+                        },
+                        {
+                            "id":  "ar-deck-verdant-starter",
+                            "name":  "Verdant Sanctuary",
+                            "description":  "Resilient creature growth, defensive auras and sustained advantage.",
+                            "minimumCards":  40,
+                            "maximumCopiesPerCard":  3,
+                            "cardIds":  [
+                                            "ar-card-verdant-001",
+                                            "ar-card-verdant-002",
+                                            "ar-card-verdant-005",
+                                            "ar-card-verdant-006",
+                                            "ar-card-verdant-007",
+                                            "ar-card-verdant-008",
+                                            "ar-card-verdant-009",
+                                            "ar-card-verdant-010",
+                                            "ar-card-verdant-011",
+                                            "ar-card-verdant-012",
+                                            "ar-card-verdant-013",
+                                            "ar-card-verdant-014",
+                                            "ar-card-verdant-015",
+                                            "ar-card-verdant-016",
+                                            "ar-card-verdant-017",
+                                            "ar-card-verdant-018",
+                                            "ar-card-verdant-019",
+                                            "ar-card-verdant-020",
+                                            "ar-card-verdant-021",
+                                            "ar-card-verdant-022",
+                                            "ar-card-verdant-023",
+                                            "ar-card-verdant-024",
+                                            "ar-card-verdant-025",
+                                            "ar-card-verdant-026",
+                                            "ar-card-verdant-027",
+                                            "ar-card-verdant-028",
+                                            "ar-card-verdant-037",
+                                            "ar-card-verdant-038",
+                                            "ar-card-verdant-039",
+                                            "ar-card-verdant-040",
+                                            "ar-card-verdant-041",
+                                            "ar-card-verdant-042",
+                                            "ar-card-verdant-043",
+                                            "ar-card-verdant-044",
+                                            "ar-card-verdant-049",
+                                            "ar-card-verdant-050",
+                                            "ar-card-verdant-051",
+                                            "ar-card-verdant-052",
+                                            "ar-card-verdant-053",
+                                            "ar-card-verdant-054",
+                                            "ar-card-verdant-055",
+                                            "ar-card-verdant-056"
+                                        ],
+                            "strategy":  "Resilient creature growth, defensive auras and sustained advantage."
+                        }
+                    ]
+}

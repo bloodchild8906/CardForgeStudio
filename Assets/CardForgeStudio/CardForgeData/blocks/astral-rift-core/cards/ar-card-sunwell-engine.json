@@ -1,0 +1,83 @@
+{
+    "version": 1,
+    "id": "ar-card-sunwell-engine",
+    "name": "Sunwell Engine",
+    "cardNumber": "003",
+    "layoutId": "ar-layout-front",
+    "backLayoutId": "ar-layout-back",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Relic",
+    "variantId": "mythic",
+    "values": [
+        {
+            "fieldId": "7e1150461ebe451eb04d2d9733b3ef71",
+            "value": "Sunwell Engine"
+        },
+        {
+            "fieldId": "35b35a270df44204ad87fc10ea4b1d25",
+            "value": "5"
+        },
+        {
+            "fieldId": "114ef7b3b56b4be89bc41f0dc8ffca5e",
+            "value": "Relic — Solar"
+        },
+        {
+            "fieldId": "ca9caa5ca8a3403aa882178aa2d2e0c4",
+            "value": "Channel actions resonate through the engine."
+        },
+        {
+            "fieldId": "d9c7174f6cb04851861433623f1a2dba",
+            "value": "0"
+        },
+        {
+            "fieldId": "ar-field-toughness",
+            "value": "7"
+        },
+        {
+            "fieldId": "df11ac1a2d544824abe10686c7bd14ab",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-sunwell-engine.png"
+        },
+        {
+            "fieldId": "ar-field-affinity",
+            "value": "Solar"
+        },
+        {
+            "fieldId": "ar-field-affinity-icon",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/solar.png"
+        },
+        {
+            "fieldId": "ar-field-rarity",
+            "value": "Mythic"
+        },
+        {
+            "fieldId": "ar-field-flavor",
+            "value": "A captive dawn powers an impossible machine."
+        },
+        {
+            "fieldId": "ar-field-collector",
+            "value": "003/240 · ARFT"
+        },
+        {
+            "fieldId": "ar-field-active",
+            "value": "true"
+        }
+    ],
+    "zoneOverrides": [],
+    "requirements": [
+        {
+            "id": "ar-card-req-ar-card-sunwell-engine",
+            "fieldId": "ar-field-rarity",
+            "comparison": "Equals",
+            "expectedValue": "Mythic",
+            "message": "Use the animated foil treatment for Mythic cards."
+        }
+    ],
+    "keywordIds": [
+        "ar-keyword-ward"
+    ],
+    "abilityIds": [
+        "ar-ability-channel",
+        "ar-ability-unique-ar-card-sunwell-engine"
+    ]
+}

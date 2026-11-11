@@ -1,0 +1,14 @@
+{
+  "name": "CardForge.DedicatedServer.Editor",
+  "rootNamespace": "CardForge.DedicatedServer.Editor",
+  "references": ["CardForge.DedicatedServer","CardForge.Simulation"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

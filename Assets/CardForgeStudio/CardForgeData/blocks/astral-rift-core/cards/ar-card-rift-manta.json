@@ -1,0 +1,75 @@
+{
+    "version": 1,
+    "id": "ar-card-rift-manta",
+    "name": "Rift Manta",
+    "cardNumber": "006",
+    "layoutId": "ar-layout-front",
+    "backLayoutId": "ar-layout-back",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Unit",
+    "variantId": "common",
+    "values": [
+        {
+            "fieldId": "7e1150461ebe451eb04d2d9733b3ef71",
+            "value": "Rift Manta"
+        },
+        {
+            "fieldId": "35b35a270df44204ad87fc10ea4b1d25",
+            "value": "2"
+        },
+        {
+            "fieldId": "114ef7b3b56b4be89bc41f0dc8ffca5e",
+            "value": "Unit — Tidal"
+        },
+        {
+            "fieldId": "ca9caa5ca8a3403aa882178aa2d2e0c4",
+            "value": "Riftborn — rally actions leave a renown wake."
+        },
+        {
+            "fieldId": "d9c7174f6cb04851861433623f1a2dba",
+            "value": "3"
+        },
+        {
+            "fieldId": "ar-field-toughness",
+            "value": "2"
+        },
+        {
+            "fieldId": "df11ac1a2d544824abe10686c7bd14ab",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-rift-manta.png"
+        },
+        {
+            "fieldId": "ar-field-affinity",
+            "value": "Tidal"
+        },
+        {
+            "fieldId": "ar-field-affinity-icon",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/tidal.png"
+        },
+        {
+            "fieldId": "ar-field-rarity",
+            "value": "Common"
+        },
+        {
+            "fieldId": "ar-field-flavor",
+            "value": "It swims between the moments sailors forget."
+        },
+        {
+            "fieldId": "ar-field-collector",
+            "value": "006/240 · ARFT"
+        },
+        {
+            "fieldId": "ar-field-active",
+            "value": "true"
+        }
+    ],
+    "zoneOverrides": [],
+    "requirements": [],
+    "keywordIds": [
+        "ar-keyword-riftborn"
+    ],
+    "abilityIds": [
+        "ar-ability-rally",
+        "ar-ability-unique-ar-card-rift-manta"
+    ]
+}

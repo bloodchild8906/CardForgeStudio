@@ -1,0 +1,108 @@
+/* CardForge Astral Rift — runtime Unity UI Toolkit skin.
+ * Purposefully presentation-only: the authoritative match state remains on the server.
+ */
+.cf-nav {
+    height: 38px;
+    min-width: 76px;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding-left: 14px;
+    padding-right: 14px;
+    border-bottom-width: 2px;
+    border-bottom-color: #26374D;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    color: #B6C4D9;
+    background-color: #111B2D;
+    -unity-font-style: bold;
+    font-size: 12px;
+}
+.cf-nav:hover {
+    color: #FFFFFF;
+    background-color: #293B58;
+    border-bottom-color: #E7BD68;
+}
+.cf-nav--active {
+    color: #FFE2A5;
+    border-bottom-color: #E7BD68;
+    background-color: #273550;
+}
+.cf-hero {
+    background-color: #16243A;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: #50617A;
+    border-bottom-color: #50617A;
+    border-left-color: #50617A;
+    border-right-color: #50617A;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+}
+.cf-panel {
+    background-color: #17243A;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-color: #344861;
+    border-bottom-color: #344861;
+    border-left-color: #344861;
+    border-right-color: #344861;
+    border-top-left-radius: 11px;
+    border-top-right-radius: 11px;
+    border-bottom-left-radius: 11px;
+    border-bottom-right-radius: 11px;
+}
+.cf-primary {
+    height: 43px;
+    margin-right: 8px;
+    margin-bottom: 5px;
+    min-width: 132px;
+    padding-left: 18px;
+    padding-right: 18px;
+    color: #172035;
+    background-color: #E7BD68;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    -unity-font-style: bold;
+    font-size: 14px;
+}
+.cf-primary:hover { background-color: #F8D992; }
+.cf-primary:disabled { background-color: #69707C; color: #B6BBC5; }
+.cf-secondary {
+    height: 40px;
+    min-width: 112px;
+    margin-right: 7px;
+    margin-bottom: 6px;
+    padding-left: 14px;
+    padding-right: 14px;
+    color: #E5EFFC;
+    background-color: #283A54;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    font-size: 12px;
+}
+.cf-secondary:hover { color: #FFFFFF; background-color: #3C5574; }
+.cf-secondary:disabled { color: #8E9AAA; background-color: #222F41; }
+.cf-danger { color: #FFD3CF; background-color: #5C2D39; }
+.cf-danger:hover { background-color: #854052; }
+.cf-filter { min-width: 79px; }
+.cf-filter--active { background-color: #CBA65C; color: #152037; }
+.cf-card-face { translate: 0px 0px; }
+.cf-card-face:hover { translate: 0px -3px; }
+.cf-card-face:focus { translate: 0px -3px; }
+.cf-card-back { border-top-color: #D2A959; }
+.cf-zone { padding-right: 6px; }
+.cf-seat { border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-left-radius: 9px; border-bottom-right-radius: 9px; }
+.cf-heading { -unity-font-style: bold; }
+.cf-deck-card:hover { background-color: #283A52; }
+.cf-textfield { margin-bottom: 5px; color: #E5EFFC; }
+.cf-scroll { flex-grow: 1; }

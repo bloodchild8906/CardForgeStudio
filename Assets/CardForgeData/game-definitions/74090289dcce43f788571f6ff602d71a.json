@@ -1,0 +1,101 @@
+{
+    "version": 1,
+    "blockId": "74090289dcce43f788571f6ff602d71a",
+    "packageId": "core",
+    "gameId": "core",
+    "packageVersion": "1.0.0",
+    "gameSystem": "cardforge-custom",
+    "minimumPlayers": 2,
+    "maximumPlayers": 2,
+    "startingHand": 7,
+    "turnFlowId": "eb2b7cccbbcd4dd59db9665d7c28882c",
+    "defaultDeckId": "",
+    "deckRules": {
+        "minCards": 1,
+        "maxCards": 120,
+        "maxCopiesPerCard": 4,
+        "allowedCardTypes": [],
+        "typeLimits": [],
+        "cardLimits": []
+    },
+    "zones": [
+        {
+            "id": "deck",
+            "name": "Deck",
+            "ownerScope": "player",
+            "visibility": "hidden",
+            "ordered": true,
+            "capacity": 0,
+            "allowedCardTypes": [],
+            "initialCardIds": [],
+            "deckStartCardType": "",
+            "returnOnLeave": false,
+            "immovable": false
+        },
+        {
+            "id": "hand",
+            "name": "Hand",
+            "ownerScope": "player",
+            "visibility": "owner",
+            "ordered": true,
+            "capacity": 0,
+            "allowedCardTypes": [],
+            "initialCardIds": [],
+            "deckStartCardType": "",
+            "returnOnLeave": false,
+            "immovable": false
+        },
+        {
+            "id": "battlefield",
+            "name": "Battlefield",
+            "ownerScope": "player",
+            "visibility": "public",
+            "ordered": false,
+            "capacity": 0,
+            "allowedCardTypes": [],
+            "initialCardIds": [],
+            "deckStartCardType": "",
+            "returnOnLeave": false,
+            "immovable": false
+        },
+        {
+            "id": "discard",
+            "name": "Discard",
+            "ownerScope": "player",
+            "visibility": "public",
+            "ordered": true,
+            "capacity": 0,
+            "allowedCardTypes": [],
+            "initialCardIds": [],
+            "deckStartCardType": "",
+            "returnOnLeave": false,
+            "immovable": false
+        }
+    ],
+    "boardLayout": [],
+    "resources": [
+        {
+            "id": "life",
+            "name": "Life",
+            "scope": "player",
+            "initialValue": 20,
+            "minimumValue": 0,
+            "maximumValue": 0
+        }
+    ],
+    "victoryRules": [
+        {
+            "id": "last-player-standing",
+            "name": "Last player standing",
+            "kind": "last-player-standing",
+            "outcome": "win",
+            "scope": "player",
+            "resourceId": "life",
+            "zoneId": "",
+            "comparison": "less-than-or-equal",
+            "threshold": 0,
+            "description": "Eliminate players at zero life; the final remaining player wins."
+        }
+    ],
+    "sampleDecks": []
+}

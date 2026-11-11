@@ -2,7 +2,7 @@
     "version": 2,
     "id": "ar-icon-solar",
     "name": "Solar affinity",
-    "assetPath": "Assets/CardForgeData/demo/astral-rift/icons/solar.png",
+    "assetPath": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/solar.png",
     "layers": [
         {
             "visible": true,

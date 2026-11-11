@@ -20,6 +20,6 @@ Start with the [project README](../README.md) for an overview, then use this ind
 | Contribute code or docs | [contributing.md](contributing.md) |
 | Fix common problems | [troubleshooting.md](troubleshooting.md) |
 | Look up terms | [glossary.md](glossary.md) |
-| Read the original short architecture brief | [Assets/CardForge/ARCHITECTURE.md](../Assets/CardForge/ARCHITECTURE.md) |
+| Read the original short architecture brief | [Assets/CardForgeStudio/CardForge/ARCHITECTURE.md](../Assets/CardForgeStudio/CardForge/ARCHITECTURE.md) |
 
 All 15 docs pages are linked here. When this index and the implementation disagree, treat the source code as authoritative and update both.

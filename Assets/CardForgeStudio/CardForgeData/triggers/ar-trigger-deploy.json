@@ -1,0 +1,32 @@
+{
+    "version": 1,
+    "id": "ar-trigger-deploy",
+    "name": "A card enters the battlefield",
+    "eventType": "Card moved",
+    "source": "Any game object",
+    "fromZone": "hand",
+    "toZone": "battlefield",
+    "orientation": "",
+    "rules": [
+        {
+            "id": "ar-trigger-deploy-rule",
+            "subject": "Action",
+            "property": "Resolution",
+            "comparison": "Equals",
+            "expectedValue": "Successful",
+            "condition": "The game is not finished."
+        }
+    ],
+    "condition": "The authoritative action resolves successfully.",
+    "responseWindow": "Immediate response window",
+    "priority": 10,
+    "causeActionIds": [
+        "ar-deploy"
+    ],
+    "causeAbilityIds": [
+        "ar-ability-arrival"
+    ],
+    "responseActionIds": [
+        "ar-signal"
+    ]
+}

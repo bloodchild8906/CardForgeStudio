@@ -74,9 +74,19 @@ public sealed class RulesEngine(AppState state)
 
         ValidateUnique(pack.Cards.Select(card => card.Id), "card", errors);
         ValidateUnique(pack.Zones.Select(zone => zone.Id), "zone", errors);
+        ValidateUnique(pack.BoardLayout.Select(zone => zone.Id), "board placement", errors);
+        foreach (var placement in pack.BoardLayout)
+        {
+            if (!pack.Zones.Any(zone => zone.Id.Equals(placement.ZoneId, StringComparison.OrdinalIgnoreCase)))
+                errors.Add($"Board placement '{placement.Id}' references an unknown zone.");
+            if (placement.X < 0 || placement.Y < 0 || placement.Width <= 0 || placement.Height <= 0 ||
+                placement.X + placement.Width > 1.001f || placement.Y + placement.Height > 1.001f)
+                errors.Add($"Board placement '{placement.Id}' is outside normalized board bounds.");
+        }
         ValidateUnique(pack.Resources.Select(resource => resource.Id), "resource", errors);
         ValidateUnique(pack.Phases.Select(phase => phase.Id), "phase", errors);
         ValidateUnique(pack.Actions.Select(action => action.Id), "action", errors);
+        ValidateUnique(pack.Triggers.Select(trigger => trigger.Id), "trigger", errors);
 
         foreach (var card in pack.Cards)
         {
@@ -117,6 +127,15 @@ public sealed class RulesEngine(AppState state)
                 errors.Add($"Phase '{phase.Id}' references unknown action '{actionId}'.");
         }
 
+        foreach (var trigger in pack.Triggers)
+        {
+            ValidateIdentifier(trigger.Id, "Trigger", errors);
+            foreach (var cause in trigger.CauseActionIds)
+                if (!actionIds.Contains(cause)) errors.Add($"Trigger '{trigger.Id}' references missing cause action '{cause}'.");
+            foreach (var response in trigger.ResponseActionIds)
+                if (!actionIds.Contains(response)) errors.Add($"Trigger '{trigger.Id}' references missing response action '{response}'.");
+        }
+
         foreach (var action in pack.Actions)
         {
             ValidateIdentifier(action.Id, "Action", errors);
@@ -140,6 +159,14 @@ public sealed class RulesEngine(AppState state)
         var pack = Get(game.RulePackId);
         if (game.Players.Count < pack.MinimumPlayers || game.Players.Count > pack.MaximumPlayers)
             throw new InvalidOperationException($"This ruleset requires {pack.MinimumPlayers} to {pack.MaximumPlayers} players.");
+        if (game.TeamSize is < 1 or > 4)
+            throw new InvalidOperationException("Supported game formats are 1v1 through 1v4.");
+        if (game.PlayerTeams.Count > 0 &&
+            (game.Players.Count != game.TeamSize + 1 ||
+             game.PlayerTeams.Count != game.Players.Count ||
+             game.PlayerTeams.Values.Count(team => team == 0) != 1 ||
+             game.PlayerTeams.Values.Count(team => team == 1) != game.TeamSize))
+            throw new InvalidOperationException("The game must have one solo player facing 1–4 opponents.");
 
         foreach (var player in game.Players)
         {
@@ -164,7 +191,12 @@ public sealed class RulesEngine(AppState state)
         var startingHand = Math.Max(0, pack.StartingRules.GetValueOrDefault("startingHand", 7));
         foreach (var player in game.Players)
         {
-            var deckDefinitions = pack.StartingDeck.Count > 0 ? pack.StartingDeck : pack.Cards.Select(card => card.Id).ToList();
+            var baseline = pack.StartingDeck.Count > 0 ? pack.StartingDeck : pack.Cards.Select(card => card.Id).ToList();
+            var supplied = game.PlayerDecks.GetValueOrDefault(player);
+            var validIds = pack.Cards.Select(card => card.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            if (supplied != null && (supplied.Count == 0 || supplied.Any(id => !validIds.Contains(id))))
+                throw new InvalidOperationException("The selected deck contains unknown or missing card definitions.");
+            var deckDefinitions = supplied ?? baseline;
             var deck = deckDefinitions.Select(cardId => new CardInstance(Guid.NewGuid().ToString("N"), cardId, player)).ToList();
             game.Zones[player][deckZone].AddRange(deck);
             if (handZone is not null)
@@ -228,6 +260,24 @@ public sealed class RulesEngine(AppState state)
                     foreach (var effect in ability.Effects ?? []) ApplyEffect(pack, game, actorId, request, effect);
                     game.Events.Add(new("ability_resolved", $"{ability.Name} resolved after {action.Name}.", actorId, new { abilityId = ability.Id, actionId = action.Id }, DateTimeOffset.UtcNow));
                 }
+            }
+        }
+        // Designer-authored trigger edges execute after the initiating action.
+        // Response actions are evaluated as effects only; they cannot recurse into triggers.
+        foreach (var trigger in pack.Triggers
+            .Where(candidate => candidate.CauseActionIds.Contains(action.Id, StringComparer.OrdinalIgnoreCase))
+            .OrderByDescending(candidate => candidate.Priority))
+        {
+            foreach (var responseId in trigger.ResponseActionIds)
+            {
+                var response = pack.Actions.First(candidate => candidate.Id.Equals(responseId, StringComparison.OrdinalIgnoreCase));
+                if (!(response.Conditions ?? []).All(condition => ConditionMatches(game, actorId, request, condition))) continue;
+                var available = PlayerResources(game, actorId);
+                if ((response.Costs ?? []).Any(cost => available.GetValueOrDefault(cost.Key) < cost.Value)) continue;
+                foreach (var cost in response.Costs ?? []) available[cost.Key] -= cost.Value;
+                foreach (var effect in response.Effects ?? []) ApplyEffect(pack, game, actorId, request, effect);
+                game.Events.Add(new("trigger_resolved", $"{trigger.Name} resolved {response.Name}.", actorId,
+                    new { triggerId = trigger.Id, responseActionId = response.Id }, DateTimeOffset.UtcNow));
             }
         }
         game.ActionSequence++;
@@ -303,9 +353,15 @@ public sealed class RulesEngine(AppState state)
             Cards = cards,
             StartingRules = startingRules,
             Zones = zones,
+            BoardLayout = source.BoardLayout ?? [],
             Resources = resources,
             Phases = phases,
             Actions = actions,
+            Triggers = (source.Triggers ?? []).Select(trigger => trigger with
+            {
+                CauseActionIds = trigger.CauseActionIds ?? [],
+                ResponseActionIds = trigger.ResponseActionIds ?? []
+            }).ToList(),
             StartingDeck = source.StartingDeck ?? [],
             Metadata = source.Metadata ?? []
         };
@@ -442,7 +498,7 @@ public sealed class RulesEngine(AppState state)
                     if (Compare(value, rule.Operator, rule.Threshold)) Eliminate(game, player, rule);
                 }
                 var remaining = game.Players.Where(player => !game.EliminatedPlayerIds.Contains(player)).ToList();
-                if (remaining.Count == 1) FinishGame(game, remaining[0], rule, $"{remaining[0]} is the last player standing.");
+                FinishIfOneSideRemains(game, remaining, rule);
                 continue;
             }
 
@@ -464,8 +520,21 @@ public sealed class RulesEngine(AppState state)
                 else { FinishGame(game, player, rule, $"{player} satisfied {rule.Name}."); break; }
             }
             var survivors = game.Players.Where(player => !game.EliminatedPlayerIds.Contains(player)).ToList();
-            if (!game.Finished && survivors.Count == 1) FinishGame(game, survivors[0], rule, $"{survivors[0]} is the final remaining player.");
+            if (!game.Finished) FinishIfOneSideRemains(game, survivors, rule);
         }
+    }
+
+    private static void FinishIfOneSideRemains(GameState game, List<string> survivors, VictoryDefinition rule)
+    {
+        if (survivors.Count == 0) return;
+        if (game.PlayerTeams.Count == 0)
+        {
+            if (survivors.Count == 1) FinishGame(game, survivors[0], rule, $"{survivors[0]} is the final remaining player.");
+            return;
+        }
+        var remainingTeams = survivors.Select(id => game.PlayerTeams[id]).Distinct().ToList();
+        if (remainingTeams.Count == 1)
+            FinishGame(game, survivors[0], rule, $"Team {remainingTeams[0] + 1} wins with {survivors.Count} survivors.");
     }
 
     private static void Eliminate(GameState game, string playerId, VictoryDefinition rule)
@@ -495,6 +564,8 @@ public sealed class RulesEngine(AppState state)
     private static void EndTurn(RulePack pack, GameState game, string actorId)
     {
         var next = (game.Players.IndexOf(actorId) + 1) % game.Players.Count;
+        for (var i = 0; i < game.Players.Count && game.EliminatedPlayerIds.Contains(game.Players[next]); i++)
+            next = (next + 1) % game.Players.Count;
         game.ActivePlayerId = game.Players[next];
         game.CurrentPhaseId = pack.Phases[0].Id;
         game.Turn++;

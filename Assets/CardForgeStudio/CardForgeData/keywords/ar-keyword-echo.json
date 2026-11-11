@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "id": "ar-keyword-echo",
+    "name": "Echo",
+    "rulesText": "This card reacts to custom signal events.",
+    "reminderText": "Signals demonstrate authored event hooks.",
+    "abilityIds": [
+        "ar-ability-echo"
+    ],
+    "tags": [
+        "event",
+        "response"
+    ]
+}

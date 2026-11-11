@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "id": "ar-ability-unique-ar-card-verdant-008",
+    "name": "Echoing Warden — Bloom Protocol",
+    "cardId": "ar-card-verdant-008",
+    "activationTriggerId": "ar-trigger-deploy",
+    "actionId": "ar-deploy",
+    "phaseId": "",
+    "condition": "",
+    "operation": "Execute server-authoritative ability effects",
+    "effect": "gain 2 life",
+    "priority": 31,
+    "scope": "Source card and game state",
+    "responseTiming": "After its source action resolves",
+    "responseResolution": "Resolve in priority order",
+    "responseActionIds": [],
+    "causeTriggerIds": [],
+    "rules": [],
+    "effects": [
+        {
+            "kind": "modify_resource",
+            "target": "",
+            "resourceId": "life",
+            "fromZone": "",
+            "toZone": "",
+            "eventType": "",
+            "message": "",
+            "amount": 2,
+            "parameters": []
+        }
+    ],
+    "conditions": [],
+    "graphNodes": [],
+    "graphLinks": []
+}

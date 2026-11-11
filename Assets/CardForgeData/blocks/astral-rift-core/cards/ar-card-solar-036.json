@@ -1,0 +1,72 @@
+{
+    "version": 1,
+    "id": "ar-card-solar-036",
+    "name": "Stormforged Sunpiercer",
+    "cardNumber": "048",
+    "layoutId": "ar-layout-front",
+    "backLayoutId": "ar-layout-back",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Relic",
+    "variantId": "rare",
+    "values": [
+        {
+            "fieldId": "5aa8e06473ef4906ad1207722c38f824",
+            "value": "Stormforged Sunpiercer"
+        },
+        {
+            "fieldId": "d3122d6a7a2e455b85aa4159a16b59dd",
+            "value": "5"
+        },
+        {
+            "fieldId": "3fdb6418da2c449cb610ce5ac43a97a2",
+            "value": "Relic — Solar"
+        },
+        {
+            "fieldId": "1fa832ace0bb4ffd980ff9350beb90ed",
+            "value": "With a friendly unit on the field: reduce 1 life against the enemy team; mill an opponent for 1; gain 1 renown; gain 2 shield."
+        },
+        {
+            "fieldId": "89c7fee71dd74befaa68a04dd3abceee",
+            "value": "0"
+        },
+        {
+            "fieldId": "ar-field-toughness",
+            "value": "2"
+        },
+        {
+            "fieldId": "a923c2a162ad467899a0e29c0acad459",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-solar-036.png"
+        },
+        {
+            "fieldId": "ar-field-affinity",
+            "value": "Solar"
+        },
+        {
+            "fieldId": "ar-field-affinity-icon",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/solar.png"
+        },
+        {
+            "fieldId": "ar-field-rarity",
+            "value": "Rare"
+        },
+        {
+            "fieldId": "ar-field-flavor",
+            "value": "No constellation follows the same course twice."
+        },
+        {
+            "fieldId": "ar-field-collector",
+            "value": "048/240 · ARFT"
+        },
+        {
+            "fieldId": "ar-field-active",
+            "value": "true"
+        }
+    ],
+    "zoneOverrides": [],
+    "requirements": [],
+    "keywordIds": [],
+    "abilityIds": [
+        "ar-ability-unique-ar-card-solar-036"
+    ]
+}

@@ -1,0 +1,106 @@
+{
+    "version": 1,
+    "id": "ar-card-event-horizon",
+    "name": "Pocket Event Horizon",
+    "cardNumber": "011",
+    "layoutId": "ar-layout-front",
+    "backLayoutId": "ar-layout-back",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Relic",
+    "variantId": "mythic",
+    "values": [
+        {
+            "fieldId": "7e1150461ebe451eb04d2d9733b3ef71",
+            "value": "Pocket Event Horizon"
+        },
+        {
+            "fieldId": "35b35a270df44204ad87fc10ea4b1d25",
+            "value": "5"
+        },
+        {
+            "fieldId": "114ef7b3b56b4be89bc41f0dc8ffca5e",
+            "value": "Relic — Umbral"
+        },
+        {
+            "fieldId": "ca9caa5ca8a3403aa882178aa2d2e0c4",
+            "value": "Banish cards from discard to prove void-zone movement."
+        },
+        {
+            "fieldId": "d9c7174f6cb04851861433623f1a2dba",
+            "value": "1"
+        },
+        {
+            "fieldId": "ar-field-toughness",
+            "value": "6"
+        },
+        {
+            "fieldId": "df11ac1a2d544824abe10686c7bd14ab",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-event-horizon.png"
+        },
+        {
+            "fieldId": "ar-field-affinity",
+            "value": "Umbral"
+        },
+        {
+            "fieldId": "ar-field-affinity-icon",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/umbral.png"
+        },
+        {
+            "fieldId": "ar-field-rarity",
+            "value": "Mythic"
+        },
+        {
+            "fieldId": "ar-field-flavor",
+            "value": "Small enough to carry. Hungry enough to notice."
+        },
+        {
+            "fieldId": "ar-field-collector",
+            "value": "011/240 · ARFT"
+        },
+        {
+            "fieldId": "ar-field-active",
+            "value": "true"
+        }
+    ],
+    "zoneOverrides": [
+        {
+            "zoneId": "ar-zone-art",
+            "deltaX": -3.0,
+            "deltaY": -3.0,
+            "deltaWidth": 6.0,
+            "deltaHeight": 6.0,
+            "fontSize": 0.0,
+            "color": "",
+            "textOverride": "",
+            "assetPathOverride": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-event-horizon.png",
+            "hidden": false
+        },
+        {
+            "zoneId": "ar-zone-title",
+            "deltaX": 0.0,
+            "deltaY": 0.0,
+            "deltaWidth": 0.0,
+            "deltaHeight": 0.0,
+            "fontSize": 0.0,
+            "color": "#F2C6FF",
+            "textOverride": "POCKET EVENT HORIZON",
+            "assetPathOverride": "",
+            "hidden": false
+        }
+    ],
+    "requirements": [
+        {
+            "id": "ar-card-req-ar-card-event-horizon",
+            "fieldId": "ar-field-rarity",
+            "comparison": "Equals",
+            "expectedValue": "Mythic",
+            "message": "Use the animated foil treatment for Mythic cards."
+        }
+    ],
+    "keywordIds": [],
+    "abilityIds": [
+        "ar-ability-void",
+        "ar-ability-unique-ar-card-event-horizon"
+    ]
+}

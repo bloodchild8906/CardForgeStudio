@@ -1,16 +1,21 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace TcgServer.Client
 {
     [DisallowMultipleComponent]
+#if UNITY_6000_5_OR_NEWER
+    [Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
     public sealed class TcgTemplateApp : MonoBehaviour
     {
         [SerializeField] private TcgConnectionSettings settings;
@@ -32,6 +37,8 @@ namespace TcgServer.Client
             Hex("F2EDE3"), Hex("4A90E2"), Hex("8E7BD8"), Hex("D95F4B"), Hex("57A05A"), Hex("9AA3C0")
         };
         private static Sprite circleSprite;
+        private static Sprite battlefieldSprite;
+        private static readonly Dictionary<string, Sprite> DemoArtCache = new();
 
         private TcgRestClient rest;
         private TcgClientSession session;
@@ -77,12 +84,45 @@ namespace TcgServer.Client
         private string currentGameId;
         private GameObject actionButtonRow;
         private ClientGameViewDto currentGameView;
+        private Dictionary<string, CardDefinitionDto> cardDefinitions = new();
+        private string loadedRulePackId;
+        private string loadingRulePackId;
+        private string lastZoneSignature;
+        private string lastActionSignature;
+        private GameObject playerHandContainer;
+        private GameObject playerFieldContainer;
+        private GameObject opponentHandContainer;
+        private GameObject opponentFieldContainer;
+        private GameObject opponentAvatar;
+        private GameObject playerAvatar;
+        private Text turnPhaseText;
+        private Text playerLifeText;
+        private Text opponentLifeText;
+        private Text playerEnergyText, opponentEnergyText, playerRenownText, opponentRenownText;
+        private Dictionary<string, GameObject> cardObjects = new();
+        private GameObject cardInspector;
+        private GameObject resultPanel;
+        private GameObject matchLogPanel;
+        private Text matchLogText;
+        private Text resultTitle;
+        private HashSet<string> previouslyRenderedCards = new();
+        private CardInstanceDto selectedCard;
+        private ClientGameActionDto pendingTargetAction;
+        private bool actionInFlight;
+        private Text eventBanner;
+        private string lastEventKey;
+        private long? previousPlayerLife, previousOpponentLife;
+        private bool autoStartDemoMatch;
 
         private void Awake()
         {
             font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             if (settings == null)
                 settings = Resources.Load<TcgConnectionSettings>("TcgConnectionSettings");
+#if UNITY_EDITOR
+            // Never mutate the project's saved connection asset during automatic port discovery.
+            if (settings != null) settings = Instantiate(settings);
+#endif
             session = GetComponent<TcgClientSession>() ?? gameObject.AddComponent<TcgClientSession>();
             rest = GetComponent<TcgRestClient>() ?? gameObject.AddComponent<TcgRestClient>();
             gameConnection = GetComponent<TcgGameConnection>() ?? gameObject.AddComponent<TcgGameConnection>();
@@ -100,12 +140,19 @@ namespace TcgServer.Client
             StartCoroutine(LogInterfaceState());
             if (!string.IsNullOrWhiteSpace(screenshotPath))
                 StartCoroutine(CaptureScreenshot(screenshotPath));
-            if (!string.IsNullOrWhiteSpace(CommandLineValue("--tcg-demo-login")))
-                QuickDemoLogin();
+            autoStartDemoMatch = Environment.GetCommandLineArgs().Any(arg =>
+                string.Equals(arg, "--tcg-demo-login", StringComparison.OrdinalIgnoreCase));
+#if UNITY_EDITOR
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "TcgClient" &&
+                settings != null && settings.DefaultRulePackId == "astral-rift")
+                autoStartDemoMatch = true;
+#endif
+            if (autoStartDemoMatch) StartCoroutine(BeginDemoMatchWhenReady());
         }
 
         private void Update()
         {
+            HandleMatchShortcuts();
             if (lobbyPage == null || !lobbyPage.activeSelf || !session.IsAuthenticated)
                 return;
             if (Time.unscaledTime < nextLobbyRefresh)
@@ -113,6 +160,53 @@ namespace TcgServer.Client
 
             nextLobbyRefresh = Time.unscaledTime + (settings == null ? 5f : settings.LobbyRefreshIntervalSeconds);
             RefreshLobby(false);
+        }
+
+        private void ToggleMatchLog()
+        {
+            if (matchLogPanel == null) return;
+            var show = !matchLogPanel.activeSelf;
+            matchLogPanel.SetActive(show);
+            if (show && cardInspector != null) cardInspector.SetActive(false);
+            else if (!show && selectedCard != null) ShowCardInspector();
+        }
+
+        private void HandleMatchShortcuts()
+        {
+#if ENABLE_INPUT_SYSTEM
+            if (gamePage == null || !gamePage.activeSelf) return;
+            var keyboard = UnityEngine.InputSystem.Keyboard.current;
+            if (keyboard == null) return;
+            if (EventSystem.current?.currentSelectedGameObject?.GetComponentInParent<InputField>() != null)
+                return;
+            if (keyboard.lKey.wasPressedThisFrame) ToggleMatchLog();
+            if (keyboard.escapeKey.wasPressedThisFrame)
+            {
+                if (matchLogPanel != null && matchLogPanel.activeSelf)
+                {
+                    ToggleMatchLog();
+                    return;
+                }
+                if (pendingTargetAction != null) pendingTargetAction = null;
+                else
+                {
+                    selectedCard = null;
+                    if (cardInspector != null) cardInspector.SetActive(false);
+                    UpdateCardVisualStates();
+                }
+                RebuildActionButtons(currentGameView, true);
+            }
+            // Space advances the phase only when the server explicitly offers that action.
+            if (keyboard.spaceKey.wasPressedThisFrame && !actionInFlight &&
+                pendingTargetAction == null && currentGameView?.activePlayerId == session.User?.id)
+            {
+                var advance = (currentGameView.allowedActions ?? Array.Empty<ClientGameActionDto>())
+                    .FirstOrDefault(action => string.IsNullOrWhiteSpace(action.sourceZone) &&
+                        (action.id.IndexOf("advance-phase", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                         action.id.IndexOf("next-phase", StringComparison.OrdinalIgnoreCase) >= 0));
+                if (advance != null) ExecuteAction(advance);
+            }
+#endif
         }
 
         private IEnumerator LogInterfaceState()
@@ -146,6 +240,61 @@ namespace TcgServer.Client
             texture.Apply();
             File.WriteAllBytes(path, texture.EncodeToPNG());
             Destroy(texture);
+        }
+
+        private IEnumerator BeginDemoMatchWhenReady()
+        {
+            // Starting a scene should work after a fresh reboot, even if the server
+            // is still publishing or has moved away from an occupied default port.
+            for (var attempt = 0; attempt < 90; attempt++)
+            {
+                if (settings == null) yield break;
+                var rulePath = "/api/rules/" + UnityWebRequest.EscapeURL(settings.DefaultRulePackId);
+                var foundServer = false;
+
+                using (var request = UnityWebRequest.Get(settings.BaseUrl + rulePath))
+                {
+                    request.timeout = 2;
+                    yield return request.SendWebRequest();
+                    foundServer = request.result == UnityWebRequest.Result.Success &&
+                        request.responseCode == 200;
+                }
+
+#if UNITY_EDITOR
+                if (!foundServer)
+                {
+                    for (var port = 5168; port <= 5198 && !foundServer; port++)
+                    {
+                        var url = "http://127.0.0.1:" + port;
+                        if (settings.BaseUrl == url) continue;
+                        using (var request = UnityWebRequest.Get(url + rulePath))
+                        {
+                            request.timeout = 1;
+                            yield return request.SendWebRequest();
+                            foundServer = request.result == UnityWebRequest.Result.Success &&
+                                request.responseCode == 200;
+                            if (foundServer)
+                            {
+                                settings.SetRuntimeBaseUrl(url);
+                                rest.Configure(settings);
+                            }
+                        }
+                    }
+                }
+#endif
+
+                if (foundServer)
+                {
+                    CheckHealth();
+                    QuickDemoLogin();
+                    yield break;
+                }
+                if (serviceStatus != null) serviceStatus.text = "STARTING ASTRAL RIFT SERVER...";
+                yield return new WaitForSeconds(2f);
+            }
+            autoStartDemoMatch = false;
+            if (loginStatus != null)
+                loginStatus.text = "The Astral Rift server did not become available. Start the demo launcher and try again.";
         }
 
         private void CheckHealth()
@@ -190,6 +339,11 @@ namespace TcgServer.Client
             nextLobbyRefresh = Time.unscaledTime + (settings == null ? 5f : settings.LobbyRefreshIntervalSeconds);
             ShowPage(lobbyPage);
             RefreshLobby();
+            if (autoStartDemoMatch)
+            {
+                autoStartDemoMatch = false;
+                CreateAiGame();
+            }
         }
 
         private void OnAuthenticationFailed(TcgApiError error) => loginStatus.text = error.ToString();
@@ -453,6 +607,22 @@ namespace TcgServer.Client
         private void OpenGame(string gameId)
         {
             currentGameId = gameId;
+            selectedCard = null;
+            pendingTargetAction = null;
+            actionInFlight = false;
+            lastEventKey = null;
+            previousPlayerLife = null;
+            previousOpponentLife = null;
+            if (cardInspector != null) cardInspector.SetActive(false);
+            if (resultPanel != null) resultPanel.SetActive(false);
+            if (matchLogPanel != null) matchLogPanel.SetActive(false);
+            previouslyRenderedCards.Clear();
+            lastZoneSignature = null;
+            lastActionSignature = null;
+            loadedRulePackId = null;
+            loadingRulePackId = null;
+            currentGameView = null;
+            cardDefinitions.Clear();
             gameIdInput.text = gameId;
             ShowPage(gamePage);
             if (gamePolling != null)
@@ -479,94 +649,513 @@ namespace TcgServer.Client
 
         private void RenderGame(ClientGameViewDto game)
         {
+            if (game == null || game.id != currentGameId) return;
             currentGameView = game;
-            var builder = new StringBuilder();
-            builder.AppendLine($"GAME  {game.id}");
-            builder.AppendLine($"RULES  {game.rulePackId}");
-            builder.AppendLine($"TURN   {game.turn}  ·  PHASE {game.currentPhaseId}");
-            builder.AppendLine($"ACTIVE {game.activePlayerId}");
-            builder.AppendLine($"STATE  {(game.finished ? "FINISHED" : "ACTIVE")}");
-            if (game.finished) builder.AppendLine($"WINNER {game.winnerPlayerId}  ·  {game.victoryRuleId}");
-            builder.AppendLine($"PLAYERS {string.Join(", ", game.players ?? Array.Empty<string>())}");
-            builder.AppendLine();
-            builder.AppendLine("RECENT EVENTS");
-            foreach (var gameEvent in (game.events ?? Array.Empty<GameEventDto>()).TakeLast(8))
-                builder.AppendLine($"{gameEvent.type,-14} {gameEvent.message}");
+            turnPhaseText.text = $"TURN {game.turn} · PHASE {game.currentPhaseId?.ToUpperInvariant() ?? "DRAW"} · {(game.finished ? "FINISHED" : "ACTIVE")}";
+            if (game.finished) turnPhaseText.text += $" · WINNER {game.winnerPlayerId?.ToUpperInvariant()}";
+            if (resultPanel != null)
+            {
+                resultPanel.SetActive(game.finished);
+                if (game.finished && matchLogPanel != null) matchLogPanel.SetActive(false);
+                if (game.finished && resultTitle != null)
+                {
+                    var won = game.winnerPlayerId == session.User?.id;
+                    resultTitle.text = won ? "VICTORY" : "DEFEAT";
+                    resultTitle.color = won ? Accent : Danger;
+                }
+            }
+            if (matchLogText != null)
+                matchLogText.text = string.Join("\n", (game.events ?? Array.Empty<GameEventDto>())
+                    .TakeLast(9).Select(e => "• " + (e.message ?? e.type ?? "Event")));
+            var latestEvent = (game.events ?? Array.Empty<GameEventDto>()).LastOrDefault();
+            if (latestEvent != null && eventBanner != null)
+            {
+                var eventKey = latestEvent.at + ":" + latestEvent.type + ":" + latestEvent.message;
+                if (eventKey != lastEventKey)
+                {
+                    lastEventKey = eventKey;
+                    eventBanner.text = latestEvent.message ?? latestEvent.type;
+                    StartCoroutine(FlashEventBanner());
+                }
+            }
 
-            gameStatus.text = $"Last synchronized {DateTime.Now:T}";
-            gameSummary.text = builder.ToString();
-            RenderPlayerState(game);
-            RebuildActionButtons(game);
+            if (loadedRulePackId == game.rulePackId && cardDefinitions.Count > 0)
+            {
+                RefreshBattlefield(game);
+                RebuildActionButtons(game);
+            }
+            else if (loadingRulePackId != game.rulePackId)
+            {
+                loadingRulePackId = game.rulePackId;
+                StartCoroutine(FetchRulePackAndRender(game));
+            }
         }
 
-        private void RenderPlayerState(ClientGameViewDto game)
+        private IEnumerator FetchRulePackAndRender(ClientGameViewDto game)
         {
-            if (session.User == null) return;
-            var resources = (game.resources ?? Array.Empty<ClientGameResourceDto>())
-                .Where(resource => resource.playerId == session.User.id)
-                .OrderBy(resource => resource.resourceId)
-                .Select(resource => resource.resourceId.ToUpperInvariant() + " " + resource.value);
-            var zones = (game.zones ?? Array.Empty<ClientGameZoneDto>())
-                .Where(zone => zone.playerId == session.User.id)
-                .OrderBy(zone => zone.zoneId)
-                .Select(zone => zone.zoneId.ToUpperInvariant() + " " + (zone.cards?.Length ?? 0) +
-                    (zone.zoneId == "hand" && zone.cards != null && zone.cards.Length > 0
-                        ? "  ·  " + string.Join(", ", zone.cards.Take(5).Select(card => card.cardId))
-                        : ""));
-            zoneSummary.text = string.Join("  ·  ", resources) + "\n" + string.Join("\n", zones);
+            yield return rest.GameRulesSync(
+                game.rulePackId,
+                rulePack =>
+                {
+                    if (currentGameId != game.id) return;
+                    cardDefinitions = (rulePack.cards ?? Array.Empty<CardDefinitionDto>()).ToDictionary(c => c.id, c => c);
+                    loadedRulePackId = game.rulePackId;
+                    loadingRulePackId = null;
+                    lastZoneSignature = null;
+                    RefreshBattlefield(game);
+                    RebuildActionButtons(game);
+                },
+                error =>
+                {
+                    if (currentGameId != game.id) return;
+                    loadingRulePackId = null;
+                    realtimeSummary.text = "Failed to load rule pack: " + error;
+                    RefreshBattlefield(game);
+                    RebuildActionButtons(game);
+                });
         }
 
-        private void RebuildActionButtons(ClientGameViewDto game)
+        private void RefreshBattlefield(ClientGameViewDto game)
         {
-            if (actionButtonRow == null) return;
+            var zoneSignature = string.Join("|", (game.zones ?? Array.Empty<ClientGameZoneDto>())
+                .Select(zone => zone.playerId + ":" + zone.zoneId + ":" + string.Join(",",
+                    (zone.cards ?? Array.Empty<CardInstanceDto>()).Select(card => card.instanceId + ":" + card.cardId))));
+            var shouldRebuild = zoneSignature != lastZoneSignature;
+            if (shouldRebuild)
+            {
+                foreach (var obj in cardObjects.Values) Destroy(obj);
+                cardObjects.Clear();
+                lastZoneSignature = zoneSignature;
+            }
+
+            var userId = session.User?.id;
+            if (string.IsNullOrWhiteSpace(userId)) return;
+
+            var opponentId = (game.players ?? Array.Empty<string>()).FirstOrDefault(p => p != userId);
+            if (string.IsNullOrWhiteSpace(opponentId)) return;
+
+            if (shouldRebuild)
+            {
+                RenderZone(opponentHandContainer, game, opponentId, "hand", hidden: true);
+                RenderZone(opponentFieldContainer, game, opponentId, "battlefield", hidden: false);
+                RenderZone(playerHandContainer, game, userId, "hand", hidden: false);
+                RenderZone(playerFieldContainer, game, userId, "battlefield", hidden: false);
+                previouslyRenderedCards = new HashSet<string>(cardObjects.Keys);
+            }
+
+            var resources = (game.resources ?? Array.Empty<ClientGameResourceDto>()).FirstOrDefault(r => r.playerId == userId && r.resourceId == "life");
+            if (resources != null && resources.resourceId == "life")
+            {
+                if (previousPlayerLife.HasValue && previousPlayerLife.Value != resources.value)
+                    StartCoroutine(FlashAvatar(playerAvatar, resources.value < previousPlayerLife.Value));
+                previousPlayerLife = resources.value;
+                playerLifeText.text = resources.value.ToString();
+            }
+            var oppResources = (game.resources ?? Array.Empty<ClientGameResourceDto>()).FirstOrDefault(r => r.playerId == opponentId && r.resourceId == "life");
+            if (oppResources != null && oppResources.resourceId == "life")
+            {
+                if (previousOpponentLife.HasValue && previousOpponentLife.Value != oppResources.value)
+                    StartCoroutine(FlashAvatar(opponentAvatar, oppResources.value < previousOpponentLife.Value));
+                previousOpponentLife = oppResources.value;
+                opponentLifeText.text = oppResources.value.ToString();
+            }
+            var allResources = game.resources ?? Array.Empty<ClientGameResourceDto>();
+            var energy = allResources.FirstOrDefault(r => r.playerId == userId && r.resourceId == "energy");
+            var oppEnergy = allResources.FirstOrDefault(r => r.playerId == opponentId && r.resourceId == "energy");
+            var renown = allResources.FirstOrDefault(r => r.playerId == userId && r.resourceId == "renown");
+            var oppRenown = allResources.FirstOrDefault(r => r.playerId == opponentId && r.resourceId == "renown");
+            playerEnergyText.text = "ENERGY  " + (energy?.value ?? 0);
+            opponentEnergyText.text = "ENERGY  " + (oppEnergy?.value ?? 0);
+            playerRenownText.text = "RENOWN  " + (renown?.value ?? 0);
+            opponentRenownText.text = "RENOWN  " + (oppRenown?.value ?? 0);
+            UpdateCardVisualStates();
+            if (selectedCard != null)
+            {
+                var stillVisible = (game.zones ?? Array.Empty<ClientGameZoneDto>()).Any(z =>
+                    (z.cards ?? Array.Empty<CardInstanceDto>()).Any(c => c.instanceId == selectedCard.instanceId));
+                if (!stillVisible) { selectedCard = null; if (cardInspector != null) cardInspector.SetActive(false); }
+                else if (shouldRebuild) ShowCardInspector();
+            }
+        }
+
+        private void RenderZone(GameObject container, ClientGameViewDto game, string playerId, string zoneId, bool hidden)
+        {
+            var zone = (game.zones ?? Array.Empty<ClientGameZoneDto>()).FirstOrDefault(z => z.playerId == playerId && z.zoneId == zoneId);
+            var cards = zone?.cards ?? Array.Empty<CardInstanceDto>();
+
+            for (var index = 0; index < cards.Length; index++)
+            {
+                var card = cards[index];
+                var key = string.IsNullOrWhiteSpace(card.instanceId)
+                    ? playerId + ":" + zoneId + ":hidden:" + index
+                    : card.instanceId;
+                var cardObj = CreateCardObject(card, hidden);
+                cardObj.transform.SetParent(container.transform, false);
+                cardObjects[key] = cardObj;
+                if (!previouslyRenderedCards.Contains(key)) StartCoroutine(AnimateCardArrival(cardObj));
+            }
+        }
+
+        private GameObject CreateCardObject(CardInstanceDto card, bool hidden)
+        {
+            var panel = CreatePanel(null, "Card", SurfaceRaised, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            SetLayout(panel, 94, 134);
+            var layout = panel.AddComponent<VerticalLayoutGroup>();
+            layout.padding = new RectOffset(6, 6, 7, 7);
+            layout.spacing = 2;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+
+            if (hidden)
+            {
+                panel.GetComponent<Image>().color = Hex("293958");
+                CreateText(panel.transform, "◆", 28, Accent, FontStyle.Bold, TextAnchor.MiddleCenter);
+                CreateText(panel.transform, "ASTRAL RIFT", 9, Foreground, FontStyle.Bold, TextAnchor.MiddleCenter);
+                return panel;
+            }
+
+            var def = cardDefinitions.GetValueOrDefault(card.cardId);
+            var name = def?.name ?? card.cardId;
+            var cost = def?.cost ?? 0;
+            var power = def?.power ?? 0;
+            var toughness = def?.toughness ?? 0;
+
+            var topRow = CreateHorizontalArea(panel.transform, 16);
+            CreateText(topRow.transform, cost.ToString(), 14, Accent, FontStyle.Bold, TextAnchor.MiddleCenter);
+            SetLayout(topRow.transform.GetChild(0).gameObject, 24, 16);
+
+            var artwork = Resources.Load<Texture2D>("CardForgeDemo/Art/" + card.cardId);
+            if (artwork != null)
+            {
+                if (!DemoArtCache.TryGetValue(card.cardId, out var sprite))
+                {
+                    sprite = Sprite.Create(artwork, new Rect(0, 0, artwork.width, artwork.height), new Vector2(0.5f, 0.5f));
+                    DemoArtCache[card.cardId] = sprite;
+                }
+                var artPanel = new GameObject("Card illustration", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+                artPanel.transform.SetParent(panel.transform, false);
+                var artImage = artPanel.GetComponent<Image>();
+                artImage.sprite = sprite;
+                artImage.preserveAspect = true;
+                SetLayout(artPanel, -1, 46);
+            }
+            var nameText = CreateText(panel.transform, name, 11, Foreground, FontStyle.Bold, TextAnchor.MiddleCenter);
+            SetLayout(nameText.gameObject, -1, artwork != null ? 28 : 64);
+            CreateText(panel.transform, def?.type?.ToUpperInvariant() ?? "CARD", 9, Muted, FontStyle.Normal, TextAnchor.MiddleCenter);
+
+            if (power > 0 || toughness > 0)
+            {
+                var stats = CreateText(panel.transform, $"{power}/{toughness}", 10, Foreground, FontStyle.Bold, TextAnchor.MiddleCenter);
+                SetLayout(stats.gameObject, -1, 12);
+            }
+
+            var button = panel.AddComponent<Button>();
+            button.targetGraphic = panel.GetComponent<Image>();
+            button.onClick.AddListener(() => OnCardClicked(card));
+            return panel;
+        }
+
+        private void OnCardClicked(CardInstanceDto card)
+        {
+            if (currentGameView == null || !session.IsAuthenticated || actionInFlight) return;
+
+            // Target selection is explicit. Never automatically choose the first card in a zone.
+            if (pendingTargetAction != null)
+            {
+                if (pendingTargetAction.target == "target_player")
+                {
+                    actionStatus.text = "Click a player avatar to target that player.";
+                    return;
+                }
+                var action = pendingTargetAction;
+                pendingTargetAction = null;
+                UpdateCardVisualStates();
+                ExecuteAction(action, selectedCard?.instanceId, card.instanceId);
+                return;
+            }
+
+            selectedCard = card;
+            UpdateCardVisualStates();
+            ShowCardInspector();
+            RebuildActionButtons(currentGameView, true);
+            if (cardObjects.TryGetValue(card.instanceId, out var visual))
+                StartCoroutine(PulseSelectedCard(visual));
+        }
+
+        private void OnAvatarClicked(bool self)
+        {
+            if (pendingTargetAction == null || pendingTargetAction.target != "target_player" ||
+                currentGameView == null || session.User == null) return;
+            var targetId = self ? session.User.id :
+                (currentGameView.players ?? Array.Empty<string>()).FirstOrDefault(p => p != session.User.id);
+            if (string.IsNullOrWhiteSpace(targetId)) return;
+            var action = pendingTargetAction;
+            pendingTargetAction = null;
+            UpdateCardVisualStates();
+            ExecuteAction(action, selectedCard?.instanceId, null, targetId);
+        }
+
+        private void UpdateCardVisualStates()
+        {
+            foreach (var item in cardObjects)
+            {
+                if (item.Value == null) continue;
+                var image = item.Value.GetComponent<Image>();
+                if (image == null) continue;
+                var isSelected = selectedCard != null && selectedCard.instanceId == item.Key;
+                var ownCard = (currentGameView?.zones ?? Array.Empty<ClientGameZoneDto>()).Any(z =>
+                    z.playerId == session.User?.id &&
+                    (z.cards ?? Array.Empty<CardInstanceDto>()).Any(c => c.instanceId == item.Key));
+                var selectable = ownCard && currentGameView?.activePlayerId == session.User?.id &&
+                    !actionInFlight;
+                var isBattlefield = (currentGameView?.zones ?? Array.Empty<ClientGameZoneDto>()).Any(z =>
+                    z.zoneId == "battlefield" &&
+                    (z.cards ?? Array.Empty<CardInstanceDto>()).Any(c => c.instanceId == item.Key));
+                var targetable = pendingTargetAction != null &&
+                    pendingTargetAction.target != "target_player" && isBattlefield;
+                image.color = targetable ? Accent : isSelected ? Hex("3F716B") :
+                    selectable ? Hex("283C59") : SurfaceRaised;
+            }
+            if (playerAvatar != null && opponentAvatar != null)
+            {
+                var playerTarget = pendingTargetAction?.target == "target_player";
+                playerAvatar.GetComponent<Image>().color = playerTarget ? Hex("315F8C") : SurfaceRaised;
+                opponentAvatar.GetComponent<Image>().color = playerTarget ? Hex("315F8C") : SurfaceRaised;
+            }
+        }
+
+        private IEnumerator FlashAvatar(GameObject avatar, bool damage)
+        {
+            if (avatar == null) yield break;
+            var image = avatar.GetComponent<Image>();
+            if (image == null) yield break;
+            var previous = image.color;
+            image.color = damage ? Danger : AccentAlt;
+            for (var i = 0; i < 12; ++i)
+            {
+                if (image == null) yield break;
+                image.color = Color.Lerp(damage ? Danger : AccentAlt, previous, i / 11f);
+                yield return null;
+            }
+            if (image != null) image.color = previous;
+        }
+
+        private void ShowCardInspector()
+        {
+            if (cardInspector == null || selectedCard == null ||
+                (matchLogPanel != null && matchLogPanel.activeSelf)) return;
+            var card = selectedCard;
+            var definition = cardDefinitions.GetValueOrDefault(card.cardId);
+            cardInspector.SetActive(true);
+            foreach (Transform child in cardInspector.transform)
+                Destroy(child.gameObject);
+
+            var header = CreateText(cardInspector.transform, definition?.name ?? card.cardId, 17, Accent, FontStyle.Bold, TextAnchor.MiddleLeft);
+            SetLayout(header.gameObject, -1, 36);
+            var image = Resources.Load<Texture2D>("CardForgeDemo/Art/" + card.cardId);
+            if (image != null)
+            {
+                if (!DemoArtCache.TryGetValue(card.cardId, out var sprite))
+                {
+                    sprite = Sprite.Create(image, new Rect(0, 0, image.width, image.height), new Vector2(.5f, .5f));
+                    DemoArtCache[card.cardId] = sprite;
+                }
+                var art = new GameObject("Artwork", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+                art.transform.SetParent(cardInspector.transform, false);
+                art.GetComponent<Image>().sprite = sprite;
+                art.GetComponent<Image>().preserveAspect = true;
+                SetLayout(art, -1, 112);
+            }
+            var stats = definition == null ? "" :
+                (definition.type ?? "Card") + "  |  Cost " + definition.cost +
+                "  |  " + definition.power + "/" + definition.toughness;
+            var detail = CreateText(cardInspector.transform, stats, 12, Foreground, FontStyle.Bold, TextAnchor.UpperLeft);
+            SetLayout(detail.gameObject, -1, 34);
+            var rules = CreateText(cardInspector.transform,
+                string.IsNullOrWhiteSpace(definition?.text) ? "Select an available action to play this card." : definition.text,
+                12, Foreground, FontStyle.Normal, TextAnchor.UpperLeft);
+            SetLayout(rules.gameObject, -1, 82);
+            CreateButton(cardInspector.transform, "Close preview", () => { selectedCard = null; cardInspector.SetActive(false); UpdateCardVisualStates(); RebuildActionButtons(currentGameView, true); }, SurfaceRaised);
+        }
+
+        private IEnumerator AnimateCardArrival(GameObject visual)
+        {
+            if (visual == null) yield break;
+            var rect = visual.transform as RectTransform;
+            if (rect == null) yield break;
+            var canvasGroup = visual.GetComponent<CanvasGroup>() ?? visual.AddComponent<CanvasGroup>();
+            var originalScale = rect.localScale;
+            for (var i = 0; i <= 12; i++)
+            {
+                if (rect == null || canvasGroup == null) yield break;
+                var progress = i / 12f;
+                rect.localScale = originalScale * Mathf.Lerp(.84f, 1f, progress);
+                canvasGroup.alpha = Mathf.SmoothStep(0f, 1f, progress);
+                yield return null;
+            }
+            if (rect != null) rect.localScale = originalScale;
+            if (canvasGroup != null) canvasGroup.alpha = 1f;
+        }
+
+        private IEnumerator PulseSelectedCard(GameObject visual)
+        {
+            if (visual == null) yield break;
+            var rect = visual.transform as RectTransform;
+            if (rect == null) yield break;
+            var startingScale = rect.localScale;
+            for (var i = 0; i < 10; i++)
+            {
+                if (rect == null) yield break;
+                rect.localScale = startingScale * (1f + Mathf.Sin(i / 9f * Mathf.PI) * .11f);
+                yield return null;
+            }
+            if (rect != null) rect.localScale = startingScale;
+        }
+
+        private IEnumerator FlashEventBanner()
+        {
+            if (eventBanner == null) yield break;
+            eventBanner.color = Accent;
+            yield return new WaitForSeconds(.8f);
+            if (eventBanner != null) eventBanner.color = Muted;
+        }
+
+        private void RebuildActionButtons(ClientGameViewDto game, bool force = false)
+        {
+            if (actionButtonRow == null || game == null) return;
+            var actionSignature = game.id + ":" + game.finished + ":" + game.activePlayerId + ":" +
+                selectedCard?.instanceId + ":" + (pendingTargetAction?.id ?? "") + ":" + actionInFlight + ":" +
+                string.Join("|", (game.allowedActions ?? Array.Empty<ClientGameActionDto>())
+                    .Select(action => action.id + ":" + action.sourceZone + ":" + action.target));
+            if (!force && lastActionSignature == actionSignature) return;
+            lastActionSignature = actionSignature;
             for (var index = actionButtonRow.transform.childCount - 1; index >= 0; index--)
                 Destroy(actionButtonRow.transform.GetChild(index).gameObject);
 
             if (game.finished)
             {
-                actionStatus.text = "Match complete.";
+                CreateButton(actionButtonRow.transform, game.winnerPlayerId == session.User?.id ? "Victory - return to lobby" : "Match ended - return to lobby",
+                    () => ShowPage(lobbyPage), Accent);
+                return;
+            }
+            if (actionInFlight)
+            {
+                CreateButton(actionButtonRow.transform, "Resolving action...", null, SurfaceRaised);
+                return;
+            }
+            if (pendingTargetAction != null)
+            {
+                CreateButton(actionButtonRow.transform,
+                    pendingTargetAction.target == "target_player" ? "Select a player avatar" : "Select a target card", null, AccentAlt);
+                CreateButton(actionButtonRow.transform, "Cancel targeting", () =>
+                {
+                    pendingTargetAction = null;
+                    UpdateCardVisualStates();
+                    RebuildActionButtons(currentGameView, true);
+                }, SurfaceRaised);
                 return;
             }
             if (session.User == null || game.activePlayerId != session.User.id)
             {
-                actionStatus.text = "Waiting for " + game.activePlayerId + "...";
+                CreateButton(actionButtonRow.transform, "Opponent's turn", null, SurfaceRaised);
                 return;
             }
 
             var actions = game.allowedActions ?? Array.Empty<ClientGameActionDto>();
-            actionStatus.text = actions.Length == 0 ? "No actions are available in this phase." : "Choose an action. Card actions use the first legal card in the source zone.";
-            foreach (var action in actions.Take(8))
+            var selectedZone = selectedCard == null ? null :
+                (game.zones ?? Array.Empty<ClientGameZoneDto>()).FirstOrDefault(z =>
+                    z.playerId == session.User.id &&
+                    (z.cards ?? Array.Empty<CardInstanceDto>()).Any(c => c.instanceId == selectedCard.instanceId))?.zoneId;
+
+            var shown = 0;
+            foreach (var action in actions)
             {
-                var selected = action;
-                CreateButton(actionButtonRow.transform, action.name, () => ExecuteAction(selected), Accent);
+                if (!string.IsNullOrWhiteSpace(action.sourceZone) && action.sourceZone != selectedZone)
+                    continue;
+                if (shown++ >= 5) break;
+                var label = string.IsNullOrWhiteSpace(action.name) ? action.id : action.name;
+                var selection = selectedCard?.instanceId;
+                CreateButton(actionButtonRow.transform, label, () =>
+                {
+                    if (action.target == "target_card" || action.target == "target_instance" || action.target == "target_player")
+                    {
+                        pendingTargetAction = action;
+                        UpdateCardVisualStates();
+                        actionStatus.text = action.target == "target_player" ?
+                            "Choose your avatar or the opponent avatar as the target." :
+                            "Choose a target card on the battlefield.";
+                        RebuildActionButtons(currentGameView, true);
+                    }
+                    else ExecuteAction(action, string.IsNullOrWhiteSpace(action.sourceZone) ? null : selection);
+                }, action.sourceZone == selectedZone && selectedZone != null ? Accent : AccentAlt);
             }
+            // Phase progression must remain accessible even when a phase lists many actions.
+            var advance = actions.FirstOrDefault(action =>
+                string.IsNullOrWhiteSpace(action.sourceZone) &&
+                (action.id.IndexOf("next-phase", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 action.id.IndexOf("advance-phase", StringComparison.OrdinalIgnoreCase) >= 0));
+            if (advance != null && !actions.Take(5).Contains(advance))
+            {
+                CreateButton(actionButtonRow.transform, "Advance phase", () => ExecuteAction(advance), Accent, Ink);
+                shown++;
+            }
+            if (shown == 0)
+                CreateButton(actionButtonRow.transform,
+                    selectedCard == null ? "Select a card to see its actions" : "No actions available for this card",
+                    null, SurfaceRaised);
+            if (selectedCard != null)
+                CreateButton(actionButtonRow.transform, "Deselect", () =>
+                {
+                    selectedCard = null;
+                    if (cardInspector != null) cardInspector.SetActive(false);
+                    UpdateCardVisualStates();
+                    RebuildActionButtons(currentGameView, true);
+                }, SurfaceRaised);
         }
 
-        private void ExecuteAction(ClientGameActionDto action)
+        private void ExecuteAction(ClientGameActionDto action, string selectedInstanceId = null, string targetInstanceId = null, string explicitTargetPlayerId = null)
         {
-            if (!RequireSession() || currentGameView == null) return;
-            string sourceInstanceId = null;
-            if (!string.IsNullOrWhiteSpace(action.sourceZone))
+            if (!RequireSession() || currentGameView == null || actionInFlight) return;
+            if (!string.IsNullOrWhiteSpace(action.sourceZone) && string.IsNullOrWhiteSpace(selectedInstanceId))
             {
-                var zone = (currentGameView.zones ?? Array.Empty<ClientGameZoneDto>())
-                    .FirstOrDefault(candidate => candidate.playerId == session.User.id && candidate.zoneId == action.sourceZone);
-                sourceInstanceId = zone?.cards?.FirstOrDefault()?.instanceId;
-                if (string.IsNullOrWhiteSpace(sourceInstanceId))
-                {
-                    actionStatus.text = "No card is available in " + action.sourceZone + " for " + action.name + ".";
-                    return;
-                }
+                actionStatus.text = "Select a card in " + action.sourceZone + " first.";
+                return;
             }
-            var targetPlayerId = action.target == "target_player"
-                ? (currentGameView.players ?? Array.Empty<string>()).FirstOrDefault(player => player != session.User.id)
-                : null;
+
+            var targetPlayerId = action.target == "target_player" ? explicitTargetPlayerId : null;
+            if (action.target == "target_player" && string.IsNullOrWhiteSpace(targetPlayerId))
+            {
+                actionStatus.text = "Choose a player avatar to target.";
+                return;
+            }
+            var matchId = currentGameId;
+            actionInFlight = true;
             actionStatus.text = "Resolving " + action.name + "...";
+            RebuildActionButtons(currentGameView, true);
             StartCoroutine(rest.ExecuteAction(
-                session.Token,
-                currentGameId,
-                new ExecuteGameActionRequestDto { actionId = action.id, sourceInstanceId = sourceInstanceId, targetPlayerId = targetPlayerId },
-                _ => StartCoroutine(rest.GameView(session.Token, currentGameId, RenderGame, error => actionStatus.text = error.ToString())),
-                error => actionStatus.text = error.ToString()));
+                session.Token, matchId,
+                new ExecuteGameActionRequestDto
+                {
+                    actionId = action.id, sourceInstanceId = selectedInstanceId,
+                    targetPlayerId = targetPlayerId, targetInstanceId = targetInstanceId
+                },
+                _ =>
+                {
+                    if (matchId != currentGameId) return;
+                    actionInFlight = false;
+                    selectedCard = null;
+                    if (cardInspector != null) cardInspector.SetActive(false);
+                    actionStatus.text = action.name + " resolved.";
+                    StartCoroutine(rest.GameView(session.Token, matchId, RenderGame,
+                        error => actionStatus.text = error.ToString()));
+                    RebuildActionButtons(currentGameView, true);
+                },
+                error =>
+                {
+                    if (matchId != currentGameId) return;
+                    actionInFlight = false;
+                    actionStatus.text = error.ToString();
+                    RebuildActionButtons(currentGameView, true);
+                }));
         }
 
         private async void ConnectRealtime()
@@ -856,28 +1445,230 @@ namespace TcgServer.Client
 
         private void BuildGamePage(Transform page)
         {
-            CreateTitle(page, "Game session", "Poll public game state immediately, then enable SignalR for chat and real-time actions.");
+            CreateTitle(page, "ASTRAL RIFT  /  LIVE MATCH", "Deploy cards, control the field, and defeat the opposing player.");
+            SetLayout(page.GetChild(0).gameObject, -1, 64);
             var controls = CreateButtonRow(page);
             gameIdInput = CreateInput(controls.transform, "Game ID", false, 360);
             CreateButton(controls.transform, "Watch game", WatchGame, Accent);
             CreateButton(controls.transform, "Back to lobby", () => ShowPage(lobbyPage), SurfaceRaised);
-            CreateButton(controls.transform, "Connect SignalR", ConnectRealtime, SurfaceRaised);
+            if (TcgGameConnection.IsAvailable)
+                CreateButton(controls.transform, "Connect live updates", ConnectRealtime, SurfaceRaised);
+            CreateButton(controls.transform, "Match log (L)", ToggleMatchLog, SurfaceRaised);
 
-            var gameCard = CreateCard(page, 550);
-            gameStatus = CreateText(gameCard.transform, "Enter a game ID or create a game from the lobby.", 13, Accent, FontStyle.Bold, TextAnchor.UpperLeft);
-            SetLayout(gameStatus.gameObject, -1, 32);
-            gameSummary = CreateText(gameCard.transform, "No game loaded.", 14, Foreground, FontStyle.Normal, TextAnchor.UpperLeft);
-            SetLayout(gameSummary.gameObject, -1, 180);
-            zoneSummary = CreateText(gameCard.transform, "Player zones and resources appear here.", 12, Foreground, FontStyle.Normal, TextAnchor.UpperLeft);
-            SetLayout(zoneSummary.gameObject, -1, 105);
-            actionStatus = CreateText(gameCard.transform, "Open a game to see its legal actions.", 12, Accent, FontStyle.Bold, TextAnchor.UpperLeft);
-            SetLayout(actionStatus.gameObject, -1, 28);
-            actionButtonRow = CreateButtonRow(gameCard.transform);
-            realtimeSummary = CreateText(gameCard.transform, TcgGameConnection.IsAvailable ? "SignalR package detected." : "REST polling ready · SignalR optional package not enabled.", 13, Muted, FontStyle.Normal, TextAnchor.UpperLeft);
-            SetLayout(realtimeSummary.gameObject, -1, 44);
-            var chat = CreateButtonRow(gameCard.transform);
-            chatInput = CreateInput(chat.transform, "Game chat", false, 420);
-            CreateButton(chat.transform, "Send chat", SendChat, Accent);
+            var battlefield = CreatePanel(page, "Battlefield", Background, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            SetLayout(battlefield, -1, 540);
+            var battleLayout = battlefield.AddComponent<VerticalLayoutGroup>();
+            battleLayout.padding = new RectOffset(22, 22, 12, 12);
+            battleLayout.spacing = 8;
+            battleLayout.childControlHeight = true;
+            battleLayout.childForceExpandHeight = true;
+            battleLayout.childControlWidth = true;
+            battleLayout.childForceExpandWidth = true;
+            AddBattlefieldBackdrop(battlefield.transform);
+
+            var topRow = CreateHorizontalArea(battlefield.transform, 145);
+            opponentAvatar = CreateAvatar(topRow.transform, "OPPONENT");
+            opponentFieldContainer = CreateZone(topRow.transform, "OPPONENT BATTLEFIELD", 1f);
+            opponentHandContainer = CreateZone(topRow.transform, "HAND (HIDDEN)", 0.36f);
+
+            var centerRow = CreatePanel(battlefield.transform, "Turn Banner", SurfaceRaised, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            SetLayout(centerRow, -1, 36);
+            var centerLayout = centerRow.AddComponent<HorizontalLayoutGroup>();
+            centerLayout.padding = new RectOffset(20, 20, 4, 4);
+            centerLayout.spacing = 12;
+            centerLayout.childAlignment = TextAnchor.MiddleCenter;
+            turnPhaseText = CreateText(centerRow.transform, "WAITING FOR GAME STATE...", 14, Accent, FontStyle.Bold, TextAnchor.MiddleCenter);
+            SetLayout(turnPhaseText.gameObject, -1, 28, 1);
+
+            var bottomRow = CreateHorizontalArea(battlefield.transform, 145);
+            playerAvatar = CreateAvatar(bottomRow.transform, "YOU");
+            playerFieldContainer = CreateZone(bottomRow.transform, "YOUR BATTLEFIELD", 1f);
+            playerHandContainer = CreateZone(bottomRow.transform, "YOUR HAND  /  CLICK TO PLAY", 0.58f);
+
+            actionButtonRow = CreateButtonRow(battlefield.transform);
+            realtimeSummary = CreateText(battlefield.transform, TcgGameConnection.IsAvailable ? "SignalR package detected." : "REST polling ready · SignalR optional package not enabled.", 12, Muted, FontStyle.Normal, TextAnchor.UpperLeft);
+            SetLayout(realtimeSummary.gameObject, -1, 28);
+            // One visible notification surface for transport errors, invalid plays and action results.
+            gameStatus = realtimeSummary;
+            actionStatus = realtimeSummary;
+            eventBanner = CreateText(battlefield.transform, "Select a card to inspect it. Actions are validated by the server.", 12, Muted, FontStyle.Italic, TextAnchor.MiddleCenter);
+            SetLayout(eventBanner.gameObject, -1, 24);
+            if (TcgGameConnection.IsAvailable)
+            {
+                var chat = CreateButtonRow(battlefield.transform);
+                chatInput = CreateInput(chat.transform, "Game chat", false, 420);
+                CreateButton(chat.transform, "Send chat", SendChat, Accent);
+            }
+
+            // Floating inspector: does not consume battlefield layout space.
+            cardInspector = CreatePanel(battlefield.transform, "Card Inspector", SurfaceRaised, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            var inspectorLayout = cardInspector.AddComponent<LayoutElement>();
+            inspectorLayout.ignoreLayout = true;
+            var inspectorRect = cardInspector.GetComponent<RectTransform>();
+            inspectorRect.anchorMin = new Vector2(1f, .5f);
+            inspectorRect.anchorMax = new Vector2(1f, .5f);
+            inspectorRect.pivot = new Vector2(1f, .5f);
+            inspectorRect.anchoredPosition = new Vector2(-18f, 0f);
+            inspectorRect.sizeDelta = new Vector2(282f, 358f);
+            var detailsLayout = cardInspector.AddComponent<VerticalLayoutGroup>();
+            detailsLayout.padding = new RectOffset(12, 12, 12, 12);
+            detailsLayout.spacing = 5;
+            detailsLayout.childControlHeight = false;
+            detailsLayout.childForceExpandHeight = false;
+            detailsLayout.childControlWidth = true;
+            detailsLayout.childForceExpandWidth = true;
+            cardInspector.SetActive(false);
+
+            resultPanel = CreatePanel(battlefield.transform, "Match Result", Background, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            resultPanel.AddComponent<LayoutElement>().ignoreLayout = true;
+            var resultRect = resultPanel.GetComponent<RectTransform>();
+            resultRect.anchorMin = new Vector2(.5f, .5f);
+            resultRect.anchorMax = new Vector2(.5f, .5f);
+            resultRect.pivot = new Vector2(.5f, .5f);
+            resultRect.anchoredPosition = Vector2.zero;
+            resultRect.sizeDelta = new Vector2(390f, 230f);
+            var resultLayout = resultPanel.AddComponent<VerticalLayoutGroup>();
+            resultLayout.padding = new RectOffset(22, 22, 20, 20);
+            resultLayout.spacing = 9;
+            resultLayout.childAlignment = TextAnchor.MiddleCenter;
+            resultLayout.childControlHeight = false;
+            resultLayout.childForceExpandHeight = false;
+            resultLayout.childControlWidth = true;
+            resultLayout.childForceExpandWidth = true;
+            resultTitle = CreateText(resultPanel.transform, "VICTORY", 34, Accent, FontStyle.Bold, TextAnchor.MiddleCenter);
+            SetLayout(resultTitle.gameObject, -1, 55);
+            var resultNote = CreateText(resultPanel.transform, "The server has finalized this match.", 13, Muted, FontStyle.Normal, TextAnchor.MiddleCenter);
+            SetLayout(resultNote.gameObject, -1, 27);
+            CreateButton(resultPanel.transform, "Play another match", CreateAiGame, Accent, Ink);
+            CreateButton(resultPanel.transform, "Return to lobby", () => ShowPage(lobbyPage), SurfaceRaised);
+            resultPanel.SetActive(false);
+
+            matchLogPanel = CreatePanel(battlefield.transform, "Match Event Log", SurfaceRaised,
+                Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            matchLogPanel.AddComponent<LayoutElement>().ignoreLayout = true;
+            var logRect = matchLogPanel.GetComponent<RectTransform>();
+            logRect.anchorMin = new Vector2(1f, .5f);
+            logRect.anchorMax = new Vector2(1f, .5f);
+            logRect.pivot = new Vector2(1f, .5f);
+            logRect.anchoredPosition = new Vector2(-18f, 0f);
+            logRect.sizeDelta = new Vector2(345f, 400f);
+            var logLayout = matchLogPanel.AddComponent<VerticalLayoutGroup>();
+            logLayout.padding = new RectOffset(12, 12, 12, 12);
+            logLayout.spacing = 8;
+            logLayout.childControlHeight = false;
+            logLayout.childForceExpandHeight = false;
+            logLayout.childControlWidth = true;
+            logLayout.childForceExpandWidth = true;
+            var logHeading = CreateText(matchLogPanel.transform, "MATCH HISTORY", 16, Accent,
+                FontStyle.Bold, TextAnchor.MiddleLeft);
+            SetLayout(logHeading.gameObject, -1, 32);
+            matchLogText = CreateText(matchLogPanel.transform, "Waiting for the first move...", 11,
+                Foreground, FontStyle.Normal, TextAnchor.UpperLeft);
+            SetLayout(matchLogText.gameObject, -1, 285);
+            CreateButton(matchLogPanel.transform, "Close log (L)", ToggleMatchLog, SurfaceRaised);
+            matchLogPanel.SetActive(false);
+        }
+
+        private static void AddBattlefieldBackdrop(Transform parent)
+        {
+            var backdrop = new GameObject("Astral Rift Board", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+            backdrop.transform.SetParent(parent, false);
+            backdrop.GetComponent<LayoutElement>().ignoreLayout = true;
+            var rect = backdrop.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            var image = backdrop.GetComponent<Image>();
+            image.sprite = BattlefieldSprite;
+            image.raycastTarget = false;
+        }
+
+        private static Sprite BattlefieldSprite
+        {
+            get
+            {
+                if (battlefieldSprite != null) return battlefieldSprite;
+                const int width = 512;
+                const int height = 512;
+                var pixels = new Color32[width * height];
+                var dark = Hex("081322");
+                var nebula = Hex("203B55");
+                for (var y = 0; y < height; y++)
+                {
+                    for (var x = 0; x < width; x++)
+                    {
+                        var dx = (x - width * .5f) / width;
+                        var dy = (y - height * .5f) / height;
+                        var haze = Mathf.Exp(-(dx * dx * 5f + dy * dy * 16f)) * .56f;
+                        pixels[y * width + x] = Color.Lerp(dark, nebula, haze);
+                    }
+                }
+                var random = new System.Random(14817);
+                for (var i = 0; i < 230; i++)
+                {
+                    var x = random.Next(width);
+                    var y = random.Next(height);
+                    var intensity = (byte)random.Next(70, 170);
+                    pixels[y * width + x] = new Color32(intensity, (byte)Mathf.Min(255, intensity + 13),
+                        (byte)Mathf.Min(255, intensity + 33), 255);
+                }
+                var texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                texture.SetPixels32(pixels);
+                texture.wrapMode = TextureWrapMode.Clamp;
+                texture.filterMode = FilterMode.Bilinear;
+                texture.Apply(false, true);
+                battlefieldSprite = Sprite.Create(texture, new Rect(0, 0, width, height), new Vector2(.5f, .5f));
+                return battlefieldSprite;
+            }
+        }
+
+        private GameObject CreateAvatar(Transform parent, string label)
+        {
+            var card = CreatePanel(parent, "Avatar", SurfaceRaised, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            SetLayout(card, 100, -1);
+            var layout = card.AddComponent<VerticalLayoutGroup>();
+            layout.padding = new RectOffset(8, 8, 8, 8);
+            layout.spacing = 4;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            CreateText(card.transform, label, 12, Muted, FontStyle.Bold, TextAnchor.MiddleCenter);
+            CreateText(card.transform, "HULL", 10, Muted, FontStyle.Bold, TextAnchor.MiddleCenter);
+            var life = CreateText(card.transform, "15", 26, Accent, FontStyle.Bold, TextAnchor.MiddleCenter);
+            var energyText = CreateText(card.transform, "ENERGY  3", 11, AccentAlt, FontStyle.Bold, TextAnchor.MiddleCenter);
+            var renownText = CreateText(card.transform, "RENOWN  0", 11, Foreground, FontStyle.Bold, TextAnchor.MiddleCenter);
+            if (label == "YOU") { playerLifeText = life; playerEnergyText = energyText; playerRenownText = renownText; }
+            else { opponentLifeText = life; opponentEnergyText = energyText; opponentRenownText = renownText; }
+            var avatarButton = card.AddComponent<Button>();
+            avatarButton.targetGraphic = card.GetComponent<Image>();
+            avatarButton.onClick.AddListener(() => OnAvatarClicked(label == "YOU"));
+            return card;
+        }
+
+        private GameObject CreateZone(Transform parent, string label, float flexibleWidth)
+        {
+            var zone = CreatePanel(parent, label, Surface, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            SetLayout(zone, -1, -1, flexibleWidth);
+            var layout = zone.AddComponent<VerticalLayoutGroup>();
+            layout.padding = new RectOffset(8, 8, 4, 4);
+            layout.spacing = 4;
+            layout.childControlHeight = false;
+            layout.childForceExpandHeight = false;
+            layout.childControlWidth = true;
+            layout.childForceExpandWidth = true;
+            CreateText(zone.transform, label, 10, Muted, FontStyle.Bold, TextAnchor.UpperLeft);
+            var content = new GameObject("Cards", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+            content.transform.SetParent(zone.transform, false);
+            SetLayout(content, -1, -1, 1);
+            var contentLayout = content.GetComponent<HorizontalLayoutGroup>();
+            contentLayout.spacing = 6;
+            contentLayout.childControlWidth = false;
+            contentLayout.childForceExpandWidth = false;
+            contentLayout.childControlHeight = true;
+            contentLayout.childForceExpandHeight = true;
+            contentLayout.childAlignment = TextAnchor.MiddleLeft;
+            if (label.IndexOf("HAND", StringComparison.OrdinalIgnoreCase) >= 0)
+                content.AddComponent<TcgFanLayout>();
+            return content;
         }
 
         private GameObject CreateCanvas()
@@ -979,7 +1770,8 @@ namespace TcgServer.Client
             buttonObject.GetComponent<Image>().color = color;
             var button = buttonObject.GetComponent<Button>();
             button.targetGraphic = buttonObject.GetComponent<Image>();
-            button.onClick.AddListener(() => clicked());
+            button.interactable = clicked != null;
+            if (clicked != null) button.onClick.AddListener(() => clicked());
             var text = CreateText(buttonObject.transform, label, 13, textColor ?? Foreground, FontStyle.Bold, TextAnchor.MiddleCenter);
             Stretch(text.rectTransform, 10);
             return button;

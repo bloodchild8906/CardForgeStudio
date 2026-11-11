@@ -1,0 +1,51 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-001",
+    "name":  "Umbral Nullwake Duelist - Umbral Signature",
+    "cardId":  "ar-card-umbral-001",
+    "activationTriggerId":  "action:ar-cast-commander",
+    "actionId":  "ar-cast-commander",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Starts in Command, visible to all. When defeated, returns to Command; each recast costs +2. On cast: Destroy one opposing creature. Mill 4 enemy card(s). Gain 2 shield.",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "destroy_target",
+                        "amount":  1,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "mill",
+                        "amount":  4,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  2
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

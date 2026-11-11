@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "id": "ar-keyword-vanguard",
+    "name": "Vanguard",
+    "rulesText": "This card reacts when a card is deployed.",
+    "reminderText": "Deploy this card to resolve its arrival ability.",
+    "abilityIds": [
+        "ar-ability-arrival"
+    ],
+    "tags": [
+        "unit",
+        "deployment"
+    ]
+}

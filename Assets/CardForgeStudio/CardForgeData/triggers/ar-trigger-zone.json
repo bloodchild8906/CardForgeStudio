@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "id": "ar-trigger-zone",
+    "name": "A card crosses a memory boundary",
+    "eventType": "Card moved",
+    "source": "Any game object",
+    "fromZone": "",
+    "toZone": "",
+    "orientation": "",
+    "rules": [
+        {
+            "id": "ar-trigger-zone-rule",
+            "subject": "Action",
+            "property": "Resolution",
+            "comparison": "Equals",
+            "expectedValue": "Successful",
+            "condition": "The game is not finished."
+        }
+    ],
+    "condition": "The authoritative action resolves successfully.",
+    "responseWindow": "Immediate response window",
+    "priority": 10,
+    "causeActionIds": [
+        "ar-retire",
+        "ar-salvage",
+        "ar-banish"
+    ],
+    "causeAbilityIds": [
+        "ar-ability-salvage",
+        "ar-ability-void"
+    ],
+    "responseActionIds": [
+        "ar-signal"
+    ]
+}

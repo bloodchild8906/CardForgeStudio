@@ -1,0 +1,58 @@
+{
+    "version": 1,
+    "id": "ar-next-phase",
+    "name": "Advance phase",
+    "triggerId": "",
+    "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
+    "effect": "Advance to the next authored phase.",
+    "condition": "Available in its assigned phase.",
+    "cost": "No resource cost",
+    "targets": "Acting player or selected card",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [],
+    "graphNodes": [
+        {
+            "id": "ar-next-phase-validate",
+            "title": "Validate request",
+            "detail": "Check phase, player priority, targets, conditions, and costs.",
+            "tone": "check",
+            "x": 70.0,
+            "y": 90.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-next-phase-apply",
+            "title": "Apply authoritative effect",
+            "detail": "Advance to the next authored phase.",
+            "tone": "process",
+            "x": 360.0,
+            "y": 90.0,
+            "causesStateChange": true,
+            "emitsTriggers": false
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-next-phase-validate",
+            "to": "ar-next-phase-apply",
+            "label": "valid"
+        }
+    ],
+    "requiresActivePlayer": true,
+    "serverEffectKind": "advance_phase",
+    "sourceZoneId": "",
+    "destinationZoneId": "",
+    "resourceId": "",
+    "effectAmount": 0,
+    "effectTarget": "",
+    "eventType": "",
+    "costResourceId": "",
+    "costAmount": 0,
+    "conditionKind": "",
+    "conditionKey": "",
+    "conditionValue": "",
+    "dataKey": "",
+    "dataValue": ""
+}

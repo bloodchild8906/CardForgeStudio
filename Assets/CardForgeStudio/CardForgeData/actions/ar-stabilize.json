@@ -1,0 +1,60 @@
+{
+    "version": 1,
+    "id": "ar-stabilize",
+    "name": "Stabilize the shared rift",
+    "triggerId": "ar-trigger-resource",
+    "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
+    "effect": "Increase the game-scoped momentum resource.",
+    "condition": "Available in its assigned phase.",
+    "cost": "No resource cost",
+    "targets": "Acting player or selected card",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [
+        "ar-trigger-resource"
+    ],
+    "graphNodes": [
+        {
+            "id": "ar-stabilize-validate",
+            "title": "Validate request",
+            "detail": "Check phase, player priority, targets, conditions, and costs.",
+            "tone": "check",
+            "x": 70.0,
+            "y": 90.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-stabilize-apply",
+            "title": "Apply authoritative effect",
+            "detail": "Increase the game-scoped momentum resource.",
+            "tone": "process",
+            "x": 360.0,
+            "y": 90.0,
+            "causesStateChange": true,
+            "emitsTriggers": true
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-stabilize-validate",
+            "to": "ar-stabilize-apply",
+            "label": "valid"
+        }
+    ],
+    "requiresActivePlayer": true,
+    "serverEffectKind": "modify_resource",
+    "sourceZoneId": "",
+    "destinationZoneId": "",
+    "resourceId": "momentum",
+    "effectAmount": 1,
+    "effectTarget": "",
+    "eventType": "",
+    "costResourceId": "",
+    "costAmount": 0,
+    "conditionKind": "",
+    "conditionKey": "",
+    "conditionValue": "",
+    "dataKey": "",
+    "dataValue": ""
+}

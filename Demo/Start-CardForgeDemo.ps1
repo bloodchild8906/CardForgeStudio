@@ -74,11 +74,12 @@ function Test-PortFree([int]$port) {
 # Mirrors the studio's CardForgeClient runtime sources into the standalone Unity
 # template project and points its connection settings at the demo server port.
 function Sync-UnityTemplate([string]$url) {
-    $sourceRoot = Join-Path $root 'Assets\CardForgeClient\Runtime'
+    $sourceRoot = Join-Path $root 'Assets\CardForgeStudio\CardForgeClient\Runtime'
     $templateRoot = Join-Path $root 'Server\templates\TcgUnityClient\Assets\TcgClient\Runtime'
     $synced = 0
     foreach ($relative in @(
         'UI\TcgTemplateApp.cs',
+        'UI\TcgFanLayout.cs',
         'Networking\TcgRestClient.cs',
         'Networking\TcgGameConnection.cs',
         'Models\TcgModels.cs',
@@ -92,6 +93,15 @@ function Sync-UnityTemplate([string]$url) {
         New-Item -ItemType Directory -Force -Path (Split-Path $target -Parent) | Out-Null
         Copy-Item $source $target -Force
         $synced++
+    }
+
+    # Keep the standalone client visually identical to the in-project game demo.
+    $artSource = Join-Path $root 'Assets\CardForgeStudio\CardForgeData\demo\astral-rift\art'
+    $artTarget = Join-Path $root 'Server\templates\TcgUnityClient\Assets\TcgClient\Resources\AstralRift\Art'
+    if (Test-Path $artSource) {
+        New-Item -ItemType Directory -Force -Path $artTarget | Out-Null
+        Copy-Item (Join-Path $artSource '*.png') $artTarget -Force
+        Write-Ok 'Synchronized Astral Rift illustrations into the standalone client.'
     }
 
     $port = ([uri]$url).Port
@@ -119,6 +129,17 @@ MonoBehaviour:
   gamePollIntervalSeconds: 1
   lobbyRefreshIntervalSeconds: 5
 "@ | Set-Content -Path $settingsPath -Encoding ascii
+
+    # Keep the scene in the main CardForgeStudio project on the same server.
+    # Otherwise Play in the editor may silently connect to a previous demo port.
+    $projectSettings = Join-Path $root 'Assets\CardForgeStudio\CardForgeClient\Resources\TcgConnectionSettings.asset'
+    if (Test-Path $projectSettings) {
+        $yaml = [IO.File]::ReadAllText($projectSettings)
+        $yaml = [regex]::Replace($yaml, '(?m)^  baseUrl: .*$','  baseUrl: ' + $url)
+        $yaml = [regex]::Replace($yaml, '(?m)^  defaultRulePackId: .*$','  defaultRulePackId: astral-rift')
+        $yaml = [regex]::Replace($yaml, '(?m)^  activePackageId: .*$','  activePackageId: astral-rift-demo')
+        [IO.File]::WriteAllText($projectSettings, $yaml, [Text.UTF8Encoding]::new($false))
+    }
     Write-Ok "Generated $synced Unity client files in Server\templates\TcgUnityClient (server $url)."
 }
 
@@ -136,6 +157,8 @@ $token = $null
 $serverProcess = $null
 
 foreach ($port in $FirstPort..$LastPort) {
+    # A free port cannot contain a reusable server. Avoid a 2-second HTTP timeout per port.
+    if (Test-PortFree $port) { continue }
     if (-not (Test-Health $port)) { continue }
     $candidate = Get-ManagementToken $port $managementKey
     if ($candidate) {
@@ -163,9 +186,14 @@ if (-not $baseUrl) {
     [Environment]::SetEnvironmentVariable('TCG_LAUNCH_CLIENT', 'false', 'Process')
     [Environment]::SetEnvironmentVariable('CARDFORGE_GAME_PACKAGE_STORE', $packageStore, 'Process')
     [Environment]::SetEnvironmentVariable('TCG_AUDIT_LOG_PATH', $auditLog, 'Process')
-    $serverProcess = Start-Process -FilePath 'dotnet' -ArgumentList @(
-        'run', '--project', "`"$apiProject`"", '--configuration', 'Debug', '--no-launch-profile'
-    ) -WorkingDirectory $root -PassThru -WindowStyle Hidden `
+    # Publish into an isolated runtime directory. The source project's bin DLL may be
+    # locked by another live server and 'dotnet run' would otherwise fail to rebuild.
+    $runtimeDir = Join-Path $stateDir 'runtime'
+    & dotnet publish $apiProject --configuration Debug --no-restore --output $runtimeDir "-p:OutputPath=$runtimeDir\" --verbosity quiet
+    if ($LASTEXITCODE -ne 0) { throw "Demo server publish failed. See the dotnet output." }
+    $serverDll = Join-Path $runtimeDir 'TcgULtimateServer.Api.dll'
+    $serverProcess = Start-Process -FilePath 'dotnet' -ArgumentList @("`"$serverDll`"") `
+        -WorkingDirectory $root -PassThru -WindowStyle Hidden `
         -RedirectStandardOutput (Join-Path $stateDir 'server-stdout.log') `
         -RedirectStandardError (Join-Path $stateDir 'server-stderr.log')
 
@@ -212,6 +240,26 @@ if ($active) {
     Write-Ok "Package active: $($response.name) $($response.version)"
 }
 
+# --- publish artwork into the persistent server asset manifest ----------------
+# Upload only the demo's illustrations; clients request them individually as needed.
+$artDirectory = Join-Path $root 'Assets\CardForgeStudio\CardForgeData\demo\astral-rift\art'
+if (Test-Path $artDirectory) {
+    $uploaded = 0
+    foreach ($art in (Get-ChildItem $artDirectory -Filter '*.png' -File)) {
+        $assetId = "astral-rift.card.$($art.BaseName)"
+        try {
+            $null = & curl.exe --fail --silent --show-error -X POST `
+                -H "Authorization: Bearer $token" `
+                -F "id=$assetId" `
+                -F "name=$($art.Name)" `
+                -F "file=@$($art.FullName);type=image/png" `
+                "$baseUrl/api/assets/upload"
+            if ($LASTEXITCODE -eq 0) { $uploaded++ }
+        } catch { Write-Warn2 "Artwork upload failed: $assetId" }
+    }
+    Write-Ok "Published $uploaded card illustrations to the server asset manifest."
+}
+
 # --- demo accounts -----------------------------------------------------------
 function Register-IfMissing([string]$handle, [string]$password) {
     try {
@@ -253,6 +301,45 @@ if ($demoA -and $demoB) {
         Write-Ok "Welcome message sent to demo."
     } catch { Write-Warn2 "Welcome message skipped." }
 }
+
+# --- seed playable local-only store and event content -------------------------
+# These records are examples and do not process real payments.
+if ($demoA) {
+    try {
+        $shopItem = @{
+            id = 'astral-starter-pack'
+            name = 'Astral Rift Starter Pack'
+            description = 'Five random cards from the Astral Rift starter pool.'
+            price = 25
+            currency = 'gold'
+            contentPackId = 'astral-rift-demo'
+            active = $true
+        } | ConvertTo-Json
+        Invoke-RestMethod -Method Put -Uri "$baseUrl/api/admin/store/products/astral-starter-pack" `
+            -Headers @{ Authorization = "Bearer $token" } -ContentType 'application/json' -Body $shopItem | Out-Null
+        $wallet = Invoke-RestMethod -Uri "$baseUrl/api/store/wallet" -Headers @{ Authorization = "Bearer $($demoA.token)" }
+        $balance = ($wallet.balances | Where-Object { $_.currency -eq 'gold' } | Select-Object -First 1).amount
+        if ([long]$balance -lt 100) {
+            Invoke-RestMethod -Method Post -Uri "$baseUrl/api/admin/players/$($demoA.user.id)/wallet-adjustments" `
+                -Headers @{ Authorization = "Bearer $token" } -ContentType 'application/json' `
+                -Body (@{ currency='gold'; amount=(100 - [long]$balance); reason='demo seed' } | ConvertTo-Json) | Out-Null
+        }
+        Write-Ok 'Starter pack and test credits available in the Store.'
+    } catch { Write-Warn2 "Demo storefront setup skipped: $($_.Exception.Message)" }
+}
+try {
+    $event = @{
+        id='astral-rift-launch'
+        name='Astral Rift Demo Season'
+        kind='event'
+        description='Explore the CardForge battlefield, play against adaptive AI and build a starter deck.'
+        startsAt=[DateTimeOffset]::UtcNow.AddDays(-1).ToString('o')
+        endsAt=[DateTimeOffset]::UtcNow.AddDays(30).ToString('o')
+        active=$true
+    } | ConvertTo-Json
+    Invoke-RestMethod -Method Put -Uri "$baseUrl/api/admin/liveops/campaigns/astral-rift-launch" `
+        -Headers @{ Authorization = "Bearer $token" } -ContentType 'application/json' -Body $event | Out-Null
+} catch { Write-Warn2 'Demo event setup skipped.' }
 
 # --- launch the client -------------------------------------------------------
 Write-Step "Demo server is ready at $baseUrl"

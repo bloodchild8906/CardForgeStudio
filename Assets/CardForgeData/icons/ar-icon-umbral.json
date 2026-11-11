@@ -2,7 +2,7 @@
     "version": 2,
     "id": "ar-icon-umbral",
     "name": "Umbral affinity",
-    "assetPath": "Assets/CardForgeData/demo/astral-rift/icons/umbral.png",
+    "assetPath": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/umbral.png",
     "layers": [
         {
             "visible": true,

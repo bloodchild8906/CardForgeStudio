@@ -4,6 +4,9 @@ using UnityEngine;
 namespace TcgServer.Client
 {
     [DisallowMultipleComponent]
+#if UNITY_6000_5_OR_NEWER
+    [Unity.Scripting.LifecycleManagement.NoAutoStaticsCleanup]
+#endif
     public sealed class TcgClientSession : MonoBehaviour
     {
         public static TcgClientSession Instance { get; private set; }

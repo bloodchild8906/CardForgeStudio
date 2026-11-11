@@ -31,3 +31,10 @@ Editor/*.slnx
 # Package output
 GamePackages/*.cardforge
 CardForgeExports/
+
+# Local game builds, transfer archives, and development runtime state
+/Builds/
+/Assets.zip
+/art-transfer/
+/Demo/.state/
+/CardForgeStudio.Native.slnx

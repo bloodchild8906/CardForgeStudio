@@ -8,9 +8,9 @@ Related: [contributing.md](contributing.md), [architecture.md](architecture.md).
 
 | Assembly | Location | References | Focus |
 | --- | --- | --- | --- |
-| `CardForge.Tests` | `Assets/CardForge/Tests/Editor` | Runtime, Editor | Import and rule matching. |
-| `CardForge.DesignLogic.Tests` | `Assets/CardForge/Tests/DesignLogic/Editor` | Runtime, DesignLogic | Geometry. |
-| `CardForge.CreatorTools.Tests` | `Assets/CardForge/Tests/CreatorTools/Editor` | Runtime, Editor, DesignLogic, ImageProcessing, Ollama, GoogleFonts, IconSets | Creator-tool logic. |
+| `CardForge.Tests` | `Assets/CardForgeStudio/CardForge/Tests/Editor` | Runtime, Editor | Import and rule matching. |
+| `CardForge.DesignLogic.Tests` | `Assets/CardForgeStudio/CardForge/Tests/DesignLogic/Editor` | Runtime, DesignLogic | Geometry. |
+| `CardForge.CreatorTools.Tests` | `Assets/CardForgeStudio/CardForge/Tests/CreatorTools/Editor` | Runtime, Editor, DesignLogic, ImageProcessing, Ollama, GoogleFonts, IconSets | Creator-tool logic. |
 
 All three:
 
@@ -38,7 +38,7 @@ Use the same Unity version as `ProjectSettings/ProjectVersion.txt` (currently `7
 
 ## Import tests
 
-`Assets/CardForge/Tests/Editor/ImportTests.cs`:
+`Assets/CardForgeStudio/CardForge/Tests/Editor/ImportTests.cs`:
 
 | Test | Verifies |
 | --- | --- |
@@ -53,14 +53,14 @@ Use the same Unity version as `ProjectSettings/ProjectVersion.txt` (currently `7
 | `ExcelReadsMultipleWorksheets` | `.xls` and `.xlsx` fixtures expose both sheets. |
 | `RequirementsUseNumericComparison` | Numeric requirement comparisons. |
 
-Fixtures live in `Assets/CardForge/Tests/Fixtures/`:
+Fixtures live in `Assets/CardForgeStudio/CardForge/Tests/Fixtures/`:
 
 - `TestMultiSheet.xls`
 - `TestMultiSheet.xlsx`
 
 ## Design logic tests
 
-`Assets/CardForge/Tests/DesignLogic/Editor/FrameGeometryTests.cs`:
+`Assets/CardForgeStudio/CardForge/Tests/DesignLogic/Editor/FrameGeometryTests.cs`:
 
 | Test | Verifies |
 | --- | --- |
@@ -71,7 +71,7 @@ Fixtures live in `Assets/CardForge/Tests/Fixtures/`:
 
 ## Creator tool tests
 
-`Assets/CardForge/Tests/CreatorTools/Editor/CreatorToolsTests.cs`:
+`Assets/CardForgeStudio/CardForge/Tests/CreatorTools/Editor/CreatorToolsTests.cs`:
 
 | Test | Verifies |
 | --- | --- |
@@ -98,7 +98,7 @@ If you change these areas, test manually with the seeded `CORE` block and consid
 1. Choose the assembly whose references you need. Do not add editor-only references to the runtime test assembly.
 2. Add a `[Test]` or `[TestCase]` method.
 3. Keep tests deterministic: no network, no reliance on the current time, no mutation of `Assets/CardForgeData`.
-4. For file fixtures, place them under `Assets/CardForge/Tests/Fixtures/` and commit their `.meta` files.
+4. For file fixtures, place them under `Assets/CardForgeStudio/CardForge/Tests/Fixtures/` and commit their `.meta` files.
 5. For pure logic, prefer extracting it into `CardForge.DesignLogic` or another runtime-safe assembly so it is easy to test.
 
 Example:

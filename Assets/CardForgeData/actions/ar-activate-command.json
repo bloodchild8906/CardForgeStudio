@@ -1,0 +1,58 @@
+{
+    "version": 1,
+    "id": "ar-activate-command",
+    "name": "Cast commander",
+    "triggerId": "",
+    "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
+    "effect": "Pay three energy and cast your Commander from Command onto the Frontline.",
+    "condition": "source_in_zone",
+    "cost": "3 energy",
+    "targets": "Acting player or selected card",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [],
+    "graphNodes": [
+        {
+            "id": "ar-activate-command-validate",
+            "title": "Validate request",
+            "detail": "Check phase, player priority, targets, conditions, and costs.",
+            "tone": "check",
+            "x": 70.0,
+            "y": 90.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-activate-command-apply",
+            "title": "Apply authoritative effect",
+            "detail": "Pay three energy and cast your Commander from Command onto the Frontline.",
+            "tone": "process",
+            "x": 360.0,
+            "y": 90.0,
+            "causesStateChange": true,
+            "emitsTriggers": false
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-activate-command-validate",
+            "to": "ar-activate-command-apply",
+            "label": "valid"
+        }
+    ],
+    "requiresActivePlayer": true,
+    "serverEffectKind": "move_card",
+    "sourceZoneId": "command",
+    "destinationZoneId": "battlefield",
+    "resourceId": "",
+    "effectAmount": 0,
+    "effectTarget": "",
+    "eventType": "",
+    "costResourceId": "energy",
+    "costAmount": 3,
+    "conditionKind": "source_in_zone",
+    "conditionKey": "",
+    "conditionValue": "",
+    "dataKey": "",
+    "dataValue": ""
+}

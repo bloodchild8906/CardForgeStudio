@@ -29,6 +29,8 @@
             "condition": "The trigger matched."
         }
     ],
+    "effects": [],
+    "conditions": [],
     "graphNodes": [
         {
             "id": "ar-ability-flare-listen",

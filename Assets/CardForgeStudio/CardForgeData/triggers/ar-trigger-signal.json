@@ -1,0 +1,34 @@
+{
+    "version": 1,
+    "id": "ar-trigger-signal",
+    "name": "A rift signal is emitted",
+    "eventType": "Custom event",
+    "source": "Any game object",
+    "fromZone": "",
+    "toZone": "",
+    "orientation": "",
+    "rules": [
+        {
+            "id": "ar-trigger-signal-rule",
+            "subject": "Action",
+            "property": "Resolution",
+            "comparison": "Equals",
+            "expectedValue": "Successful",
+            "condition": "The game is not finished."
+        }
+    ],
+    "condition": "The authoritative action resolves successfully.",
+    "responseWindow": "Immediate response window",
+    "priority": 10,
+    "causeActionIds": [
+        "ar-signal",
+        "ar-record"
+    ],
+    "causeAbilityIds": [
+        "ar-ability-echo",
+        "ar-ability-record"
+    ],
+    "responseActionIds": [
+        "ar-signal"
+    ]
+}

@@ -32,10 +32,17 @@ namespace TcgServer.Client
             }
         }
 
+        // These events are raised by the optional SignalR adapter; REST-only builds do not raise them.
+#if !TCG_SIGNALR
+#pragma warning disable CS0067
+#endif
         public event Action<GameStateDto> GameStateChanged;
         public event Action<string> ChatReceived;
         public event Action<string> AnnouncementReceived;
         public event Action<string> ConnectionStateChanged;
+#if !TCG_SIGNALR
+#pragma warning restore CS0067
+#endif
 
 #if TCG_SIGNALR
         private void Update()

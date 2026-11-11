@@ -27,7 +27,7 @@ Dependencies flow one way: `EditorUI` -> `Editor` -> `Runtime`/`DesignLogic`. Cr
 ## Data flow
 
 1. `CardForgeStore` owns all dictionaries (`Blocks`, `Layouts`, `Cards`, `Icons`, `TurnFlows`, `Triggers`, `Actions`, `Abilities`, `Keywords`) plus `Schema`.
-2. `Reload()` reads JSON from `Assets/CardForgeData/`, normalizes null lists to empty, and seeds `schema.json` if missing.
+2. `Reload()` reads JSON from `Assets/CardForgeStudio/CardForgeData/`, normalizes null lists to empty, and seeds `schema.json` if missing.
 3. Every screen in `CardForgeWindow` is a projection of the store; edits write JSON back to disk atomically (`<file>.tmp` then replace).
 4. `ExportBlock()` validates, collects JSON/images/fonts, writes `export-manifest.json`, and builds an AssetBundle named `cards-<slug(code)>-<first 8 of block id>`.
 5. `CardForgeRuntimeReader.Load(path)` opens the bundle, finds the manifest by JSON content, and dispatches each JSON path to `Schema`, `Block`, `Layouts`, `Cards`, `TurnFlows`, `Triggers`, `Actions`, `Abilities`, `Keywords`, `Icons`.
@@ -35,7 +35,7 @@ Dependencies flow one way: `EditorUI` -> `Editor` -> `Runtime`/`DesignLogic`. Cr
 ## Authoring flow
 
 ```
-JSON on disk (Assets/CardForgeData/)
+JSON on disk (Assets/CardForgeStudio/CardForgeData/)
         |
         v
 CardForgeStore.Reload()  <-- in-memory dictionaries

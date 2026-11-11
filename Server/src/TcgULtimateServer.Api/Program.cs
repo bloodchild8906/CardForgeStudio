@@ -58,9 +58,12 @@ builder.Services.AddSingleton<RulesEngine>();
 builder.Services.AddSingleton<GamePackageService>();
 builder.Services.AddSingleton<StateMachineService>();
 builder.Services.AddSingleton<BotService>();
+builder.Services.AddSingleton<UnitySimulationBridge>();
 builder.Services.AddSingleton<SecurePacketService>();
-builder.Services.AddSingleton<IAssetStore, InMemoryAssetStore>();
+builder.Services.AddSingleton<IAssetStore, FileAssetStore>();
 builder.Services.AddSingleton<AssetService>();
+builder.Services.AddSingleton<CommerceService>();
+builder.Services.AddHostedService<MatchmakingWorker>();
 builder.Services.AddSignalR();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 {
@@ -127,14 +130,22 @@ app.MapPost("/api/auth/register", (RegisterRequest request, AuthService auth) =>
     catch (InvalidOperationException exception) { return Results.BadRequest(exception.Message); }
 }).RequireRateLimiting("authentication");
 app.MapGet("/", () => Results.NotFound());
-app.MapGet("/api/health", (AppState state) => Results.Ok(new
+app.MapGet("/api/health", async Task<IResult> (AppState state, UnitySimulationBridge unity) =>
 {
-    service = "TcgULtimateServer",
-    status = state.Settings.MaintenanceMode ? "maintenance" : "healthy",
-    version = typeof(Program).Assembly.GetName().Version?.ToString() ?? "development",
-    serverTime = DateTimeOffset.UtcNow,
-    maintenanceMode = state.Settings.MaintenanceMode
-}));
+    var simulationReady = !unity.Enabled || await unity.Ready();
+    var payload = new
+    {
+        service = "CardForge Gateway",
+        status = !simulationReady ? "simulation-unavailable" :
+            state.Settings.MaintenanceMode ? "maintenance" : "healthy",
+        simulationMode = unity.Enabled ? "Unity Dedicated Server" : "legacy-dotnet",
+        simulationReady,
+        version = typeof(Program).Assembly.GetName().Version?.ToString() ?? "development",
+        serverTime = DateTimeOffset.UtcNow,
+        maintenanceMode = state.Settings.MaintenanceMode
+    };
+    return simulationReady ? Results.Ok(payload) : Results.Json(payload, statusCode: 503);
+});
 app.MapPost("/api/auth/login", (LoginRequest request, AuthService auth) =>
 {
     try { return Results.Ok(auth.Login(request)); }
@@ -294,10 +305,17 @@ app.MapGet("/api/admin/matchmaking/queues/{id}/entries", (string id, HttpRequest
 {
     return TryGetAdmin(request, auth, admin, out _) ? Results.Ok(operations.MatchmakingEntries(id)) : Results.Forbid();
 });
-app.MapPost("/api/admin/matchmaking/queues/{id}/run", (string id, HttpRequest http, AuthService auth, AdminService admin, OperationsService operations) =>
+app.MapPost("/api/admin/matchmaking/queues/{id}/run", async Task<IResult> (string id,
+    HttpRequest http, AuthService auth, AdminService admin, OperationsService operations,
+    UnitySimulationBridge unity) =>
 {
     if (!TryGetAdmin(http, auth, admin, out var user)) return Results.Forbid();
-    try { return Results.Ok(operations.RunMatchmaking(id, user.Id)); }
+    try
+    {
+        return Results.Ok(unity.Enabled
+            ? await operations.RunUnityMatchmakingAsync(id, user.Id, unity)
+            : operations.RunMatchmaking(id, user.Id));
+    }
     catch (KeyNotFoundException exception) { return Results.NotFound(exception.Message); }
     catch (InvalidOperationException exception) { return Results.BadRequest(exception.Message); }
 });
@@ -651,6 +669,28 @@ app.MapPost("/api/state-machines/{id}/transitions", (string id, TransitionStateM
     catch (KeyNotFoundException exception) { return Results.NotFound(exception.Message); }
     catch (InvalidOperationException exception) { return Results.BadRequest(exception.Message); }
 });
+// Public discovery feeds for the player client. Purchases remain server-authoritative.
+app.MapGet("/api/store/products", (OperationsService operations) =>
+    Results.Ok(operations.Products().Where(product => product.Active).ToList()));
+app.MapGet("/api/store/wallet", (HttpRequest http, AuthService auth, AppState state) =>
+{
+    var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
+    if (user == null) return Results.Unauthorized();
+    return state.Wallets.TryGetValue(user.Id, out var wallet) ?
+        Results.Ok(new { balances = wallet.Balances.Select(pair => new { currency = pair.Key, amount = pair.Value }).ToArray() }) :
+        Results.NotFound();
+});
+app.MapPost("/api/store/purchase", (PurchaseRequest purchase, HttpRequest http, AuthService auth, CommerceService commerce) =>
+{
+    var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
+    if (user == null) return Results.Unauthorized();
+    try { return Results.Ok(commerce.Purchase(user.Id, purchase.ProductId)); }
+    catch (InvalidOperationException exception) { return Results.BadRequest(exception.Message); }
+});
+app.MapGet("/api/events", (OperationsService operations) =>
+    Results.Ok(operations.Campaigns().Where(campaign => campaign.Active &&
+        campaign.EndsAt > DateTimeOffset.UtcNow).OrderBy(campaign => campaign.StartsAt).ToList()));
+
 app.MapGet("/api/assets/manifest", (HttpRequest request, AssetService assets) => Results.Ok(assets.Manifest($"{request.Scheme}://{request.Host}")));
 app.MapPost("/api/assets/upload", async (HttpRequest request, AssetService assets, AuthService auth, AdminService admin, AuditLogService audit) =>
 {
@@ -707,7 +747,13 @@ app.MapGet("/api/assets/{id}", (string id, HttpRequest request, AuthService auth
     }
     catch (KeyNotFoundException) { return Results.NotFound(); }
 });
-app.MapGet("/api/inventory/{userId}", (string userId, AppState s) => s.Inventories.TryGetValue(userId, out var inventory) ? Results.Ok(inventory) : Results.NotFound());
+app.MapGet("/api/inventory/{userId}", (string userId, HttpRequest http, AuthService auth, AdminService admin, AppState s) =>
+{
+    var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
+    if (user is null) return Results.Unauthorized();
+    if (user.Id != userId && !admin.IsAdmin(user)) return Results.Forbid();
+    return s.Inventories.TryGetValue(userId, out var inventory) ? Results.Ok(inventory) : Results.NotFound();
+});
 app.MapGet("/api/decks", (HttpRequest http, AuthService auth, AppState s) =>
 {
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
@@ -719,11 +765,22 @@ app.MapPost("/api/decks", (SaveDeckRequest request, HttpRequest http, AuthServic
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
     if (user is null) return Results.Unauthorized();
     if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.RulePackId)) return Results.BadRequest("Deck name and rule pack are required.");
-    if (!s.RulePacks.ContainsKey(request.RulePackId)) return Results.BadRequest("Unknown rule pack.");
+    if (!s.RulePacks.TryGetValue(request.RulePackId, out var pack)) return Results.BadRequest("Unknown rule pack.");
     if (request.CardIds.Count == 0) return Results.BadRequest("A deck must contain at least one card.");
+    if (request.CardIds.Count > 120) return Results.BadRequest("Deck cannot exceed 120 cards.");
     var id = string.IsNullOrWhiteSpace(request.Id) ? Guid.NewGuid().ToString("N") : request.Id.Trim();
-    var suspended = s.Decks.TryGetValue(id, out var existing) && string.Equals(existing.OwnerId, user.Id, StringComparison.Ordinal) && existing.Suspended;
-    var deck = new DeckDefinition(id, user.Id, request.Name.Trim(), request.RulePackId, request.CardIds, DateTimeOffset.UtcNow, suspended);
+    if (s.Decks.TryGetValue(id, out var existing) && existing.OwnerId != user.Id) return Results.Forbid();
+    if (existing?.Suspended == true) return Results.BadRequest("Suspended decks cannot be edited.");
+    var legal = pack.Cards.Select(card => card.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
+    if (request.CardIds.Any(cardId => !legal.Contains(cardId)))
+        return Results.BadRequest("Deck contains cards that are not defined by this game's rules.");
+    if (!s.Inventories.TryGetValue(user.Id, out var inventory)) return Results.BadRequest("Inventory unavailable.");
+    var owned = inventory.Cards.GroupBy(card => card.CardId, StringComparer.OrdinalIgnoreCase)
+        .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
+    foreach (var group in request.CardIds.GroupBy(cardId => cardId, StringComparer.OrdinalIgnoreCase))
+        if (group.Count() > owned.GetValueOrDefault(group.Key))
+            return Results.BadRequest("Deck contains more copies than you own: " + group.Key);
+    var deck = new DeckDefinition(id, user.Id, request.Name.Trim(), request.RulePackId, request.CardIds, DateTimeOffset.UtcNow, false);
     s.Decks[id] = deck;
     return Results.Ok(deck);
 });
@@ -795,68 +852,135 @@ app.MapDelete("/api/matchmaking/leave", (HttpRequest http, AuthService auth, Ope
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
     return user is null ? Results.Unauthorized() : operations.LeaveMatchmaking(user) ? Results.NoContent() : Results.NotFound();
 });
+app.MapGet("/api/matchmaking/result", (HttpRequest http, AuthService auth, AppState state) =>
+{
+    var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
+    if (user is null) return Results.Unauthorized();
+    state.MatchedGamesByUser.TryGetValue(user.Id, out var gameId);
+    return Results.Ok(new { gameId });
+});
 app.MapGet("/api/matchmaking/me", (HttpRequest http, AuthService auth, OperationsService operations) =>
 {
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
     return user is null ? Results.Unauthorized() : Results.Ok(operations.MatchmakingEntries().Where(entry => string.Equals(entry.UserId, user.Id, StringComparison.Ordinal)));
 });
-app.MapPost("/api/games", (CreateGameRequest request, HttpRequest http, AuthService auth, AppState s, RulesEngine engine, BotService bots) =>
+app.MapPost("/api/games", async Task<IResult> (CreateGameRequest request, HttpRequest http, AuthService auth, AppState s, RulesEngine engine, BotService bots, UnitySimulationBridge unity) =>
 {
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "")); if (user is null) return Results.Unauthorized();
     if (!s.RulePacks.ContainsKey(request.RulePackId)) return Results.BadRequest("Unknown rule pack.");
     var players = request.PlayerIds.Distinct(StringComparer.Ordinal).ToList();
     if (players.Any(playerId => !s.Users.ContainsKey(playerId))) return Results.BadRequest("Every player must be a registered user.");
     if (!players.Contains(user.Id, StringComparer.Ordinal)) players.Insert(0, user.Id);
-    if (request.AddAi) players.Add("bot-" + Guid.NewGuid().ToString("N")[..8]);
-    if (players.Count is < 2 or > 8) return Results.BadRequest("A game needs between two and eight players.");
-    var game = new GameState { RulePackId = request.RulePackId, Players = players }; engine.Start(game);
+    if (request.TeamSize is < 1 or > 4) return Results.BadRequest("Choose 1v1, 1v2, 1v3, or 1v4.");
+    var seats = request.TeamSize + 1;
+    var pack = engine.Get(request.RulePackId);
+    if (seats < pack.MinimumPlayers || seats > pack.MaximumPlayers)
+        return Results.BadRequest($"Ruleset '{pack.Id}' supports {pack.MinimumPlayers}-{pack.MaximumPlayers} participants, not {seats}. Update the game's player limits in the CardForge publisher.");
+    GameState game;
+    try { game = TeamMatchComposer.Create(request.RulePackId, players, request.TeamSize,
+        request.AddAi, () => "bot-" + Guid.NewGuid().ToString("N")[..8]); }
+    catch (InvalidOperationException exception) { return Results.BadRequest(exception.Message); }
+    var deck = MatchQuality.SelectDeck(s, user.Id, request.RulePackId, request.DeckId);
+    if (!string.IsNullOrWhiteSpace(request.DeckId) && deck == null)
+        return Results.BadRequest("The selected deck is unavailable.");
+    game.BotDifficulty = MatchQuality.AiDifficulty(user.Rating, MatchQuality.DeckPower(s, request.RulePackId, deck));
+    if (unity.Enabled)
+    {
+        if (!await unity.Ready()) return Results.Problem("Unity dedicated simulation is not ready.", statusCode: 503);
+        try
+        {
+            var decks = new Dictionary<string, List<string>>();
+            if (deck != null) decks[user.Id] = deck.CardIds.ToList();
+            var sim = await unity.Create(pack, players, request.TeamSize, request.AddAi, game.BotDifficulty, decks);
+            return Results.Ok(UnitySimulationBridge.PublicSummary(sim));
+        }
+        catch (HttpRequestException) { return Results.Problem("Unity simulation unreachable.", statusCode: 503); }
+        catch (InvalidOperationException ex) { return Results.BadRequest(ex.Message); }
+    }
+    if (deck != null) game.PlayerDecks[user.Id] = deck.CardIds.ToList();
+    engine.Start(game);
     // If the AI moves first, play its turn now so the human is never handed a game that is waiting on a bot.
-    if (game.ActivePlayerId.StartsWith("bot-", StringComparison.Ordinal)) bots.TakeTurn(game, game.ActivePlayerId);
-    s.Games[game.Id] = game; return Results.Ok(game);
+    bots.ResolvePendingBotTurns(game);
+    s.Games[game.Id] = game; return Results.Ok(PublicGameSummary(game));
 });
-app.MapGet("/api/games", (HttpRequest http, AuthService auth, AdminService admin, AppState s) =>
+app.MapGet("/api/games", (HttpRequest http, AuthService auth, AdminService admin, AppState s, UnitySimulationBridge unity) =>
 {
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
     if (user is null) return Results.Unauthorized();
+    if (unity.Enabled)
+        return Results.Ok(unity.Cached().Where(game => admin.IsAdmin(user) ||
+            game.players.Contains(user.Id, StringComparer.Ordinal))
+            .Select(UnitySimulationBridge.PublicSummary).ToList());
     return admin.IsAdmin(user)
         ? Results.Ok(s.Games.Values)
-        : Results.Ok(s.Games.Values.Where(game => game.Players.Contains(user.Id, StringComparer.Ordinal)));
+        : Results.Ok(s.Games.Values.Where(game => game.Players.Contains(user.Id, StringComparer.Ordinal))
+            .Select(PublicGameSummary).ToList());
 });
-app.MapGet("/api/games/{id}", (string id, HttpRequest http, AuthService auth, AdminService admin, AppState s) =>
+app.MapGet("/api/games/{id}", (string id, HttpRequest http, AuthService auth, AdminService admin, AppState s, UnitySimulationBridge unity) =>
 {
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
     if (user is null) return Results.Unauthorized();
-    return s.Games.TryGetValue(id, out var game) &&
-           (admin.IsAdmin(user) || game.Players.Contains(user.Id, StringComparer.Ordinal))
-        ? Results.Ok(game)
-        : Results.NotFound("Game not found.");
-});
-app.MapGet("/api/games/{id}/client-view", (string id, HttpRequest http, AuthService auth, AdminService admin, AppState s, RulesEngine engine) =>
-{
-    var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
-    if (user is null) return Results.Unauthorized();
-    if (!s.Games.TryGetValue(id, out var game) || (!admin.IsAdmin(user) && !game.Players.Contains(user.Id, StringComparer.Ordinal)))
+    if (unity.Enabled)
+    {
+        if (!unity.TryCached(id, out var sim) ||
+            (!admin.IsAdmin(user) && !sim.players.Contains(user.Id)))
+            return Results.NotFound("Game not found.");
+        return Results.Ok(UnitySimulationBridge.PublicSummary(sim));
+    }
+    if (!s.Games.TryGetValue(id, out var game) ||
+        (!admin.IsAdmin(user) && !game.Players.Contains(user.Id, StringComparer.Ordinal)))
         return Results.NotFound("Game not found.");
-    return Results.Ok(BuildClientGameView(game, engine));
+    return admin.IsAdmin(user) ? Results.Ok(game) : Results.Ok(PublicGameSummary(game));
 });
-app.MapPost("/api/games/{id}/actions", (string id, ExecuteGameActionRequest action, HttpRequest request, AuthService auth, AppState s, RulesEngine engine, BotService bots) =>
+app.MapGet("/api/games/{id}/client-view", async Task<IResult> (string id, HttpRequest http, AuthService auth, AdminService admin, AppState s, RulesEngine engine, UnitySimulationBridge unity) =>
+{
+    var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
+    if (user is null) return Results.Unauthorized();
+    if (unity.Enabled)
+    {
+        if (!unity.TryCached(id, out var sim) ||
+            (!admin.IsAdmin(user) && !sim.players.Contains(user.Id)))
+            return Results.NotFound("Game not found.");
+        try { return Results.Ok(UnitySimulationBridge.Convert(await unity.View(id, user.Id),
+            engine.Get(sim.rulePackId))); }
+        catch (HttpRequestException) { return Results.Problem("Unity simulation unavailable.", statusCode: 503); }
+        catch (InvalidOperationException error) { return Results.BadRequest(error.Message); }
+    }
+    if (!s.Games.TryGetValue(id, out var game) || (!admin.IsAdmin(user) && !game.Players.Contains(user.Id)))
+        return Results.NotFound("Game not found.");
+    return Results.Ok(BuildClientGameView(game, engine, user.Id));
+});
+app.MapPost("/api/games/{id}/actions", async Task<IResult> (string id, ExecuteGameActionRequest action, HttpRequest request, AuthService auth, AppState s, RulesEngine engine, BotService bots, UnitySimulationBridge unity) =>
 {
     var user = auth.FromToken(request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
     if (user is null) return Results.Unauthorized();
+    if (unity.Enabled)
+    {
+        if (!unity.TryCached(id, out var sim) || !sim.players.Contains(user.Id))
+            return Results.NotFound("Game not found.");
+        try { return Results.Ok(UnitySimulationBridge.PublicSummary(await unity.Action(id, user.Id, action))); }
+        catch (HttpRequestException) { return Results.Problem("Unity simulation unavailable.", statusCode: 503); }
+        catch (InvalidOperationException error) { return Results.BadRequest(error.Message); }
+    }
     if (!s.Games.TryGetValue(id, out var game) || !game.Players.Contains(user.Id)) return Results.NotFound("Game not found or access denied.");
     try
     {
         engine.Execute(game, user.Id, action);
-        if (game.ActivePlayerId.StartsWith("bot-", StringComparison.Ordinal)) bots.TakeTurn(game, game.ActivePlayerId);
-        return Results.Ok(game);
+        bots.ResolvePendingBotTurns(game);
+        return Results.Ok(PublicGameSummary(game));
     }
     catch (InvalidOperationException exception) { return Results.BadRequest(exception.Message); }
 });
-app.MapDelete("/api/games/{id}", (string id, HttpRequest request, AuthService auth, AdminService admin, AppState s, AuditLogService audit) =>
+app.MapDelete("/api/games/{id}", async Task<IResult> (string id, HttpRequest request, AuthService auth, AdminService admin, AppState s, AuditLogService audit, UnitySimulationBridge unity) =>
 {
     var user = auth.FromToken(request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
     if (user is null) return Results.Unauthorized();
     if (!admin.IsAdmin(user)) return Results.Forbid();
+    if (unity.Enabled)
+    {
+        try { return await unity.Delete(id) ? Results.NoContent() : Results.NotFound(); }
+        catch (HttpRequestException) { return Results.Problem("Unity simulation unavailable.", statusCode: 503); }
+    }
     if (!s.Games.TryRemove(id, out _)) return Results.NotFound("Game not found.");
     audit.Write("Information", "games", $"Terminated game {id}.", user.Id);
     return Results.NoContent();
@@ -946,21 +1070,17 @@ static bool TryGetAdmin(HttpRequest request, AuthService auth, AdminService admi
     return false;
 }
 
-static ClientGameView BuildClientGameView(GameState game, RulesEngine engine)
+static ClientGameView BuildClientGameView(GameState game, RulesEngine engine, string viewerId) =>
+    ClientGameViewBuilder.Build(game, engine, viewerId);
+
+// Never expose internal zones or card instances through generic player endpoints.
+// Use /client-view for the viewer-aware board and card data.
+static object PublicGameSummary(GameState game) => new
 {
-    var pack = engine.Get(game.RulePackId);
-    var phase = pack.Phases.FirstOrDefault(candidate => candidate.Id.Equals(game.CurrentPhaseId, StringComparison.OrdinalIgnoreCase));
-    var allowed = (phase?.AllowedActions ?? [])
-        .Select(actionId => pack.Actions.FirstOrDefault(action => action.Id.Equals(actionId, StringComparison.OrdinalIgnoreCase)))
-        .Where(action => action is not null)
-        .Select(action => new ClientGameAction(action!.Id, action.Name, action.SourceZone, action.DestinationZone, action.RequiresActivePlayer,
-            action.Effects?.Select(effect => effect.Target).FirstOrDefault(target => !string.IsNullOrWhiteSpace(target))))
-        .ToList();
-    var zones = game.Zones.SelectMany(owner => owner.Value.Select(zone => new ClientGameZone(owner.Key, zone.Key, zone.Value))).ToList();
-    var resources = game.Resources.SelectMany(owner => owner.Value.Select(resource => new ClientGameResource(owner.Key, resource.Key, resource.Value))).ToList();
-    return new ClientGameView(game.Id, game.RulePackId, game.Players, game.ActivePlayerId, game.CurrentPhaseId, game.Turn, game.Finished,
-        game.WinnerPlayerId, game.VictoryRuleId, zones, resources, allowed, game.Events.TakeLast(40).ToList());
-}
+    game.Id, game.RulePackId, game.Players, game.ActivePlayerId,
+    game.CurrentPhaseId, game.Turn, game.Finished,
+    game.WinnerPlayerId, game.VictoryRuleId
+};
 
 static bool AcceptsEncoding(string? header, string encoding) => header?.Split(',').Any(value =>
 {

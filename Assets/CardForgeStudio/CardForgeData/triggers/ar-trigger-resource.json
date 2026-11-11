@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "id": "ar-trigger-resource",
+    "name": "A resource changes",
+    "eventType": "Resource changed",
+    "source": "Any game object",
+    "fromZone": "",
+    "toZone": "",
+    "orientation": "",
+    "rules": [
+        {
+            "id": "ar-trigger-resource-rule",
+            "subject": "Action",
+            "property": "Resolution",
+            "comparison": "Equals",
+            "expectedValue": "Successful",
+            "condition": "The game is not finished."
+        }
+    ],
+    "condition": "The authoritative action resolves successfully.",
+    "responseWindow": "Immediate response window",
+    "priority": 10,
+    "causeActionIds": [
+        "ar-channel",
+        "ar-rally",
+        "ar-stabilize"
+    ],
+    "causeAbilityIds": [
+        "ar-ability-channel",
+        "ar-ability-rally"
+    ],
+    "responseActionIds": [
+        "ar-signal"
+    ]
+}

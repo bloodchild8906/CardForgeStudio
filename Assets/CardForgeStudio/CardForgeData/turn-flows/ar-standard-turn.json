@@ -1,0 +1,332 @@
+{
+    "version": 1,
+    "id": "ar-standard-turn",
+    "name": "Astral Rift five-phase turn",
+    "description": "Ready, Draw, Main, Clash, and End phases with explicit server action availability.",
+    "nodes": [
+        {
+            "id": "ar-ready",
+            "name": "Ready",
+            "phase": "Ready",
+            "check": "Refresh planning and gather energy.",
+            "resolution": "Resolve legal actions in priority order, then advance when requested.",
+            "x": 60.0,
+            "y": 70.0,
+            "optional": false,
+            "actionRules": [
+                {
+                    "id": "ar-ready-rule-ar-channel",
+                    "actionId": "ar-channel",
+                    "availability": "Available during Ready",
+                    "condition": "Active player has priority.",
+                    "priority": 100,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": [
+                        "ar-trigger-resource"
+                    ]
+                },
+                {
+                    "id": "ar-ready-rule-ar-next-phase",
+                    "actionId": "ar-next-phase",
+                    "availability": "Available during Ready",
+                    "condition": "Active player has priority.",
+                    "priority": 99,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                }
+            ]
+        },
+        {
+            "id": "ar-draw-phase",
+            "name": "Draw",
+            "phase": "Draw",
+            "check": "Draw a card from the ordered deck.",
+            "resolution": "Resolve legal actions in priority order, then advance when requested.",
+            "x": 310.0,
+            "y": 70.0,
+            "optional": false,
+            "actionRules": [
+                {
+                    "id": "ar-draw-phase-rule-ar-draw",
+                    "actionId": "ar-draw",
+                    "availability": "Available during Draw",
+                    "condition": "Active player has priority.",
+                    "priority": 100,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-draw-phase-rule-ar-next-phase",
+                    "actionId": "ar-next-phase",
+                    "availability": "Available during Draw",
+                    "condition": "Active player has priority.",
+                    "priority": 99,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                }
+            ]
+        },
+        {
+            "id": "ar-main",
+            "name": "Main",
+            "phase": "Main",
+            "check": "Deploy, move cards, write data, and emit events.",
+            "resolution": "Resolve legal actions in priority order, then advance when requested.",
+            "x": 560.0,
+            "y": 70.0,
+            "optional": false,
+            "actionRules": [
+                {
+                    "id": "ar-main-rule-ar-channel",
+                    "actionId": "ar-channel",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 100,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-deploy",
+                    "actionId": "ar-deploy",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 99,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": [
+                        "ar-trigger-deploy"
+                    ]
+                },
+                {
+                    "id": "ar-main-rule-ar-install-relic",
+                    "actionId": "ar-install-relic",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 98,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-cast-event",
+                    "actionId": "ar-cast-event",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 97,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-activate-command",
+                    "actionId": "ar-activate-command",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 96,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-stabilize",
+                    "actionId": "ar-stabilize",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 95,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-retire",
+                    "actionId": "ar-retire",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 94,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-salvage",
+                    "actionId": "ar-salvage",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 93,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-banish",
+                    "actionId": "ar-banish",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 92,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-record",
+                    "actionId": "ar-record",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 91,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-signal",
+                    "actionId": "ar-signal",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 90,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-main-rule-ar-next-phase",
+                    "actionId": "ar-next-phase",
+                    "availability": "Available during Main",
+                    "condition": "Active player has priority.",
+                    "priority": 89,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                }
+            ]
+        },
+        {
+            "id": "ar-clash",
+            "name": "Clash",
+            "phase": "Clash",
+            "check": "Strike an opponent or rally toward Ascension.",
+            "resolution": "Resolve legal actions in priority order, then advance when requested.",
+            "x": 310.0,
+            "y": 270.0,
+            "optional": false,
+            "actionRules": [
+                {
+                    "id": "ar-clash-rule-ar-strike",
+                    "actionId": "ar-strike",
+                    "availability": "Available during Clash",
+                    "condition": "Active player has priority.",
+                    "priority": 100,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": [
+                        "ar-trigger-strike"
+                    ]
+                },
+                {
+                    "id": "ar-clash-rule-ar-rally",
+                    "actionId": "ar-rally",
+                    "availability": "Available during Clash",
+                    "condition": "Active player has priority.",
+                    "priority": 99,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-clash-rule-ar-next-phase",
+                    "actionId": "ar-next-phase",
+                    "availability": "Available during Clash",
+                    "condition": "Active player has priority.",
+                    "priority": 98,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                }
+            ]
+        },
+        {
+            "id": "ar-end",
+            "name": "End",
+            "phase": "End",
+            "check": "End the turn or exercise the explicit finish-game hook.",
+            "resolution": "Resolve legal actions in priority order, then advance when requested.",
+            "x": 560.0,
+            "y": 270.0,
+            "optional": false,
+            "actionRules": [
+                {
+                    "id": "ar-end-rule-ar-end-turn",
+                    "actionId": "ar-end-turn",
+                    "availability": "Available during End",
+                    "condition": "Active player has priority.",
+                    "priority": 100,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                },
+                {
+                    "id": "ar-end-rule-ar-concede",
+                    "actionId": "ar-concede",
+                    "availability": "Available during End",
+                    "condition": "Active player has priority.",
+                    "priority": 99,
+                    "resolutionOrder": "Priority order",
+                    "optional": false,
+                    "beforeTriggerIds": [],
+                    "afterTriggerIds": []
+                }
+            ]
+        }
+    ],
+    "links": [
+        {
+            "from": "ar-ready",
+            "to": "ar-draw-phase",
+            "label": "starlight gathered"
+        },
+        {
+            "from": "ar-draw-phase",
+            "to": "ar-main",
+            "label": "chart complete"
+        },
+        {
+            "from": "ar-main",
+            "to": "ar-clash",
+            "label": "formations set"
+        },
+        {
+            "from": "ar-clash",
+            "to": "ar-end",
+            "label": "clash resolved"
+        },
+        {
+            "from": "ar-end",
+            "to": "ar-ready",
+            "label": "next player"
+        }
+    ]
+}

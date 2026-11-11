@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "id": "ar-keyword-riftborn",
+    "name": "Riftborn",
+    "rulesText": "This card reacts when its controller rallies.",
+    "reminderText": "Rally to advance the Ascension victory path.",
+    "abilityIds": [
+        "ar-ability-rally"
+    ],
+    "tags": [
+        "renown",
+        "victory"
+    ]
+}

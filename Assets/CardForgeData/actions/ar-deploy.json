@@ -1,10 +1,10 @@
 {
     "version": 1,
     "id": "ar-deploy",
-    "name": "Deploy card",
+    "name": "Deploy unit",
     "triggerId": "ar-trigger-deploy",
     "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
-    "effect": "Move a card from hand to the battlefield.",
+    "effect": "Move a Unit from hand to the Frontline.",
     "condition": "source_in_zone",
     "cost": "2 energy",
     "targets": "Acting player or selected card",
@@ -27,7 +27,7 @@
         {
             "id": "ar-deploy-apply",
             "title": "Apply authoritative effect",
-            "detail": "Move a card from hand to the battlefield.",
+            "detail": "Move a Unit from hand to the Frontline.",
             "tone": "process",
             "x": 360.0,
             "y": 90.0,
