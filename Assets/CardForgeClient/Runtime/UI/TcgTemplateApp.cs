@@ -15,14 +15,23 @@ namespace TcgServer.Client
     {
         [SerializeField] private TcgConnectionSettings settings;
 
-        private static readonly Color Background = Hex("0D121B");
-        private static readonly Color Surface = Hex("151C27");
-        private static readonly Color SurfaceRaised = Hex("1E2735");
-        private static readonly Color Divider = Hex("374354");
-        private static readonly Color Accent = Hex("5294D6");
-        private static readonly Color Foreground = Hex("EBF0F6");
-        private static readonly Color Muted = Hex("A0ABB9");
+        private static readonly Color Background = Hex("0A0D18");
+        private static readonly Color Surface = Hex("131A30");
+        private static readonly Color SurfaceRaised = Hex("1C2547");
+        private static readonly Color Divider = Hex("2E3A66");
+        private static readonly Color Accent = Hex("E3B23C");
+        private static readonly Color AccentAlt = Hex("5B8DEF");
+        private static readonly Color Ink = Hex("1B1408");
+        private static readonly Color Foreground = Hex("F2EDE3");
+        private static readonly Color Muted = Hex("9AA3C0");
         private static readonly Color Danger = Hex("E16570");
+
+        // MTG-style mana gem colors: white, blue, black, red, green, colorless.
+        private static readonly Color[] GemColors =
+        {
+            Hex("F2EDE3"), Hex("4A90E2"), Hex("8E7BD8"), Hex("D95F4B"), Hex("57A05A"), Hex("9AA3C0")
+        };
+        private static Sprite circleSprite;
 
         private TcgRestClient rest;
         private TcgClientSession session;
@@ -64,6 +73,7 @@ namespace TcgServer.Client
         private InputField recipientIdInput;
         private InputField directMessageInput;
         private Coroutine gamePolling;
+        private float nextLobbyRefresh;
         private string currentGameId;
         private GameObject actionButtonRow;
         private ClientGameViewDto currentGameView;
@@ -90,6 +100,19 @@ namespace TcgServer.Client
             StartCoroutine(LogInterfaceState());
             if (!string.IsNullOrWhiteSpace(screenshotPath))
                 StartCoroutine(CaptureScreenshot(screenshotPath));
+            if (!string.IsNullOrWhiteSpace(CommandLineValue("--tcg-demo-login")))
+                QuickDemoLogin();
+        }
+
+        private void Update()
+        {
+            if (lobbyPage == null || !lobbyPage.activeSelf || !session.IsAuthenticated)
+                return;
+            if (Time.unscaledTime < nextLobbyRefresh)
+                return;
+
+            nextLobbyRefresh = Time.unscaledTime + (settings == null ? 5f : settings.LobbyRefreshIntervalSeconds);
+            RefreshLobby(false);
         }
 
         private IEnumerator LogInterfaceState()
@@ -164,18 +187,47 @@ namespace TcgServer.Client
             session.SetSession(auth);
             passwordInput.text = string.Empty;
             operatorStatus.text = $"{auth.user.handle.ToUpperInvariant()} · RATING {auth.user.rating}";
+            nextLobbyRefresh = Time.unscaledTime + (settings == null ? 5f : settings.LobbyRefreshIntervalSeconds);
             ShowPage(lobbyPage);
             RefreshLobby();
         }
 
         private void OnAuthenticationFailed(TcgApiError error) => loginStatus.text = error.ToString();
 
-        private void RefreshLobby()
+        private const string DemoHandle = "demo";
+        private const string DemoPassword = "cardforge-demo";
+
+        private void QuickDemoLogin()
+        {
+            handleInput.text = DemoHandle;
+            passwordInput.text = DemoPassword;
+            loginStatus.text = "Quick demo sign-in...";
+            StartCoroutine(rest.Login(
+                DemoHandle,
+                DemoPassword,
+                OnAuthenticated,
+                _ => StartCoroutine(RegisterDemoAccount())));
+        }
+
+        private IEnumerator RegisterDemoAccount()
+        {
+            loginStatus.text = "Demo account not found — registering...";
+            yield return rest.Register(
+                DemoHandle,
+                DemoPassword,
+                OnAuthenticated,
+                error => loginStatus.text = "Demo sign-in failed: " + error);
+        }
+
+        private void RefreshLobby() => RefreshLobby(true);
+
+        private void RefreshLobby(bool announce)
         {
             if (!session.IsAuthenticated)
                 return;
 
-            lobbyStatus.text = "Refreshing live server data...";
+            if (announce)
+                lobbyStatus.text = "Refreshing live server data...";
             lobbySummary.text = $"PLAYER\n{session.User.handle}\n\nRATING\n{session.User.rating:N0}\n\nROLE\n{session.User.role.ToUpperInvariant()}";
 
             StartCoroutine(rest.Presence(
@@ -249,7 +301,7 @@ namespace TcgServer.Client
             if (!RequireSession())
                 return;
 
-            lobbyStatus.text = "Creating game against AI...";
+            lobbyStatus.text = "Creating a match against the server AI...";
             StartCoroutine(rest.CreateAiGame(
                 session.Token,
                 session.User.id,
@@ -406,6 +458,10 @@ namespace TcgServer.Client
             if (gamePolling != null)
                 StopCoroutine(gamePolling);
             gamePolling = StartCoroutine(PollGame());
+            if (TcgGameConnection.IsAvailable)
+                ConnectRealtime();
+            else
+                realtimeSummary.text = "REST polling active · SignalR package not enabled.";
         }
 
         private IEnumerator PollGame()
@@ -601,6 +657,7 @@ namespace TcgServer.Client
             var canvas = CreateCanvas();
             CreatePanel(canvas.transform, "Background", Background, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
             BuildHeader(canvas.transform);
+            CreatePanel(canvas.transform, "Header Accent", Accent, new Vector2(0, 1), new Vector2(1, 1), new Vector2(0, -78), new Vector2(0, -76));
             loginPage = CreatePage(canvas.transform, "Login Page");
             lobbyPage = CreatePage(canvas.transform, "Lobby Page");
             collectionPage = CreatePage(canvas.transform, "Collection Page");
@@ -625,7 +682,7 @@ namespace TcgServer.Client
             layout.childControlWidth = false;
             layout.childForceExpandWidth = false;
 
-            var brand = CreateText(header.transform, "TCG ULTIMATE CLIENT\nPLAYER CONNECTION TEMPLATE", 20, Foreground, FontStyle.Bold, TextAnchor.MiddleLeft);
+            var brand = CreateText(header.transform, "CARDFORGE\nARENA-STYLE LIVE DEMO", 22, Foreground, FontStyle.Bold, TextAnchor.MiddleLeft);
             SetLayout(brand.gameObject, 360, 50);
             serviceStatus = CreateText(header.transform, "CONNECTING", 13, Muted, FontStyle.Bold, TextAnchor.MiddleLeft);
             SetLayout(serviceStatus.gameObject, 280, 50, 1);
@@ -635,21 +692,58 @@ namespace TcgServer.Client
 
         private void BuildLoginPage(Transform page)
         {
-            CreateTitle(page, "Connect to TcgULtimateServer", "Register a test player or sign in with a server-managed account.");
-            var card = CreateCard(page, 470);
-            handleInput = CreateInput(card.transform, "Handle", false);
-            passwordInput = CreateInput(card.transform, "Password", true);
-            var buttons = CreateButtonRow(card.transform);
-            CreateButton(buttons.transform, "Sign in", () => Authenticate(false), Accent);
+            var hero = CreatePanel(page, "Hero", Surface, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            SetLayout(hero, -1, 130);
+            var heroLayout = hero.AddComponent<VerticalLayoutGroup>();
+            heroLayout.padding = new RectOffset(28, 28, 16, 10);
+            heroLayout.spacing = 4;
+            heroLayout.childControlHeight = false;
+            heroLayout.childForceExpandHeight = false;
+            heroLayout.childControlWidth = true;
+            heroLayout.childForceExpandWidth = true;
+            CreateText(hero.transform, "CARD FORGE", 44, Accent, FontStyle.Bold, TextAnchor.MiddleLeft);
+            CreateText(hero.transform, "ARENA-INSPIRED TCG PLATFORM — AUTHOR IN UNITY, PLAY ON THE AUTHORITATIVE SERVER", 14, Muted, FontStyle.Bold, TextAnchor.MiddleLeft);
+            CreateGemRow(hero.transform);
+
+            var columns = CreateHorizontalArea(page, 470);
+
+            var loginCard = CreateCard(columns.transform, 470, 0.85f);
+            CreateSectionLabel(loginCard.transform, "PLAYER SIGN-IN");
+            handleInput = CreateInput(loginCard.transform, "Handle (3-24 characters)", false);
+            passwordInput = CreateInput(loginCard.transform, "Password (8+ characters)", true);
+            var buttons = CreateButtonRow(loginCard.transform);
+            CreateButton(buttons.transform, "Quick demo sign-in", QuickDemoLogin, Accent, Ink);
+            CreateButton(buttons.transform, "Sign in", () => Authenticate(false), AccentAlt);
             CreateButton(buttons.transform, "Register", () => Authenticate(true), SurfaceRaised);
-            CreateButton(buttons.transform, "Retry server", CheckHealth, SurfaceRaised);
-            loginStatus = CreateText(card.transform, "Use the local development server at https://localhost:5001.", 13, Muted, FontStyle.Normal, TextAnchor.UpperLeft);
-            SetLayout(loginStatus.gameObject, -1, 70);
+            var secondary = CreateButtonRow(loginCard.transform);
+            CreateButton(secondary.transform, "Retry server", CheckHealth, SurfaceRaised);
+            loginStatus = CreateText(
+                loginCard.transform,
+                "Quick demo sign-in uses the \"demo\" account and registers it on first run.\nServer: " + (settings == null ? "not configured" : settings.BaseUrl),
+                13, Muted, FontStyle.Normal, TextAnchor.UpperLeft);
+            SetLayout(loginStatus.gameObject, -1, 80);
+
+            var tourCard = CreateCard(columns.transform, 470, 1.15f);
+            CreateSectionLabel(tourCard.transform, "WHAT THIS DEMO SHOWS");
+            var tour = CreateText(
+                tourCard.transform,
+                "LOBBY\n" +
+                "• Live player presence, enabled matchmaking queues, and the ranked leaderboard — all refreshed automatically.\n\n" +
+                "PLAY\n" +
+                "• Create a match against the server AI and play the Astral Rift package turn by turn, or join ranked/casual matchmaking.\n\n" +
+                "COLLECTION & DECKS\n" +
+                "• Server-backed inventory, achievements, and saved deck records.\n\n" +
+                "SOCIAL\n" +
+                "• Friends and direct messages between player accounts.\n\n" +
+                "GAME BROWSER & REALTIME\n" +
+                "• Inspect active and recorded games by ID; SignalR streams live game state, chat, and announcements.",
+                13, Foreground, FontStyle.Normal, TextAnchor.UpperLeft);
+            SetLayout(tour.gameObject, -1, 340);
         }
 
         private void BuildLobbyPage(Transform page)
         {
-            CreateTitle(page, "Player lobby", "Review live service data, join matchmaking, or create a game against AI.");
+            CreateTitle(page, "Arena lobby", "Live service data, matchmaking queues, rankings — everything refreshes automatically. Hit Play vs AI for an instant Astral Rift match.");
             var columns = CreateHorizontalArea(page, 520);
             var identityCard = CreateCard(columns.transform, 410, 0.8f);
             lobbySummary = CreateText(identityCard.transform, "PLAYER", 18, Foreground, FontStyle.Bold, TextAnchor.UpperLeft);
@@ -661,7 +755,7 @@ namespace TcgServer.Client
             CreateButton(identityButtons.transform, "Ranked", () => JoinQueue("ranked"), Accent);
             CreateButton(identityButtons.transform, "Casual", () => JoinQueue("casual"), SurfaceRaised);
             CreateButton(identityButtons.transform, "Leave queue", LeaveQueue, SurfaceRaised);
-            CreateButton(identityButtons.transform, "Create vs AI", CreateAiGame, Accent);
+            CreateButton(identityButtons.transform, "Play vs AI (" + (settings == null ? "rules" : settings.DefaultRulePackId) + ")", CreateAiGame, Accent, Ink);
             CreateButton(identityButtons.transform, "Sign out", SignOut, Danger);
 
             var featureButtons = CreateButtonRow(identityCard.transform);
@@ -877,7 +971,7 @@ namespace TcgServer.Client
             return row;
         }
 
-        private Button CreateButton(Transform parent, string label, Action clicked, Color color)
+        private Button CreateButton(Transform parent, string label, Action clicked, Color color, Color? textColor = null)
         {
             var buttonObject = new GameObject(label, typeof(RectTransform), typeof(Image), typeof(Button), typeof(LayoutElement));
             buttonObject.transform.SetParent(parent, false);
@@ -886,9 +980,59 @@ namespace TcgServer.Client
             var button = buttonObject.GetComponent<Button>();
             button.targetGraphic = buttonObject.GetComponent<Image>();
             button.onClick.AddListener(() => clicked());
-            var text = CreateText(buttonObject.transform, label, 13, Foreground, FontStyle.Bold, TextAnchor.MiddleCenter);
+            var text = CreateText(buttonObject.transform, label, 13, textColor ?? Foreground, FontStyle.Bold, TextAnchor.MiddleCenter);
             Stretch(text.rectTransform, 10);
             return button;
+        }
+
+        private void CreateGemRow(Transform parent)
+        {
+            var row = new GameObject("Mana Gems", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(LayoutElement));
+            row.transform.SetParent(parent, false);
+            SetLayout(row, -1, 22);
+            var layout = row.GetComponent<HorizontalLayoutGroup>();
+            layout.spacing = 10;
+            layout.childAlignment = TextAnchor.MiddleLeft;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            layout.childForceExpandWidth = false;
+            layout.childForceExpandHeight = false;
+            foreach (var color in GemColors)
+            {
+                var gem = new GameObject("Gem", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+                gem.transform.SetParent(row.transform, false);
+                gem.GetComponent<Image>().sprite = CircleSprite;
+                gem.GetComponent<Image>().color = color;
+                SetLayout(gem, 18, 18);
+            }
+        }
+
+        private static Sprite CircleSprite
+        {
+            get
+            {
+                if (circleSprite != null)
+                    return circleSprite;
+
+                const int size = 64;
+                var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+                var pixels = new Color32[size * size];
+                var center = (size - 1) / 2f;
+                for (var y = 0; y < size; y++)
+                {
+                    for (var x = 0; x < size; x++)
+                    {
+                        var distance = Vector2.Distance(new Vector2(x, y), new Vector2(center, center)) / center;
+                        var alpha = Mathf.Clamp01((1f - distance) * size * 0.45f);
+                        pixels[y * size + x] = new Color32(255, 255, 255, (byte)(alpha * 255));
+                    }
+                }
+
+                texture.SetPixels32(pixels);
+                texture.Apply();
+                circleSprite = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
+                return circleSprite;
+            }
         }
 
         private InputField CreateInput(Transform parent, string placeholder, bool password, float width = -1)

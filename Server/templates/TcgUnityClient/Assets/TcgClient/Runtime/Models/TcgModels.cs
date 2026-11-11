@@ -123,6 +123,60 @@ namespace TcgServer.Client
     }
 
     [Serializable]
+    public sealed class ClientGameZoneDto
+    {
+        public string playerId;
+        public string zoneId;
+        public CardInstanceDto[] cards = Array.Empty<CardInstanceDto>();
+    }
+
+    [Serializable]
+    public sealed class ClientGameResourceDto
+    {
+        public string playerId;
+        public string resourceId;
+        public long value;
+    }
+
+    [Serializable]
+    public sealed class ClientGameActionDto
+    {
+        public string id;
+        public string name;
+        public string sourceZone;
+        public string destinationZone;
+        public bool requiresActivePlayer;
+        public string target;
+    }
+
+    [Serializable]
+    public sealed class ClientGameViewDto
+    {
+        public string id;
+        public string rulePackId;
+        public string[] players = Array.Empty<string>();
+        public string activePlayerId;
+        public string currentPhaseId;
+        public int turn;
+        public bool finished;
+        public string winnerPlayerId;
+        public string victoryRuleId;
+        public ClientGameZoneDto[] zones = Array.Empty<ClientGameZoneDto>();
+        public ClientGameResourceDto[] resources = Array.Empty<ClientGameResourceDto>();
+        public ClientGameActionDto[] allowedActions = Array.Empty<ClientGameActionDto>();
+        public GameEventDto[] events = Array.Empty<GameEventDto>();
+    }
+
+    [Serializable]
+    public sealed class ExecuteGameActionRequestDto
+    {
+        public string actionId;
+        public string sourceInstanceId;
+        public string targetPlayerId;
+        public string targetInstanceId;
+    }
+
+    [Serializable]
     public sealed class CardDefinitionDto
     {
         public string id;

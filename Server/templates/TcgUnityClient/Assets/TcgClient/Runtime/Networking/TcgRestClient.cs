@@ -58,6 +58,7 @@ namespace TcgServer.Client
         {
             var request = new CreateGameRequestDto
             {
+                rulePackId = settings == null ? "mtg-like" : settings.DefaultRulePackId,
                 playerIds = new[] { userId },
                 addAi = true
             };
@@ -69,6 +70,18 @@ namespace TcgServer.Client
                 json => completed(JsonUtility.FromJson<GameStateDto>(json)),
                 failed);
         }
+
+        public IEnumerator GameView(string token, string gameId, Action<ClientGameViewDto> completed, Action<TcgApiError> failed) =>
+            GetJson("/api/games/" + UnityWebRequest.EscapeURL(gameId) + "/client-view", token, json => completed(JsonUtility.FromJson<ClientGameViewDto>(json)), failed);
+
+        public IEnumerator ExecuteAction(string token, string gameId, ExecuteGameActionRequestDto action, Action<GameStateDto> completed, Action<TcgApiError> failed) =>
+            SendJson(
+                UnityWebRequest.kHttpVerbPOST,
+                "/api/games/" + UnityWebRequest.EscapeURL(gameId) + "/actions",
+                JsonUtility.ToJson(action),
+                token,
+                json => completed(JsonUtility.FromJson<GameStateDto>(json)),
+                failed);
 
         public IEnumerator Game(string token, string gameId, Action<GameStateDto> completed, Action<TcgApiError> failed) =>
             GetJson($"/api/games/{UnityWebRequest.EscapeURL(gameId)}", token, json => completed(JsonUtility.FromJson<GameStateDto>(json)), failed);

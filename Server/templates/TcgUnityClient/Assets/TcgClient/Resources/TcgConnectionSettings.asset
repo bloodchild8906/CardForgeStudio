@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e870cd084b5eb204d9eb029031a85596, type: 3}
   m_Name: TcgConnectionSettings
   m_EditorClassIdentifier: Assembly-CSharp::TcgServer.Client.TcgConnectionSettings
-  baseUrl: https://localhost:5001
+  baseUrl: http://127.0.0.1:5169
+  defaultRulePackId: astral-rift
+  activePackageId: astral-rift-demo
+  activePackageVersion: 1.0.0
   gamePollIntervalSeconds: 1
   lobbyRefreshIntervalSeconds: 5

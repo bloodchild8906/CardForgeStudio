@@ -8,8 +8,8 @@ namespace TcgServer.Client.Editor
 {
     public static class TcgTemplateProjectSetup
     {
-        private const string SettingsPath = "Assets/TcgClient/Resources/TcgConnectionSettings.asset";
-        private const string ScenePath = "Assets/TcgClient/Scenes/TcgClient.unity";
+        public const string SettingsPath = "Assets/TcgClient/Resources/TcgConnectionSettings.asset";
+        public const string ScenePath = "Assets/TcgClient/Scenes/TcgClient.unity";
 
         [MenuItem("Tools/TcgStudio/Create or Refresh Client Scene")]
         public static void CreateTemplateScene()
@@ -26,17 +26,15 @@ namespace TcgServer.Client.Editor
             }
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var root = new GameObject("Tcg Client Template");
+            var root = new GameObject("CardForge Client");
             root.AddComponent<TcgClientSession>();
-            root.AddComponent<TcgRestClient>();
+            var rest = root.AddComponent<TcgRestClient>();
             root.AddComponent<TcgGameConnection>();
             var app = root.AddComponent<TcgTemplateApp>();
 
-            var appObject = new SerializedObject(app);
-            appObject.Update();
-            appObject.FindProperty("settings").objectReferenceValue = settings;
-            appObject.ApplyModifiedPropertiesWithoutUndo();
-            EditorUtility.SetDirty(app);
+            // Both components read server settings through a serialized field, so bind them explicitly.
+            Bind(app, "settings", settings);
+            Bind(rest, "settings", settings);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
@@ -46,7 +44,61 @@ namespace TcgServer.Client.Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Selection.activeGameObject = root;
-            Debug.Log($"TcgULtimateClient template scene created at {ScenePath}");
+            Debug.Log($"CardForge client scene created at {ScenePath}");
+        }
+
+        public static void ConfigureConnection(string baseUrl, string rulePackId, string packageId, string packageVersion)
+        {
+            var settings = AssetDatabase.LoadAssetAtPath<TcgConnectionSettings>(SettingsPath);
+            if (settings == null)
+            {
+                Directory.CreateDirectory("Assets/TcgClient/Resources");
+                settings = ScriptableObject.CreateInstance<TcgConnectionSettings>();
+                AssetDatabase.CreateAsset(settings, SettingsPath);
+            }
+
+            var serialized = new SerializedObject(settings);
+            serialized.Update();
+            serialized.FindProperty("baseUrl").stringValue = (baseUrl ?? "").TrimEnd('/');
+            serialized.FindProperty("defaultRulePackId").stringValue = rulePackId ?? "mtg-like";
+            serialized.FindProperty("activePackageId").stringValue = packageId ?? "";
+            serialized.FindProperty("activePackageVersion").stringValue = packageVersion ?? "";
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(settings);
+            AssetDatabase.SaveAssets();
+        }
+
+        // Batch entry point: Unity -batchmode -executeMethod TcgServer.Client.Editor.TcgTemplateProjectSetup.BatchCreateScene
+        public static void BatchCreateScene() => CreateTemplateScene();
+
+        // Batch entry point: builds the demo client to Builds/Windows/TcgULtimateClient.exe
+        public static void BuildWindowsClient()
+        {
+            CreateTemplateScene();
+            var report = BuildPipeline.BuildPlayer(
+                new[] { ScenePath },
+                "Builds/Windows",
+                BuildTarget.StandaloneWindows64,
+                BuildOptions.None);
+            if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded)
+            {
+                Debug.LogError("CardForge demo client build failed: " + report.summary.result);
+                if (Application.isBatchMode) EditorApplication.Exit(1);
+                return;
+            }
+
+            Debug.Log("CardForge demo client built: " + report.summary.outputPath);
+        }
+
+        private static void Bind(Object target, string property, Object value)
+        {
+            var serialized = new SerializedObject(target);
+            serialized.Update();
+            var field = serialized.FindProperty(property);
+            if (field == null) return;
+            field.objectReferenceValue = value;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(target);
         }
     }
 }

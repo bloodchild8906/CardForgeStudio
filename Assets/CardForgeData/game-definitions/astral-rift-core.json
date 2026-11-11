@@ -9,7 +9,7 @@
     "maximumPlayers": 4,
     "startingHand": 5,
     "turnFlowId": "ar-standard-turn",
-    "defaultDeckId": "ar-deck-dawn-grove",
+    "defaultDeckId": "ar-deck-showcase",
     "zones": [
         {
             "id": "deck",
@@ -145,6 +145,39 @@
         }
     ],
     "sampleDecks": [
+        {
+            "id": "ar-deck-showcase",
+            "name": "Astral Rift Showcase",
+            "description": "Two copies of every card so each ability can fire within a single match.",
+            "minimumCards": 24,
+            "maximumCopiesPerCard": 4,
+            "cardIds": [
+                "ar-card-dawn-captain",
+                "ar-card-dawn-captain",
+                "ar-card-ember-fox",
+                "ar-card-ember-fox",
+                "ar-card-sunwell-engine",
+                "ar-card-sunwell-engine",
+                "ar-card-tide-oracle",
+                "ar-card-tide-oracle",
+                "ar-card-moonlit-archive",
+                "ar-card-moonlit-archive",
+                "ar-card-rift-manta",
+                "ar-card-rift-manta",
+                "ar-card-verdant-colossus",
+                "ar-card-verdant-colossus",
+                "ar-card-seedship",
+                "ar-card-seedship",
+                "ar-card-moss-memory",
+                "ar-card-moss-memory",
+                "ar-card-void-duelist",
+                "ar-card-void-duelist",
+                "ar-card-event-horizon",
+                "ar-card-event-horizon",
+                "ar-card-whisper-agent",
+                "ar-card-whisper-agent"
+            ]
+        },
         {
             "id": "ar-deck-dawn-grove",
             "name": "Dawn Grove Expedition",

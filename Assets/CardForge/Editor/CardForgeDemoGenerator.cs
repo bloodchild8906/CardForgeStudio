@@ -21,6 +21,7 @@ namespace CardForge.Editor
         public const string PackageId = "astral-rift-demo";
         public const string GameId = "astral-rift";
         public const string Version = "1.0.0";
+        const string ShowcaseDeckId = "ar-deck-showcase";
         const string AssetRoot = "Assets/CardForgeData/demo/astral-rift";
 
         sealed class DemoCard
@@ -399,7 +400,7 @@ namespace CardForge.Editor
             var game = new GameDefinitionDocument
             {
                 blockId = block.id, packageId = PackageId, gameId = GameId, packageVersion = Version, gameSystem = "astral-rift-showcase",
-                minimumPlayers = 2, maximumPlayers = 4, startingHand = 5, turnFlowId = "ar-standard-turn", defaultDeckId = "ar-deck-dawn-grove",
+                minimumPlayers = 2, maximumPlayers = 4, startingHand = 5, turnFlowId = "ar-standard-turn", defaultDeckId = ShowcaseDeckId,
                 zones = new List<GameZoneDocument>
                 {
                     new GameZoneDocument{id="deck",name="Constellation Deck",ownerScope="player",visibility="hidden",ordered=true},
@@ -425,11 +426,18 @@ namespace CardForge.Editor
                 },
                 sampleDecks = new List<GameDeckDocument>
                 {
+                    new GameDeckDocument{id=ShowcaseDeckId,name="Astral Rift Showcase",description="Two copies of every card so each ability can fire within a single match.",minimumCards=24,maximumCopiesPerCard=4,cardIds=ShowcaseDeckCards()},
                     new GameDeckDocument{id="ar-deck-dawn-grove",name="Dawn Grove Expedition",description="Solar and Verdant pilots race toward Ascension.",minimumCards=24,maximumCopiesPerCard=4,cardIds=DeckCards("Solar", "Verdant")},
                     new GameDeckDocument{id="ar-deck-tide-void",name="Tide of the Void",description="Tidal recursion and Umbral disruption pressure every zone.",minimumCards=24,maximumCopiesPerCard=4,cardIds=DeckCards("Tidal", "Umbral")}
                 }
             };
             store.SaveGameDefinition(game);
+        }
+
+        /// <summary>Builds the default deck holding two copies of every demo card so every ability is reachable.</summary>
+        static List<string> ShowcaseDeckCards()
+        {
+            return CardSet.SelectMany(card => Enumerable.Repeat(card.Id, 2)).ToList();
         }
 
         static List<string> DeckCards(params string[] affinities)
