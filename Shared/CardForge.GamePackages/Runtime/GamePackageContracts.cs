@@ -53,6 +53,7 @@ public sealed class GamePackageContentSummary
     public int Keywords { get; set; }
     public int TurnFlows { get; set; }
     public int VictoryRules { get; set; }
+    public int Decks { get; set; }
 }
 
 public sealed class VictoryDefinitionSet

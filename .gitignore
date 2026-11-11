@@ -21,11 +21,13 @@ artifacts/
 *.log
 
 # Generated Unity IDE files
+/*.csproj
+/*.sln
+/CardForgeStudio.slnx
 Editor/*.csproj
 Editor/*.sln
 Editor/*.slnx
 
 # Package output
 GamePackages/*.cardforge
-Editor/CardForgeExports/
-Editor/CardForgeGamePackages/
+CardForgeExports/

@@ -87,6 +87,13 @@ public sealed class RulesEngine(AppState state)
                 ValidateEffectsAndConditions(ability.Effects, ability.Conditions, $"ability '{ability.Id}'", pack, errors);
         }
 
+        var cardIds = pack.Cards.Select(card => card.Id).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var cardId in pack.StartingDeck.Where(cardId => !cardIds.Contains(cardId)))
+            errors.Add($"Starting deck references unknown card '{cardId}'.");
+        var startingHand = Math.Max(0, pack.StartingRules.GetValueOrDefault("startingHand", 7));
+        if (pack.StartingDeck.Count > 0 && pack.StartingDeck.Count < startingHand)
+            errors.Add("Starting deck cannot contain fewer cards than the starting hand.");
+
         foreach (var zone in pack.Zones)
         {
             ValidateIdentifier(zone.Id, "Zone", errors);
@@ -157,7 +164,8 @@ public sealed class RulesEngine(AppState state)
         var startingHand = Math.Max(0, pack.StartingRules.GetValueOrDefault("startingHand", 7));
         foreach (var player in game.Players)
         {
-            var deck = pack.Cards.Select(card => new CardInstance(Guid.NewGuid().ToString("N"), card.Id, player)).ToList();
+            var deckDefinitions = pack.StartingDeck.Count > 0 ? pack.StartingDeck : pack.Cards.Select(card => card.Id).ToList();
+            var deck = deckDefinitions.Select(cardId => new CardInstance(Guid.NewGuid().ToString("N"), cardId, player)).ToList();
             game.Zones[player][deckZone].AddRange(deck);
             if (handZone is not null)
                 Draw(game, player, deckZone, handZone, startingHand);
@@ -190,6 +198,10 @@ public sealed class RulesEngine(AppState state)
             throw new InvalidOperationException("It is not this player's priority.");
 
         var sourceCard = FindCard(game, actorId, request.SourceInstanceId);
+        // Validate the card move up front so a rejected action never leaves its costs deducted.
+        if (sourceCard is not null && !string.IsNullOrWhiteSpace(action.SourceZone) && !string.IsNullOrWhiteSpace(action.DestinationZone) &&
+            game.Zones.GetValueOrDefault(actorId)?.GetValueOrDefault(action.SourceZone)?.Any(card => card.InstanceId == request.SourceInstanceId) != true)
+            throw new InvalidOperationException($"Card is not in zone '{action.SourceZone}'.");
         foreach (var condition in action.Conditions ?? [])
             if (!ConditionMatches(game, actorId, request, condition))
                 throw new InvalidOperationException($"Condition '{condition.Kind}' was not satisfied for action '{action.Id}'.");
@@ -202,7 +214,7 @@ public sealed class RulesEngine(AppState state)
         }
         foreach (var cost in action.Costs ?? []) PlayerResources(game, actorId)[cost.Key] -= cost.Value;
 
-        if (!string.IsNullOrWhiteSpace(action.SourceZone) && !string.IsNullOrWhiteSpace(action.DestinationZone))
+        if (sourceCard is not null && !string.IsNullOrWhiteSpace(action.SourceZone) && !string.IsNullOrWhiteSpace(action.DestinationZone))
             MoveCard(game, actorId, request.SourceInstanceId, action.SourceZone, action.DestinationZone);
 
         foreach (var effect in action.Effects ?? []) ApplyEffect(pack, game, actorId, request, effect);
@@ -294,6 +306,7 @@ public sealed class RulesEngine(AppState state)
             Resources = resources,
             Phases = phases,
             Actions = actions,
+            StartingDeck = source.StartingDeck ?? [],
             Metadata = source.Metadata ?? []
         };
     }

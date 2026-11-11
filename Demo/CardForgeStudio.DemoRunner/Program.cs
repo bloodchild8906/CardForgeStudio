@@ -107,7 +107,8 @@ static string FindRepository(string start)
     var directory = new DirectoryInfo(start);
     while (directory != null)
     {
-        if (File.Exists(Path.Combine(directory.FullName, "CardForgeStudio.slnx"))) return directory.FullName;
+        if (Directory.Exists(Path.Combine(directory.FullName, "Server")) &&
+            Directory.Exists(Path.Combine(directory.FullName, "Shared"))) return directory.FullName;
         directory = directory.Parent;
     }
     throw new DirectoryNotFoundException("Could not find the CardForgeStudio repository.");

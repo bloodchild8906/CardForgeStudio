@@ -20,9 +20,9 @@ CardForge Studio is a Unity-native, **editor-only** authoring suite for building
 
 ## Quick start
 
-1. Clone the repository and open the folder as a Unity project with Unity `7000.0.0a16`.
+1. Clone the repository and open its root folder (`CardForgeStudio`) as a Unity project with Unity `7000.0.0a16`.
 2. Let Unity finish the first import (this recreates the ignored `Library/` folder).
-3. Open the studio: **CardForge > Open Studio** (or **Window > CardForge Studio**).
+3. Open **CardForge > Dashboard**, then choose **CardForge Studio**.
 4. On a fresh checkout, `CardForgeStore.Reload()` seeds:
    - a seven-field schema (`title`, `cost`, `type`, `rules`, `power`, `art`, `faction`),
    - a starter **Core Set** block (`CORE`) with three layouts (two fronts, one back) and one card,
@@ -72,12 +72,7 @@ Unity generates `Library/`, `Logs/`, `Temp/`, `UserSettings/`, `*.csproj`, `*.sl
 
 | Where | What |
 | --- | --- |
-| `CardForge > Open Studio` | Open the authoring window. |
-| `Window > CardForge Studio` | Same window (alternate menu path). |
-| `CardForge > Frame Composer` | Extract a card frame into a layout + PNG layers. |
-| `CardForge > Icon Set Studio` | Slice atlases / import icon folders. |
-| `CardForge > Google Fonts Library` | Import open-licensed font families. |
-| `CardForge > AI Provider Settings` | Configure Ollama cloud or local endpoint. |
+| `CardForge > Dashboard` | Central entry point for the Studio, creator tools, publishing, client setup, server, lessons, and templates. |
 | `CardForgeBatchBuild.BuildAllActive` | CI: export every block for the active build target. |
 
 ---

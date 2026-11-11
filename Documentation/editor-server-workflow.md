@@ -1,6 +1,6 @@
 # Editor to server workflow
 
-1. Open `Editor` in Unity and use the existing CardForge designers.
+1. Open the repository root (`D:\CardForgeStudio`) in Unity and use the existing CardForge designers.
 2. Open **CardForge > Game Package Publisher**. Select a block, set its semantic package version, choose the turn flow, review gameplay defaults, and publish a `.cardforge` file.
 3. Launch the native server dashboard and open **Game packages**.
 4. Choose the package. The server imports it only after archive, manifest, hash, rule-pack, and victory validation succeeds.

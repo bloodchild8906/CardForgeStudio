@@ -800,7 +800,7 @@ app.MapGet("/api/matchmaking/me", (HttpRequest http, AuthService auth, Operation
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
     return user is null ? Results.Unauthorized() : Results.Ok(operations.MatchmakingEntries().Where(entry => string.Equals(entry.UserId, user.Id, StringComparison.Ordinal)));
 });
-app.MapPost("/api/games", (CreateGameRequest request, HttpRequest http, AuthService auth, AppState s, RulesEngine engine) =>
+app.MapPost("/api/games", (CreateGameRequest request, HttpRequest http, AuthService auth, AppState s, RulesEngine engine, BotService bots) =>
 {
     var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "")); if (user is null) return Results.Unauthorized();
     if (!s.RulePacks.ContainsKey(request.RulePackId)) return Results.BadRequest("Unknown rule pack.");
@@ -809,7 +809,10 @@ app.MapPost("/api/games", (CreateGameRequest request, HttpRequest http, AuthServ
     if (!players.Contains(user.Id, StringComparer.Ordinal)) players.Insert(0, user.Id);
     if (request.AddAi) players.Add("bot-" + Guid.NewGuid().ToString("N")[..8]);
     if (players.Count is < 2 or > 8) return Results.BadRequest("A game needs between two and eight players.");
-    var game = new GameState { RulePackId = request.RulePackId, Players = players }; engine.Start(game); s.Games[game.Id] = game; return Results.Ok(game);
+    var game = new GameState { RulePackId = request.RulePackId, Players = players }; engine.Start(game);
+    // If the AI moves first, play its turn now so the human is never handed a game that is waiting on a bot.
+    if (game.ActivePlayerId.StartsWith("bot-", StringComparison.Ordinal)) bots.TakeTurn(game, game.ActivePlayerId);
+    s.Games[game.Id] = game; return Results.Ok(game);
 });
 app.MapGet("/api/games", (HttpRequest http, AuthService auth, AdminService admin, AppState s) =>
 {
@@ -827,6 +830,14 @@ app.MapGet("/api/games/{id}", (string id, HttpRequest http, AuthService auth, Ad
            (admin.IsAdmin(user) || game.Players.Contains(user.Id, StringComparer.Ordinal))
         ? Results.Ok(game)
         : Results.NotFound("Game not found.");
+});
+app.MapGet("/api/games/{id}/client-view", (string id, HttpRequest http, AuthService auth, AdminService admin, AppState s, RulesEngine engine) =>
+{
+    var user = auth.FromToken(http.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase));
+    if (user is null) return Results.Unauthorized();
+    if (!s.Games.TryGetValue(id, out var game) || (!admin.IsAdmin(user) && !game.Players.Contains(user.Id, StringComparer.Ordinal)))
+        return Results.NotFound("Game not found.");
+    return Results.Ok(BuildClientGameView(game, engine));
 });
 app.MapPost("/api/games/{id}/actions", (string id, ExecuteGameActionRequest action, HttpRequest request, AuthService auth, AppState s, RulesEngine engine, BotService bots) =>
 {
@@ -933,6 +944,22 @@ static bool TryGetAdmin(HttpRequest request, AuthService auth, AdminService admi
     }
     user = null!;
     return false;
+}
+
+static ClientGameView BuildClientGameView(GameState game, RulesEngine engine)
+{
+    var pack = engine.Get(game.RulePackId);
+    var phase = pack.Phases.FirstOrDefault(candidate => candidate.Id.Equals(game.CurrentPhaseId, StringComparison.OrdinalIgnoreCase));
+    var allowed = (phase?.AllowedActions ?? [])
+        .Select(actionId => pack.Actions.FirstOrDefault(action => action.Id.Equals(actionId, StringComparison.OrdinalIgnoreCase)))
+        .Where(action => action is not null)
+        .Select(action => new ClientGameAction(action!.Id, action.Name, action.SourceZone, action.DestinationZone, action.RequiresActivePlayer,
+            action.Effects?.Select(effect => effect.Target).FirstOrDefault(target => !string.IsNullOrWhiteSpace(target))))
+        .ToList();
+    var zones = game.Zones.SelectMany(owner => owner.Value.Select(zone => new ClientGameZone(owner.Key, zone.Key, zone.Value))).ToList();
+    var resources = game.Resources.SelectMany(owner => owner.Value.Select(resource => new ClientGameResource(owner.Key, resource.Key, resource.Value))).ToList();
+    return new ClientGameView(game.Id, game.RulePackId, game.Players, game.ActivePlayerId, game.CurrentPhaseId, game.Turn, game.Finished,
+        game.WinnerPlayerId, game.VictoryRuleId, zones, resources, allowed, game.Events.TakeLast(40).ToList());
 }
 
 static bool AcceptsEncoding(string? header, string encoding) => header?.Split(',').Any(value =>

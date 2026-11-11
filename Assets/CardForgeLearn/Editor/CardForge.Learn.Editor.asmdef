@@ -1,0 +1,24 @@
+{
+  "name": "CardForge.Learn.Editor",
+  "rootNamespace": "CardForge.Learn",
+	"references": [
+	"CardForge.Runtime",
+	"CardForge.Editor",
+	"CardForge.EditorUI",
+	"CardForge.GamePackages",
+	"CardForge.FrameComposer.Editor",
+	"CardForge.GoogleFonts.Editor",
+	"CardForge.IconSets.Editor",
+	"CardForge.Ollama.Editor",
+	"CardForge.Client.Editor"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

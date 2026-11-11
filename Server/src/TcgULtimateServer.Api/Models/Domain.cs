@@ -109,6 +109,7 @@ public record RulePack(string Id, string Name, string Version, string Descriptio
     public List<TcgResourceDefinition> Resources { get; init; } = [];
     public List<TcgPhaseDefinition> Phases { get; init; } = [];
     public List<TcgActionDefinition> Actions { get; init; } = [];
+    public List<string> StartingDeck { get; init; } = [];
     public Dictionary<string, JsonElement> Metadata { get; init; } = [];
 }
 public record CardInstance(string InstanceId, string CardId, string OwnerId);
@@ -341,6 +342,23 @@ public record GamePackageVersionRecord(
     VictoryDefinitionSet VictoryDefinitions);
 public record CreateGameRequest(string RulePackId, List<string> PlayerIds, bool AddAi = false);
 public record PlayCardRequest(string CardInstanceId);
+public record ClientGameZone(string PlayerId, string ZoneId, List<CardInstance> Cards);
+public record ClientGameResource(string PlayerId, string ResourceId, long Value);
+public record ClientGameAction(string Id, string Name, string? SourceZone, string? DestinationZone, bool RequiresActivePlayer, string? Target);
+public record ClientGameView(
+    string Id,
+    string RulePackId,
+    List<string> Players,
+    string ActivePlayerId,
+    string CurrentPhaseId,
+    int Turn,
+    bool Finished,
+    string? WinnerPlayerId,
+    string? VictoryRuleId,
+    List<ClientGameZone> Zones,
+    List<ClientGameResource> Resources,
+    List<ClientGameAction> AllowedActions,
+    List<GameEvent> Events);
 public record GameEvent(string Type, string Message, string? ActorId = null, object? Data = null, DateTimeOffset? At = null);
 public record StateMachineTransition(
     string Event,

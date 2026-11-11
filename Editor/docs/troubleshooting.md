@@ -32,7 +32,7 @@ Ids must be 1-128 characters of letters, digits, `-` or `_`. Ids are used as fil
 
 ### Nothing appears / the window is blank
 
-- Open **CardForge > Open Studio** again.
+- Open **CardForge > Dashboard**, then choose **CardForge Studio** again.
 - Check the Console for UI Toolkit UXML/USS load errors.
 - Confirm `Assets/CardForge/Editor/UI/UXML/CardForgeWindow.uxml` and the USS files exist.
 - Try **Studio settings > Show artwork** off if decorative art fails to load.
