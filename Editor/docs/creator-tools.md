@@ -59,7 +59,7 @@ AI output is untrusted: it can hallucinate regions. The prompt explicitly forbid
 On save, Frame Composer:
 
 - Writes the layout into the selected block.
-- Saves each region as an independent PNG under `Assets/CardForgeData/frames/`.
+- Saves each region as an independent PNG under `Assets/CardForgeStudio/CardForgeData/frames/`.
 - Builds a composited frame overlay with detected content slots made transparent while preserving a small border.
 - Writes zone entries that reference the PNG layers.
 
@@ -90,7 +90,7 @@ Icon Set Studio slices an atlas or imports a folder of images and registers each
 5. Uncheck blank cells and rename individual icons.
 6. **Import selected PNG icons**.
 
-Each cell is exported as an independent PNG under `Assets/CardForgeData/icon-sets/`, and an `IconDocument` is saved with its asset path. Names default to `<prefix>-001`, `<prefix>-002`, and so on.
+Each cell is exported as an independent PNG under `Assets/CardForgeStudio/CardForgeData/icon-sets/`, and an `IconDocument` is saved with its asset path. Names default to `<prefix>-001`, `<prefix>-002`, and so on.
 
 ### Folder mode
 
@@ -106,7 +106,7 @@ Each cell is exported as an independent PNG under `Assets/CardForgeData/icon-set
 {
   "name": "Symbols",
   "entries": [
-    { "name": "symbol-001", "assetPath": "Assets/CardForgeData/icon-sets/..." }
+    { "name": "symbol-001", "assetPath": "Assets/CardForgeStudio/CardForgeData/icon-sets/..." }
   ]
 }
 ```
@@ -130,15 +130,15 @@ The importer downloads open-licensed TTF/OTF families from the official `google/
 1. Enter a family name (for example `Inter`, `Cinzel`, `Redaction`).
 2. **Import Google font**.
 3. The tool queries the GitHub contents API, finds TTF/OTF files and a license file, downloads them, and writes:
-   - `Assets/CardForgeData/fonts/<family>/<font files>`
-   - `Assets/CardForgeData/fonts/<family>/LICENSE.txt` when available
-   - `Assets/CardForgeData/fonts/<family>/manifest.json`
+   - `Assets/CardForgeStudio/CardForgeData/fonts/<family>/<font files>`
+   - `Assets/CardForgeStudio/CardForgeData/fonts/<family>/LICENSE.txt` when available
+   - `Assets/CardForgeStudio/CardForgeData/fonts/<family>/manifest.json`
 
 The manifest records the family, source and license path.
 
 ### Local import
 
-**Import local TTF / OTF...** copies a font into `Assets/CardForgeData/fonts/` and refreshes the asset database. Fonts must be **100 bytes to 20 MB**. You are responsible for redistribution rights.
+**Import local TTF / OTF...** copies a font into `Assets/CardForgeStudio/CardForgeData/fonts/` and refreshes the asset database. Fonts must be **100 bytes to 20 MB**. You are responsible for redistribution rights.
 
 ### Security
 

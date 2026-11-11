@@ -1,0 +1,159 @@
+{
+    "version": 1,
+    "fields": [
+        {
+            "id": "7e1150461ebe451eb04d2d9733b3ef71",
+            "key": "title",
+            "label": "Card Name",
+            "kind": 0,
+            "defaultValue": "New Card",
+            "help": "The card's printed title.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "35b35a270df44204ad87fc10ea4b1d25",
+            "key": "cost",
+            "label": "Energy Cost",
+            "kind": 1,
+            "defaultValue": "1",
+            "help": "Energy required to deploy the card.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "114ef7b3b56b4be89bc41f0dc8ffca5e",
+            "key": "type",
+            "label": "Card Type",
+            "kind": 0,
+            "defaultValue": "Unit",
+            "help": "Unit, Relic, Event, or other game type.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "ca9caa5ca8a3403aa882178aa2d2e0c4",
+            "key": "rules",
+            "label": "Rules Text",
+            "kind": 0,
+            "defaultValue": "",
+            "help": "Authoritative printed rules text.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "d9c7174f6cb04851861433623f1a2dba",
+            "key": "power",
+            "label": "Power",
+            "kind": 1,
+            "defaultValue": "0",
+            "help": "Combat power.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "df11ac1a2d544824abe10686c7bd14ab",
+            "key": "art",
+            "label": "Artwork",
+            "kind": 3,
+            "defaultValue": "",
+            "help": "Card illustration asset.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "8b388354a70341a5889318c095e85b45",
+            "key": "faction",
+            "label": "Faction Icon",
+            "kind": 2,
+            "defaultValue": "",
+            "help": "",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "ar-field-toughness",
+            "key": "toughness",
+            "label": "Integrity",
+            "kind": 1,
+            "defaultValue": "0",
+            "help": "Combat integrity.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "ar-field-affinity",
+            "key": "affinity",
+            "label": "Affinity",
+            "kind": 0,
+            "defaultValue": "Neutral",
+            "help": "Solar, Tidal, Verdant, or Umbral.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "ar-field-affinity-icon",
+            "key": "affinity_icon",
+            "label": "Affinity Icon",
+            "kind": 2,
+            "defaultValue": "",
+            "help": "Portable affinity icon asset.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "ar-field-rarity",
+            "key": "rarity",
+            "label": "Rarity",
+            "kind": 0,
+            "defaultValue": "Common",
+            "help": "Common, Uncommon, Rare, or Mythic.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "ar-field-flavor",
+            "key": "flavor",
+            "label": "Flavor Text",
+            "kind": 0,
+            "defaultValue": "",
+            "help": "World-building text.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "ar-field-collector",
+            "key": "collector",
+            "label": "Collector Number",
+            "kind": 0,
+            "defaultValue": "001/240",
+            "help": "Set collector number.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        },
+        {
+            "id": "ar-field-active",
+            "key": "active",
+            "label": "Tournament Legal",
+            "kind": 4,
+            "defaultValue": "true",
+            "help": "Demonstrates boolean card data.",
+            "decimalPlaces": 0,
+            "prefix": "",
+            "suffix": ""
+        }
+    ]
+}

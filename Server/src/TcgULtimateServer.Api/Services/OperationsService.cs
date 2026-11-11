@@ -142,8 +142,8 @@ public sealed class OperationsService(AppState state, AuditLogService audit, Rul
     public MatchmakingQueueConfiguration SaveMatchmakingQueue(MatchmakingQueueRequest request, string actorId)
     {
         ValidateIdentity(request.Id, request.Name, "Matchmaking queue");
-        if (request.MinPlayers is < 2 or > 16 || request.MaxPlayers < request.MinPlayers || request.MaxPlayers > 16)
-            throw new InvalidOperationException("Matchmaking player limits must be between 2 and 16, with max players not lower than min players.");
+        if (request.MinPlayers != request.MaxPlayers || request.MinPlayers is < 2 or > 5)
+            throw new InvalidOperationException("Only 1v1, 1v2, 1v3, and 1v4 queues (2–5 seats) are supported.");
         if (request.InitialRatingRange is < 0 or > 5000 || request.RatingExpansionPerSecond is < 0 or > 1000)
             throw new InvalidOperationException("Matchmaking rating ranges are out of bounds.");
         if (request.MaxWaitSeconds is < 5 or > 3600)
@@ -177,10 +177,23 @@ public sealed class OperationsService(AppState state, AuditLogService audit, Rul
     {
         if (!state.MatchmakingQueues.TryGetValue(request.QueueId, out var queue) || !queue.Enabled)
             throw new InvalidOperationException("The matchmaking queue is not available.");
-        if (request.PartySize is < 1 or > 8 || request.PartySize > queue.MaxPlayers)
-            throw new InvalidOperationException("Party size is not valid for this queue.");
+        if (request.PartySize != 1)
+            throw new InvalidOperationException("Party matchmaking requires verified party membership; queue individually until invitations are supported.");
         foreach (var existing in state.MatchmakingEntries.Values.Where(entry => string.Equals(entry.UserId, user.Id, StringComparison.Ordinal)).ToList())
             state.MatchmakingEntries.TryRemove(existing.Id, out _);
+        var deck = !string.IsNullOrWhiteSpace(request.DeckId)
+            ? state.Decks.Values.FirstOrDefault(candidate => candidate.Id == request.DeckId &&
+                candidate.OwnerId == user.Id && !candidate.Suspended &&
+                state.RulePacks.ContainsKey(candidate.RulePackId))
+            : state.Decks.Values.Where(candidate => candidate.OwnerId == user.Id &&
+                !candidate.Suspended && state.RulePacks.ContainsKey(candidate.RulePackId))
+                .OrderByDescending(candidate => candidate.UpdatedAt).FirstOrDefault();
+        if (!string.IsNullOrWhiteSpace(request.DeckId) && deck == null)
+            throw new InvalidOperationException("The selected deck is unavailable or does not belong to this player.");
+        var rulePackId = deck?.RulePackId ?? state.RulePacks.Keys.OrderBy(id => id).FirstOrDefault()
+            ?? throw new InvalidOperationException("No playable ruleset is active.");
+        var power = MatchQuality.DeckPower(state, rulePackId, deck);
+        state.MatchedGamesByUser.TryRemove(user.Id, out _);
         var entry = new MatchmakingQueueEntry(
             Guid.NewGuid().ToString("N"),
             queue.Id,
@@ -188,7 +201,8 @@ public sealed class OperationsService(AppState state, AuditLogService audit, Rul
             user.Rating,
             request.PartySize,
             string.IsNullOrWhiteSpace(request.Region) ? "global" : request.Region.Trim().ToLowerInvariant(),
-            DateTimeOffset.UtcNow);
+            DateTimeOffset.UtcNow,
+            power, deck?.Id, rulePackId);
         state.MatchmakingEntries[entry.Id] = entry;
         return entry;
     }
@@ -223,8 +237,13 @@ public sealed class OperationsService(AppState state, AuditLogService audit, Rul
             var anchor = waiting[0];
             var waitSeconds = Math.Max(0, (DateTimeOffset.UtcNow - anchor.JoinedAt).TotalSeconds);
             var ratingRange = queue.InitialRatingRange + (int)(waitSeconds * queue.RatingExpansionPerSecond);
+            var powerRange = Math.Min(1000, 120 + (int)(waitSeconds * Math.Max(2, queue.RatingExpansionPerSecond)));
             var candidates = waiting
-                .Where(entry => string.Equals(entry.Region, anchor.Region, StringComparison.OrdinalIgnoreCase) && Math.Abs(entry.Rating - anchor.Rating) <= ratingRange)
+                .Where(entry =>
+                    string.Equals(entry.Region, anchor.Region, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(entry.RulePackId, anchor.RulePackId, StringComparison.OrdinalIgnoreCase) &&
+                    MatchQuality.Compatible(entry.Rating, anchor.Rating, entry.DeckPower, anchor.DeckPower, ratingRange, powerRange))
+                .OrderBy(entry => Math.Abs(entry.Rating - anchor.Rating) * 2 + Math.Abs(entry.DeckPower - anchor.DeckPower))
                 .ToList();
             var selected = new List<MatchmakingQueueEntry>();
             var playerCount = 0;
@@ -238,13 +257,24 @@ public sealed class OperationsService(AppState state, AuditLogService audit, Rul
 
             var allowedToBackfill = queue.BotBackfill && waitSeconds >= queue.MaxWaitSeconds;
             if (playerCount < queue.MinPlayers && !allowedToBackfill) break;
+            var rulePackId = anchor.RulePackId ?? state.RulePacks.Keys.OrderBy(key => key).FirstOrDefault();
+            if (rulePackId == null || !state.RulePacks.TryGetValue(rulePackId, out var eligiblePack) ||
+                queue.MaxPlayers < eligiblePack.MinimumPlayers || queue.MaxPlayers > eligiblePack.MaximumPlayers)
+                break;
             var botsForMatch = Math.Max(0, queue.MinPlayers - playerCount);
-            var players = selected.SelectMany(entry => Enumerable.Range(0, entry.PartySize).Select(index => index == 0 ? entry.UserId : $"{entry.UserId}-party-{index + 1}")).ToList();
-            players.AddRange(Enumerable.Range(1, botsForMatch).Select(index => $"matchmaking-bot-{Guid.NewGuid():N}"));
-            var game = new GameState { RulePackId = state.RulePacks.Keys.FirstOrDefault() ?? "mtg-like", Players = players };
+            var players = selected.Select(entry => entry.UserId).ToList();
+            var game = TeamMatchComposer.Create(rulePackId, players, queue.MaxPlayers - 1,
+                allowedToBackfill, () => $"bot-matchmaking-{Guid.NewGuid():N}");
+            game.BotDifficulty = MatchQuality.AiDifficulty(anchor.Rating, anchor.DeckPower);
+            foreach (var participant in selected)
+            {
+                var deck = MatchQuality.SelectDeck(state, participant.UserId, game.RulePackId, participant.DeckId);
+                if (deck != null) game.PlayerDecks[participant.UserId] = deck.CardIds.ToList();
+            }
             rules.Start(game);
             state.Games[game.Id] = game;
             gameIds.Add(game.Id);
+            foreach (var participant in selected) state.MatchedGamesByUser[participant.UserId] = game.Id;
             playersMatched += playerCount;
             botsAdded += botsForMatch;
             foreach (var entry in selected)
@@ -258,6 +288,93 @@ public sealed class OperationsService(AppState state, AuditLogService audit, Rul
         var remaining = state.MatchmakingEntries.Values.Where(entry => string.Equals(entry.QueueId, id, StringComparison.OrdinalIgnoreCase)).Sum(entry => entry.PartySize);
         audit.Write("Information", "matchmaking", $"Ran queue {id}: {gameIds.Count} matches, {playersMatched} players, {botsAdded} bots.", actorId);
         return new MatchmakingRunResult(id, gameIds.Count, playersMatched, botsAdded, remaining, gameIds);
+    }
+
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, System.Threading.SemaphoreSlim> unityQueueLocks = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Runs rated matchmaking against the Unity simulation, never allocating
+    /// a legacy GameState while native gameplay is enabled.
+    /// </summary>
+    public async Task<MatchmakingRunResult> RunUnityMatchmakingAsync(
+        string id, string actorId, UnitySimulationBridge unity, CancellationToken cancellationToken = default)
+    {
+        if (!unity.Enabled) throw new InvalidOperationException("Native simulation is not configured.");
+        if (!state.MatchmakingQueues.TryGetValue(id, out var queue))
+            throw new KeyNotFoundException("Queue not found.");
+        if (!queue.Enabled) throw new InvalidOperationException("Queue is disabled.");
+
+        var gate = unityQueueLocks.GetOrAdd(id, _ => new System.Threading.SemaphoreSlim(1, 1));
+        await gate.WaitAsync(cancellationToken);
+        try
+        {
+            var waiting = state.MatchmakingEntries.Values
+                .Where(e => string.Equals(e.QueueId, id, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(e => e.JoinedAt).ToList();
+            var ids = new List<string>();
+            var humans = 0;
+            var bots = 0;
+
+            while (waiting.Count > 0)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var anchor = waiting[0];
+                var seconds = Math.Max(0, (DateTimeOffset.UtcNow - anchor.JoinedAt).TotalSeconds);
+                var ratingTolerance = queue.InitialRatingRange +
+                    (int)(seconds * queue.RatingExpansionPerSecond);
+                var powerTolerance = Math.Min(1000,
+                    120 + (int)(seconds * Math.Max(2, queue.RatingExpansionPerSecond)));
+                var selected = waiting
+                    .Where(entry =>
+                        string.Equals(entry.Region, anchor.Region, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(entry.RulePackId, anchor.RulePackId, StringComparison.OrdinalIgnoreCase) &&
+                        MatchQuality.Compatible(anchor.Rating, entry.Rating,
+                            anchor.DeckPower, entry.DeckPower, ratingTolerance, powerTolerance))
+                    .OrderBy(entry => Math.Abs(entry.Rating - anchor.Rating) * 2 +
+                                      Math.Abs(entry.DeckPower - anchor.DeckPower))
+                    .Take(queue.MaxPlayers).ToList();
+
+                var canBackfill = queue.BotBackfill && seconds >= queue.MaxWaitSeconds;
+                if (selected.Count < queue.MinPlayers && !canBackfill) break;
+                if (selected.Count == 0) break;
+
+                var packId = anchor.RulePackId;
+                if (packId == null || !state.RulePacks.TryGetValue(packId, out var pack) ||
+                    queue.MaxPlayers < pack.MinimumPlayers || queue.MaxPlayers > pack.MaximumPlayers)
+                    break;
+                if (!await unity.Ready()) break;
+
+                var participantIds = selected.Select(e => e.UserId).ToList();
+                var decks = new Dictionary<string, List<string>>();
+                foreach (var participant in selected)
+                {
+                    var deck = MatchQuality.SelectDeck(state, participant.UserId, packId, participant.DeckId);
+                    if (deck != null) decks[participant.UserId] = deck.CardIds.ToList();
+                }
+                var botCount = Math.Max(0, queue.MaxPlayers - selected.Count);
+                var difficulty = MatchQuality.AiDifficulty(anchor.Rating, anchor.DeckPower);
+                // Only commit queue removal after the Unity host accepts the match.
+                var created = await unity.Create(pack, participantIds, queue.MaxPlayers - 1,
+                    canBackfill, difficulty, decks);
+
+                ids.Add(created.id);
+                humans += selected.Count;
+                bots += botCount;
+                foreach (var participant in selected)
+                {
+                    state.MatchedGamesByUser[participant.UserId] = created.id;
+                    state.MatchmakingEntries.TryRemove(participant.Id, out _);
+                    waiting.Remove(participant);
+                }
+            }
+
+            var remaining = state.MatchmakingEntries.Values
+                .Count(entry => entry.QueueId.Equals(id, StringComparison.OrdinalIgnoreCase));
+            audit.Write("Information", "matchmaking",
+                $"Unity queue {id}: {ids.Count} matches, {humans} humans, {bots} bots.", actorId);
+            return new MatchmakingRunResult(id, ids.Count, humans, bots, remaining, ids);
+        }
+        finally { gate.Release(); }
     }
 
     public IReadOnlyList<LiveOpsCampaign> Campaigns() => state.LiveOpsCampaigns.Values.OrderBy(campaign => campaign.StartsAt).ToList();

@@ -1,0 +1,45 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-022",
+    "name":  "Ravencrest Marauder - Umbral Signature",
+    "cardId":  "ar-card-umbral-022",
+    "activationTriggerId":  "action:ar-play-creature",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Restore 2 life. Draw 1 card(s).",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  2
+                    },
+                    {
+                        "kind":  "draw",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

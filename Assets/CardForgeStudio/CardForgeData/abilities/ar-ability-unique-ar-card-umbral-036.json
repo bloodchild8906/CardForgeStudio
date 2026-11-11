@@ -1,0 +1,46 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-036",
+    "name":  "Hush Colossus - Umbral Signature",
+    "cardId":  "ar-card-umbral-036",
+    "activationTriggerId":  "action:ar-play-creature",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Mill 2 enemy card(s). Gain 3 mana.",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "mill",
+                        "amount":  2,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "energy",
+                        "amount":  3
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

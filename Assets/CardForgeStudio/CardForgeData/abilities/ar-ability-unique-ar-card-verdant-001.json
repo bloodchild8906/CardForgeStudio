@@ -1,0 +1,50 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-verdant-001",
+    "name":  "Verdant Elderroot Sovereign - Verdant Signature",
+    "cardId":  "ar-card-verdant-001",
+    "activationTriggerId":  "action:ar-cast-commander",
+    "actionId":  "ar-cast-commander",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Starts in Command, visible to all. When defeated, returns to Command; each recast costs +2. On cast: Gain 2 shield per friendly creature. Gain 3 renown. Draw 1 card(s).",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "scale_resource",
+                        "resourceId":  "shield",
+                        "amount":  2
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "renown",
+                        "amount":  3
+                    },
+                    {
+                        "kind":  "draw",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

@@ -1,0 +1,72 @@
+{
+    "version": 1,
+    "id": "ar-card-umbral-028",
+    "name": "Boundless Nullblade",
+    "cardNumber": "211",
+    "layoutId": "ar-layout-front",
+    "backLayoutId": "ar-layout-back",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Unit",
+    "variantId": "uncommon",
+    "values": [
+        {
+            "fieldId": "5aa8e06473ef4906ad1207722c38f824",
+            "value": "Boundless Nullblade"
+        },
+        {
+            "fieldId": "d3122d6a7a2e455b85aa4159a16b59dd",
+            "value": "4"
+        },
+        {
+            "fieldId": "3fdb6418da2c449cb610ce5ac43a97a2",
+            "value": "Unit — Umbral"
+        },
+        {
+            "fieldId": "1fa832ace0bb4ffd980ff9350beb90ed",
+            "value": "mill an opponent for 1."
+        },
+        {
+            "fieldId": "89c7fee71dd74befaa68a04dd3abceee",
+            "value": "1"
+        },
+        {
+            "fieldId": "ar-field-toughness",
+            "value": "1"
+        },
+        {
+            "fieldId": "a923c2a162ad467899a0e29c0acad459",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-umbral-028.png"
+        },
+        {
+            "fieldId": "ar-field-affinity",
+            "value": "Umbral"
+        },
+        {
+            "fieldId": "ar-field-affinity-icon",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/umbral.png"
+        },
+        {
+            "fieldId": "ar-field-rarity",
+            "value": "Uncommon"
+        },
+        {
+            "fieldId": "ar-field-flavor",
+            "value": "No constellation follows the same course twice."
+        },
+        {
+            "fieldId": "ar-field-collector",
+            "value": "211/240 · ARFT"
+        },
+        {
+            "fieldId": "ar-field-active",
+            "value": "true"
+        }
+    ],
+    "zoneOverrides": [],
+    "requirements": [],
+    "keywordIds": [],
+    "abilityIds": [
+        "ar-ability-unique-ar-card-umbral-028"
+    ]
+}

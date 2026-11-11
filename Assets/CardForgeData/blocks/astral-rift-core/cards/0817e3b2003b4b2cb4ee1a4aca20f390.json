@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "id": "0817e3b2003b4b2cb4ee1a4aca20f390",
+    "name": "New card",
+    "cardNumber": "001",
+    "layoutId": "ar-layout-front",
+    "backLayoutId": "ar-layout-back",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Card",
+    "variantId": "",
+    "values": [
+        {
+            "fieldId": "7fda30e765584bc9b20adc95e3e6243a",
+            "value": "verdant"
+        }
+    ],
+    "zoneOverrides": [],
+    "requirements": [],
+    "keywordIds": [],
+    "abilityIds": []
+}

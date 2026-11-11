@@ -1,0 +1,78 @@
+{
+    "version":  1,
+    "id":  "ar-card-solar-055",
+    "name":  "Firstborn Surge",
+    "cardNumber":  "055",
+    "layoutId":  "ar-layout-front",
+    "backLayoutId":  "ar-layout-back",
+    "sourceBlockId":  "",
+    "sourceCardId":  "",
+    "cardType":  "QuickSpell",
+    "variantId":  "common",
+    "values":  [
+                   {
+                       "fieldId":  "7e1150461ebe451eb04d2d9733b3ef71",
+                       "value":  "Firstborn Surge"
+                   },
+                   {
+                       "fieldId":  "35b35a270df44204ad87fc10ea4b1d25",
+                       "value":  "2"
+                   },
+                   {
+                       "fieldId":  "114ef7b3b56b4be89bc41f0dc8ffca5e",
+                       "value":  "QuickSpell - Solar"
+                   },
+                   {
+                       "fieldId":  "ca9caa5ca8a3403aa882178aa2d2e0c4",
+                       "value":  "Fast: cast during any player turn. Gain 1 shield. Draw 2 card(s)."
+                   },
+                   {
+                       "fieldId":  "d9c7174f6cb04851861433623f1a2dba",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "ar-field-toughness",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "df11ac1a2d544824abe10686c7bd14ab",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-solar-055.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity",
+                       "value":  "Solar"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity-icon",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/solar.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-rarity",
+                       "value":  "Common"
+                   },
+                   {
+                       "fieldId":  "ar-field-flavor",
+                       "value":  "Within the Astral Rift, no two constellations answer the same call."
+                   },
+                   {
+                       "fieldId":  "ar-field-collector",
+                       "value":  "055/240 ARFT"
+                   },
+                   {
+                       "fieldId":  "ar-field-active",
+                       "value":  "true"
+                   }
+               ],
+    "zoneOverrides":  [
+
+                      ],
+    "requirements":  [
+
+                     ],
+    "keywordIds":  [
+
+                   ],
+    "abilityIds":  [
+                       "ar-ability-unique-ar-card-solar-055"
+                   ]
+}

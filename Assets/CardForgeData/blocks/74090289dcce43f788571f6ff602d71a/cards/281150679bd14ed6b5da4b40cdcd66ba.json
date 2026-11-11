@@ -1,0 +1,17 @@
+{
+    "version": 1,
+    "id": "281150679bd14ed6b5da4b40cdcd66ba",
+    "name": "New Discovery",
+    "cardNumber": "001",
+    "layoutId": "d40df6b0650f4820bf06b239734c0744",
+    "backLayoutId": "7aca69870e9a4d66b34881b109cb2a62",
+    "sourceBlockId": "",
+    "sourceCardId": "",
+    "cardType": "Card",
+    "variantId": "",
+    "values": [],
+    "zoneOverrides": [],
+    "requirements": [],
+    "keywordIds": [],
+    "abilityIds": []
+}

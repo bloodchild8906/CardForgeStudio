@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "id": "ar-keyword-overcharge",
+    "name": "Overcharge",
+    "rulesText": "This card reacts to strike actions.",
+    "reminderText": "A strike emits this card's flare event.",
+    "abilityIds": [
+        "ar-ability-flare"
+    ],
+    "tags": [
+        "combat",
+        "energy"
+    ]
+}

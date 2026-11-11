@@ -1,0 +1,52 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-solar-059",
+    "name":  "Starforged Snap - Solar Signature",
+    "cardId":  "ar-card-solar-059",
+    "activationTriggerId":  "action:ar-cast-quickspell",
+    "actionId":  "ar-cast-quickspell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Fast: cast during any player turn. Gain 1 shield. Deal 1 damage to an enemy player. Gain 1 renown.",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  1
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  -1,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "renown",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

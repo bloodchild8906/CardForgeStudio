@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup>
+  <TargetFramework>netstandard2.1</TargetFramework>
+  <LangVersion>9.0</LangVersion>
+  <Nullable>disable</Nullable>
+  <ImplicitUsings>disable</ImplicitUsings>
+  <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+</PropertyGroup>
+<ItemGroup>
+  <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/Simulation/Simulation.Models.cs" Link="Simulation.Models.cs"/>
+  <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/Simulation/Simulation.Engine.cs" Link="Simulation.Engine.cs"/>
+  <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/Simulation/Simulation.Astral.cs" Link="Simulation.Astral.cs"/>
+  <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/Simulation/Simulation.DeckLegality.cs" Link="Simulation.DeckLegality.cs"/>
+  <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/Simulation/Simulation.Bots.cs" Link="Simulation.Bots.cs"/>
+  <Compile Include="../../Assets/CardForgeStudio/CardForgeDedicatedServer/Runtime/Simulation/Simulation.Protocol.cs" Link="Simulation.Protocol.cs"/>
+</ItemGroup>
+</Project>

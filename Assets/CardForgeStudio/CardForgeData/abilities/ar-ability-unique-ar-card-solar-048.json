@@ -1,0 +1,45 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-solar-048",
+    "name":  "Firebrand Manifest - Solar Signature",
+    "cardId":  "ar-card-solar-048",
+    "activationTriggerId":  "action:ar-cast-spell",
+    "actionId":  "ar-cast-spell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Mill 1 enemy card(s). Draw 1 card(s).",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "mill",
+                        "amount":  1,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "draw",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

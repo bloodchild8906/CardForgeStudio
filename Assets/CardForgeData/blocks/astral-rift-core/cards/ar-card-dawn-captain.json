@@ -11,23 +11,23 @@
     "variantId": "rare",
     "values": [
         {
-            "fieldId": "7e1150461ebe451eb04d2d9733b3ef71",
+            "fieldId": "5aa8e06473ef4906ad1207722c38f824",
             "value": "Dawnline Captain"
         },
         {
-            "fieldId": "35b35a270df44204ad87fc10ea4b1d25",
+            "fieldId": "d3122d6a7a2e455b85aa4159a16b59dd",
             "value": "3"
         },
         {
-            "fieldId": "114ef7b3b56b4be89bc41f0dc8ffca5e",
+            "fieldId": "3fdb6418da2c449cb610ce5ac43a97a2",
             "value": "Unit — Solar"
         },
         {
-            "fieldId": "ca9caa5ca8a3403aa882178aa2d2e0c4",
+            "fieldId": "1fa832ace0bb4ffd980ff9350beb90ed",
             "value": "Vanguard — when deployed, announce the arrival trigger."
         },
         {
-            "fieldId": "d9c7174f6cb04851861433623f1a2dba",
+            "fieldId": "89c7fee71dd74befaa68a04dd3abceee",
             "value": "4"
         },
         {
@@ -35,8 +35,8 @@
             "value": "3"
         },
         {
-            "fieldId": "df11ac1a2d544824abe10686c7bd14ab",
-            "value": "Assets/CardForgeData/demo/astral-rift/art/ar-card-dawn-captain.png"
+            "fieldId": "a923c2a162ad467899a0e29c0acad459",
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-dawn-captain.png"
         },
         {
             "fieldId": "ar-field-affinity",
@@ -44,7 +44,7 @@
         },
         {
             "fieldId": "ar-field-affinity-icon",
-            "value": "Assets/CardForgeData/demo/astral-rift/icons/solar.png"
+            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/solar.png"
         },
         {
             "fieldId": "ar-field-rarity",
@@ -56,7 +56,7 @@
         },
         {
             "fieldId": "ar-field-collector",
-            "value": "001/012 · ARFT"
+            "value": "001/240 · ARFT"
         },
         {
             "fieldId": "ar-field-active",
@@ -69,6 +69,7 @@
         "ar-keyword-vanguard"
     ],
     "abilityIds": [
-        "ar-ability-arrival"
+        "ar-ability-arrival",
+        "ar-ability-unique-ar-card-dawn-captain"
     ]
 }

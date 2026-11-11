@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "id": "ar-keyword-ward",
+    "name": "Ward",
+    "rulesText": "This card reacts when energy is channeled.",
+    "reminderText": "Channel to demonstrate resource-linked abilities.",
+    "abilityIds": [
+        "ar-ability-channel"
+    ],
+    "tags": [
+        "defense",
+        "resource"
+    ]
+}

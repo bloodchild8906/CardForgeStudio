@@ -1,0 +1,58 @@
+{
+    "version": 1,
+    "id": "ar-end-turn",
+    "name": "End turn",
+    "triggerId": "",
+    "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
+    "effect": "Pass priority and begin the next player's Ready phase.",
+    "condition": "Available in its assigned phase.",
+    "cost": "No resource cost",
+    "targets": "Acting player or selected card",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [],
+    "graphNodes": [
+        {
+            "id": "ar-end-turn-validate",
+            "title": "Validate request",
+            "detail": "Check phase, player priority, targets, conditions, and costs.",
+            "tone": "check",
+            "x": 70.0,
+            "y": 90.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-end-turn-apply",
+            "title": "Apply authoritative effect",
+            "detail": "Pass priority and begin the next player's Ready phase.",
+            "tone": "process",
+            "x": 360.0,
+            "y": 90.0,
+            "causesStateChange": true,
+            "emitsTriggers": false
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-end-turn-validate",
+            "to": "ar-end-turn-apply",
+            "label": "valid"
+        }
+    ],
+    "requiresActivePlayer": true,
+    "serverEffectKind": "end_turn",
+    "sourceZoneId": "",
+    "destinationZoneId": "",
+    "resourceId": "",
+    "effectAmount": 0,
+    "effectTarget": "",
+    "eventType": "",
+    "costResourceId": "",
+    "costAmount": 0,
+    "conditionKind": "",
+    "conditionKey": "",
+    "conditionValue": "",
+    "dataKey": "",
+    "dataValue": ""
+}

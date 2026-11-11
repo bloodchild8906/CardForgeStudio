@@ -1,0 +1,47 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-044",
+    "name":  "Shadesong Rebirth - Umbral Signature",
+    "cardId":  "ar-card-umbral-044",
+    "activationTriggerId":  "action:ar-cast-spell",
+    "actionId":  "ar-cast-spell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Drain 1 enemy mana. Gain 3 shield.",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "drain_resource",
+                        "resourceId":  "energy",
+                        "amount":  1,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  3
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

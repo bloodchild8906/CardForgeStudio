@@ -1,0 +1,45 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-tidal-023",
+    "name":  "Tidewalker Archer - Tidal Signature",
+    "cardId":  "ar-card-tidal-023",
+    "activationTriggerId":  "action:ar-play-creature",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Draw 1 card(s). Gain 3 shield.",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "draw",
+                        "amount":  1
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  3
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

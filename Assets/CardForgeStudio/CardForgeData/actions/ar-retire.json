@@ -1,0 +1,60 @@
+{
+    "version": 1,
+    "id": "ar-retire",
+    "name": "Retire from the starfield",
+    "triggerId": "ar-trigger-zone",
+    "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
+    "effect": "Move one of your battlefield cards to the discard zone.",
+    "condition": "source_in_zone",
+    "cost": "No resource cost",
+    "targets": "Acting player or selected card",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [
+        "ar-trigger-zone"
+    ],
+    "graphNodes": [
+        {
+            "id": "ar-retire-validate",
+            "title": "Validate request",
+            "detail": "Check phase, player priority, targets, conditions, and costs.",
+            "tone": "check",
+            "x": 70.0,
+            "y": 90.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-retire-apply",
+            "title": "Apply authoritative effect",
+            "detail": "Move one of your battlefield cards to the discard zone.",
+            "tone": "process",
+            "x": 360.0,
+            "y": 90.0,
+            "causesStateChange": true,
+            "emitsTriggers": true
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-retire-validate",
+            "to": "ar-retire-apply",
+            "label": "valid"
+        }
+    ],
+    "requiresActivePlayer": true,
+    "serverEffectKind": "move_card",
+    "sourceZoneId": "battlefield",
+    "destinationZoneId": "discard",
+    "resourceId": "",
+    "effectAmount": 0,
+    "effectTarget": "",
+    "eventType": "",
+    "costResourceId": "",
+    "costAmount": 0,
+    "conditionKind": "source_in_zone",
+    "conditionKey": "",
+    "conditionValue": "",
+    "dataKey": "",
+    "dataValue": ""
+}

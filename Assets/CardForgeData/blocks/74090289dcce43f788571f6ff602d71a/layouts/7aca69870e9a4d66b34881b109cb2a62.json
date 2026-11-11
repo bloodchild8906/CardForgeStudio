@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "id": "7aca69870e9a4d66b34881b109cb2a62",
+    "name": "Classic Back",
+    "isBack": true,
+    "width": 360,
+    "height": 504,
+    "backgroundAssetPath": "",
+    "backgroundColor": "#0C1A2A",
+    "templates": [],
+    "zones": [
+        {
+            "locked": false,
+            "id": "b7b176a998ab4dfc9f5f7a6059eb1e0e",
+            "name": "Back title",
+            "kind": 4,
+            "fieldId": "",
+            "staticText": "CARD FORGE",
+            "staticAssetPath": "",
+            "x": 25.0,
+            "y": 182.0,
+            "width": 310.0,
+            "height": 90.0,
+            "order": 0,
+            "offsetX": 0.0,
+            "offsetY": 0.0,
+            "fontSize": 30.0,
+            "fontAssetPath": "",
+            "color": "#F2F0EB",
+            "backgroundColor": "#00000000",
+            "templateId": "",
+            "bold": true,
+            "visible": true,
+            "alignment": "MiddleCenter",
+            "layers": [],
+            "variants": []
+        }
+    ],
+    "layoutType": "Standard",
+    "requirements": []
+}

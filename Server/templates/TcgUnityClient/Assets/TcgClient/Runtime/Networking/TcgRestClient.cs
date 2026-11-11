@@ -92,6 +92,9 @@ namespace TcgServer.Client
         public IEnumerator Rules(Action<RulePackDto[]> completed, Action<TcgApiError> failed) =>
             GetJson("/api/rules", null, json => completed(JsonArrayUtility.FromJson<RulePackDto>(json)), failed);
 
+        public IEnumerator GameRulesSync(string rulePackId, Action<RulePackDto> completed, Action<TcgApiError> failed) =>
+            GetJson("/api/rules/" + UnityWebRequest.EscapeURL(rulePackId), null, json => completed(JsonUtility.FromJson<RulePackDto>(json)), failed);
+
         public IEnumerator AssetManifest(Action<AssetDescriptorDto[]> completed, Action<TcgApiError> failed) =>
             GetJson("/api/assets/manifest", null, json => completed(JsonArrayUtility.FromJson<AssetDescriptorDto>(json)), failed);
 

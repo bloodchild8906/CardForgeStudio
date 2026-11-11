@@ -1,0 +1,45 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-tidal-030",
+    "name":  "Driftwood Golem - Tidal Signature",
+    "cardId":  "ar-card-tidal-030",
+    "activationTriggerId":  "action:ar-play-creature",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Return 1 card(s) from your discard to hand. Restore 1 life.",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "reclaim",
+                        "amount":  1
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

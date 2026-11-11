@@ -34,7 +34,7 @@ Ids must be 1-128 characters of letters, digits, `-` or `_`. Ids are used as fil
 
 - Open **CardForge > Dashboard**, then choose **CardForge Studio** again.
 - Check the Console for UI Toolkit UXML/USS load errors.
-- Confirm `Assets/CardForge/Editor/UI/UXML/CardForgeWindow.uxml` and the USS files exist.
+- Confirm `Assets/CardForgeStudio/CardForge/Editor/UI/UXML/CardForgeWindow.uxml` and the USS files exist.
 - Try **Studio settings > Show artwork** off if decorative art fails to load.
 
 ### A library is empty
@@ -204,7 +204,7 @@ Set `fontAssetPath` in the zone inspector. Fonts are Unity assets; refresh the p
 
 ### Excel tests fail
 
-The `.xls`/`.xlsx` fixtures must exist under `Assets/CardForge/Tests/Fixtures/`. If the code page provider is missing, Excel reading fails with the Windows-1252 message above.
+The `.xls`/`.xlsx` fixtures must exist under `Assets/CardForgeStudio/CardForge/Tests/Fixtures/`. If the code page provider is missing, Excel reading fails with the Windows-1252 message above.
 
 ## Performance
 

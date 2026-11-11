@@ -1,0 +1,60 @@
+{
+    "version": 1,
+    "id": "ar-deploy",
+    "name": "Deploy unit",
+    "triggerId": "ar-trigger-deploy",
+    "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
+    "effect": "Move a Unit from hand to the Frontline.",
+    "condition": "source_in_zone",
+    "cost": "2 energy",
+    "targets": "Acting player or selected card",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [
+        "ar-trigger-deploy"
+    ],
+    "graphNodes": [
+        {
+            "id": "ar-deploy-validate",
+            "title": "Validate request",
+            "detail": "Check phase, player priority, targets, conditions, and costs.",
+            "tone": "check",
+            "x": 70.0,
+            "y": 90.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-deploy-apply",
+            "title": "Apply authoritative effect",
+            "detail": "Move a Unit from hand to the Frontline.",
+            "tone": "process",
+            "x": 360.0,
+            "y": 90.0,
+            "causesStateChange": true,
+            "emitsTriggers": true
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-deploy-validate",
+            "to": "ar-deploy-apply",
+            "label": "valid"
+        }
+    ],
+    "requiresActivePlayer": true,
+    "serverEffectKind": "move_card",
+    "sourceZoneId": "hand",
+    "destinationZoneId": "battlefield",
+    "resourceId": "",
+    "effectAmount": 0,
+    "effectTarget": "",
+    "eventType": "",
+    "costResourceId": "energy",
+    "costAmount": 2,
+    "conditionKind": "source_in_zone",
+    "conditionKey": "",
+    "conditionValue": "",
+    "dataKey": "",
+    "dataValue": ""
+}

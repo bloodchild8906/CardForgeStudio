@@ -36,6 +36,9 @@ public record TcgZoneDefinition(
     string Visibility = "owner",
     bool Ordered = false,
     int? Capacity = null);
+public record TcgBoardZonePlacement(
+    string Id, string ZoneId, string Side, string Label,
+    float X, float Y, float Width, float Height, int Order = 0);
 public record TcgResourceDefinition(
     string Id,
     string Name,
@@ -70,6 +73,12 @@ public record TcgActionDefinition(
     List<TcgConditionDefinition>? Conditions = null,
     List<TcgEffectDefinition>? Effects = null,
     Dictionary<string, JsonElement>? Metadata = null);
+public record TcgTriggerDefinition(
+    string Id,
+    string Name,
+    List<string> CauseActionIds,
+    List<string> ResponseActionIds,
+    int Priority = 0);
 public record TcgPhaseDefinition(
     string Id,
     string Name,
@@ -106,9 +115,11 @@ public record RulePack(string Id, string Name, string Version, string Descriptio
     public int MinimumPlayers { get; init; } = 2;
     public int MaximumPlayers { get; init; } = 2;
     public List<TcgZoneDefinition> Zones { get; init; } = [];
+    public List<TcgBoardZonePlacement> BoardLayout { get; init; } = [];
     public List<TcgResourceDefinition> Resources { get; init; } = [];
     public List<TcgPhaseDefinition> Phases { get; init; } = [];
     public List<TcgActionDefinition> Actions { get; init; } = [];
+    public List<TcgTriggerDefinition> Triggers { get; init; } = [];
     public List<string> StartingDeck { get; init; } = [];
     public Dictionary<string, JsonElement> Metadata { get; init; } = [];
 }
@@ -212,8 +223,11 @@ public record MatchmakingQueueEntry(
     int Rating,
     int PartySize,
     string Region,
-    DateTimeOffset JoinedAt);
-public record JoinMatchmakingRequest(string QueueId, string Region = "global", int PartySize = 1);
+    DateTimeOffset JoinedAt,
+    int DeckPower = 500,
+    string? DeckId = null,
+    string? RulePackId = null);
+public record JoinMatchmakingRequest(string QueueId, string Region = "global", int PartySize = 1, string? DeckId = null);
 public record MatchmakingQueueStatus(MatchmakingQueueConfiguration Queue, int WaitingPlayers, int WaitingParties, int LongestWaitSeconds);
 public record MatchmakingRunResult(string QueueId, int MatchesCreated, int PlayersMatched, int BotsAdded, int PlayersRemaining, List<string> GameIds);
 public record LiveOpsCampaign(
@@ -340,8 +354,9 @@ public record GamePackageVersionRecord(
     DateTimeOffset ImportedAt,
     RulePack RulePack,
     VictoryDefinitionSet VictoryDefinitions);
-public record CreateGameRequest(string RulePackId, List<string> PlayerIds, bool AddAi = false);
+public record CreateGameRequest(string RulePackId, List<string> PlayerIds, bool AddAi = false, string? DeckId = null, int TeamSize = 1);
 public record PlayCardRequest(string CardInstanceId);
+public record ClientGameTeam(string PlayerId, int TeamId);
 public record ClientGameZone(string PlayerId, string ZoneId, List<CardInstance> Cards);
 public record ClientGameResource(string PlayerId, string ResourceId, long Value);
 public record ClientGameAction(string Id, string Name, string? SourceZone, string? DestinationZone, bool RequiresActivePlayer, string? Target);
@@ -358,7 +373,11 @@ public record ClientGameView(
     List<ClientGameZone> Zones,
     List<ClientGameResource> Resources,
     List<ClientGameAction> AllowedActions,
-    List<GameEvent> Events);
+    List<GameEvent> Events)
+{
+    public int TeamSize { get; init; } = 1;
+    public List<ClientGameTeam> Teams { get; init; } = [];
+}
 public record GameEvent(string Type, string Message, string? ActorId = null, object? Data = null, DateTimeOffset? At = null);
 public record StateMachineTransition(
     string Event,
@@ -403,6 +422,11 @@ public class GameState
     public string RulePackId { get; init; } = "mtg-like";
     public List<string> Players { get; init; } = [];
     public Dictionary<string, int> Life { get; init; } = [];
+    public Dictionary<string, List<string>> PlayerDecks { get; init; } = [];
+    /// <summary>Team membership. Missing entries denote free-for-all games.</summary>
+    public Dictionary<string, int> PlayerTeams { get; init; } = [];
+    public int TeamSize { get; set; } = 1;
+    public int BotDifficulty { get; set; } = 2;
     public Dictionary<string, List<CardInstance>> Hands { get; init; } = [];
     public Dictionary<string, List<CardInstance>> Battlefield { get; init; } = [];
     public Dictionary<string, Dictionary<string, List<CardInstance>>> Zones { get; init; } = [];
@@ -437,6 +461,7 @@ public class AppState
     public ConcurrentDictionary<string, BotSimulationRun> BotSimulationRuns { get; } = new();
     public ConcurrentDictionary<string, MatchmakingQueueConfiguration> MatchmakingQueues { get; } = new();
     public ConcurrentDictionary<string, MatchmakingQueueEntry> MatchmakingEntries { get; } = new();
+    public ConcurrentDictionary<string, string> MatchedGamesByUser { get; } = new();
     public ConcurrentDictionary<string, LiveOpsCampaign> LiveOpsCampaigns { get; } = new();
     public ConcurrentDictionary<string, RewardCampaign> RewardCampaigns { get; } = new();
     public ConcurrentDictionary<string, ManagedAchievement> ManagedAchievements { get; } = new();

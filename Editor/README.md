@@ -2,7 +2,7 @@
 
 CardForge Studio is a Unity-native, **editor-only** authoring suite for building **digital** trading card games. It provides a visual card/layout designer, a JSON-backed content library, a turn-flow and rules authoring system, and creator tools for extracting frames, slicing icon atlases, importing fonts, and analyzing card art with an optional vision model.
 
-**JSON is the source of truth.** Every card, layout, block, icon, trigger, action, ability, keyword, and turn flow is a plain JSON document under `Assets/CardForgeData/`. Unity assets (textures, fonts) provide renderable art. There is no hidden ScriptableObject database.
+**JSON is the source of truth.** Every card, layout, block, icon, trigger, action, ability, keyword, and turn flow is a plain JSON document under `Assets/CardForgeStudio/CardForgeData/`. Unity assets (textures, fonts) provide renderable art. There is no hidden ScriptableObject database.
 
 > **Status:** proof of concept. CardForge authors content and exports it; it is **not** a complete game runtime or a rules engine for production play. See [Limitations](#limitations).
 
@@ -50,7 +50,7 @@ Full setup details: [docs/getting-started.md](docs/getting-started.md).
 ## Repo layout
 
 ```
-Assets/CardForge/
+Assets/CardForgeStudio/CardForge/
   Runtime/            shipped data + rules + reader
   Runtime/DesignLogic shipped pure geometry
   Editor/             authoring, store, exporters
@@ -58,7 +58,7 @@ Assets/CardForge/
   Editor/UI/          studio shell (UXML/USS/scripts)
   Editor/Extensions/  creator tools (one assembly each)
   Tests/              editor test assemblies
-Assets/CardForgeData/ authored JSON and generated assets
+Assets/CardForgeStudio/CardForgeData/ authored JSON and generated assets
 ProjectSettings/      Unity settings
 Packages/             package manifest and lock
 docs/                 this documentation

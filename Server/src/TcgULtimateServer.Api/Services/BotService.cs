@@ -16,11 +16,28 @@ public sealed class BotService(RulesEngine rules)
     /// <summary>How many times the bot uses the same non-structural action in one turn.</summary>
     private const int MaxRepeatsPerAction = 2;
 
+    /// <summary>Advances consecutive bot seats, without letting one malfunctioning bot lock the server.</summary>
+    public void ResolvePendingBotTurns(GameState game)
+    {
+        for (var i = 0; i < game.Players.Count && !game.Finished &&
+            TeamMatchComposer.IsBot(game.ActivePlayerId); i++)
+        {
+            var current = game.ActivePlayerId;
+            TakeTurn(game, current);
+            if (game.ActivePlayerId == current) break;
+        }
+    }
+
     public void TakeTurn(GameState game, string botId)
     {
         var pack = rules.Get(game.RulePackId);
         var uses = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        var opponent = game.Players.FirstOrDefault(player => !player.Equals(botId, StringComparison.Ordinal) && !game.EliminatedPlayerIds.Contains(player));
+        var difficulty = Math.Clamp(game.BotDifficulty, 1, 4);
+        var maxRepeats = difficulty == 1 ? 1 : difficulty >= 4 ? 3 : MaxRepeatsPerAction;
+        var ownTeam = game.PlayerTeams.GetValueOrDefault(botId, -1);
+        var opponent = game.Players.FirstOrDefault(player =>
+            player != botId && !game.EliminatedPlayerIds.Contains(player) &&
+            (game.PlayerTeams.Count == 0 || game.PlayerTeams.GetValueOrDefault(player, -2) != ownTeam));
 
         for (var step = 0; step < MaxActionsPerTurn; step++)
         {
@@ -32,8 +49,8 @@ public sealed class BotService(RulesEngine rules)
                 .ToList();
 
             var productive = allowed
-                .Where(action => !IsStructural(action) && uses.GetValueOrDefault(action.Id) < MaxRepeatsPerAction)
-                .OrderByDescending(action => SourceCard(game, botId, action.SourceZone) is not null)
+                .Where(action => !IsStructural(action) && uses.GetValueOrDefault(action.Id) < maxRepeats)
+                .OrderByDescending(action => EvaluateAction(pack, game, botId, action, difficulty))
                 .ToList();
             var leaving = allowed.Where(action => HasEffect(action, "advance_phase"))
                 .Concat(allowed.Where(action => HasEffect(action, "end_turn")))
@@ -49,10 +66,27 @@ public sealed class BotService(RulesEngine rules)
                     break;
                 }
                 // An illegal attempt must not be retried this turn (cost, condition or target was not satisfied).
-                uses[action.Id] = MaxRepeatsPerAction;
+                uses[action.Id] = maxRepeats;
             }
             if (!acted) return;
         }
+    }
+
+    private static double EvaluateAction(RulePack pack, GameState game, string botId, TcgActionDefinition action, int difficulty)
+    {
+        var source = SourceCard(game, botId, action.SourceZone);
+        if (difficulty == 1) return source == null ? 0 : 1;
+        var card = source == null ? null : pack.Cards.FirstOrDefault(def => def.Id == source.CardId);
+        var benefit = (source == null ? 0 : 5) + (card == null ? 0 :
+            (card.Power + card.Toughness + card.Abilities.Count * 3.0) / Math.Max(1, card.Cost + 1));
+        foreach (var effect in action.Effects ?? [])
+        {
+            if (effect.Kind == "draw") benefit += 2 * Math.Max(1, effect.Amount);
+            if (effect.Kind == "modify_resource") benefit += effect.Target == "target_player" && effect.Amount < 0
+                ? -effect.Amount * 3 : effect.Amount * 2;
+            if (effect.Kind == "move_card") benefit += 4;
+        }
+        return difficulty >= 4 ? benefit : Math.Round(benefit / 3);
     }
 
     private bool TryExecute(GameState game, string botId, TcgActionDefinition action, string? opponent)

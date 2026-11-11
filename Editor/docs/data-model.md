@@ -1,6 +1,6 @@
 # Data model
 
-CardForge stores all authored content as JSON under `Assets/CardForgeData`. The models are plain `[Serializable]` classes in `Assets/CardForge/Runtime/CardForgeModels.cs`, serialized with Unity's `JsonUtility`.
+CardForge stores all authored content as JSON under `Assets/CardForgeData`. The models are plain `[Serializable]` classes in `Assets/CardForgeStudio/CardForge/Runtime/CardForgeModels.cs`, serialized with Unity's `JsonUtility`.
 
 Related: [file-map.md](file-map.md), [designer-guide.md](designer-guide.md), [rules-and-flows.md](rules-and-flows.md), [runtime-guide.md](runtime-guide.md).
 
@@ -26,7 +26,7 @@ Related: [file-map.md](file-map.md), [designer-guide.md](designer-guide.md), [ru
 ## Storage layout
 
 ```
-Assets/CardForgeData/
+Assets/CardForgeStudio/CardForgeData/
   schema.json
   blocks/<blockId>/block.json
   blocks/<blockId>/layouts/<layoutId>.json
@@ -134,7 +134,7 @@ Seeded fields: `title`, `cost`, `type`, `rules`, `power`, `art` (Image), `factio
   "isBack": false,
   "width": 360,
   "height": 504,
-  "backgroundAssetPath": "Assets/CardForgeData/...",
+  "backgroundAssetPath": "Assets/CardForgeStudio/CardForgeData/...",
   "backgroundColor": "#131d2b",
   "templates": [],
   "zones": [],
@@ -451,7 +451,7 @@ Older icons (`version < 2`) are upgraded on load: layers get `visible = true` an
   "blockName": "Core Set",
   "bundleName": "cards-core-9d501abe",
   "unityBuildTarget": "StandaloneWindows64",
-  "jsonAssetPaths": ["Assets/CardForgeData/schema.json", "..."],
+  "jsonAssetPaths": ["Assets/CardForgeStudio/CardForgeData/schema.json", "..."],
   "imageAssetPaths": ["..."],
   "fontAssetPaths": ["..."]
 }

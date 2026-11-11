@@ -1,0 +1,58 @@
+{
+    "version": 1,
+    "id": "ar-draw",
+    "name": "Chart the rift",
+    "triggerId": "",
+    "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
+    "effect": "Draw one card.",
+    "condition": "Available in its assigned phase.",
+    "cost": "No resource cost",
+    "targets": "Acting player or selected card",
+    "orientationChange": 0,
+    "orientationTarget": "Target card",
+    "causeTriggerIds": [],
+    "graphNodes": [
+        {
+            "id": "ar-draw-validate",
+            "title": "Validate request",
+            "detail": "Check phase, player priority, targets, conditions, and costs.",
+            "tone": "check",
+            "x": 70.0,
+            "y": 90.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "ar-draw-apply",
+            "title": "Apply authoritative effect",
+            "detail": "Draw one card.",
+            "tone": "process",
+            "x": 360.0,
+            "y": 90.0,
+            "causesStateChange": true,
+            "emitsTriggers": false
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "ar-draw-validate",
+            "to": "ar-draw-apply",
+            "label": "valid"
+        }
+    ],
+    "requiresActivePlayer": true,
+    "serverEffectKind": "draw",
+    "sourceZoneId": "deck",
+    "destinationZoneId": "hand",
+    "resourceId": "",
+    "effectAmount": 1,
+    "effectTarget": "",
+    "eventType": "",
+    "costResourceId": "",
+    "costAmount": 0,
+    "conditionKind": "",
+    "conditionKey": "",
+    "conditionValue": "",
+    "dataKey": "",
+    "dataValue": ""
+}

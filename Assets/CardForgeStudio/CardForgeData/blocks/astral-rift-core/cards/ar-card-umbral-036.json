@@ -1,0 +1,78 @@
+{
+    "version":  1,
+    "id":  "ar-card-umbral-036",
+    "name":  "Hush Colossus",
+    "cardNumber":  "216",
+    "layoutId":  "ar-layout-front",
+    "backLayoutId":  "ar-layout-back",
+    "sourceBlockId":  "",
+    "sourceCardId":  "",
+    "cardType":  "Creature",
+    "variantId":  "uncommon",
+    "values":  [
+                   {
+                       "fieldId":  "7e1150461ebe451eb04d2d9733b3ef71",
+                       "value":  "Hush Colossus"
+                   },
+                   {
+                       "fieldId":  "35b35a270df44204ad87fc10ea4b1d25",
+                       "value":  "1"
+                   },
+                   {
+                       "fieldId":  "114ef7b3b56b4be89bc41f0dc8ffca5e",
+                       "value":  "Creature - Umbral"
+                   },
+                   {
+                       "fieldId":  "ca9caa5ca8a3403aa882178aa2d2e0c4",
+                       "value":  "Mill 2 enemy card(s). Gain 3 mana."
+                   },
+                   {
+                       "fieldId":  "d9c7174f6cb04851861433623f1a2dba",
+                       "value":  "4"
+                   },
+                   {
+                       "fieldId":  "ar-field-toughness",
+                       "value":  "4"
+                   },
+                   {
+                       "fieldId":  "df11ac1a2d544824abe10686c7bd14ab",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-umbral-036.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity",
+                       "value":  "Umbral"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity-icon",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/umbral.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-rarity",
+                       "value":  "Uncommon"
+                   },
+                   {
+                       "fieldId":  "ar-field-flavor",
+                       "value":  "Within the Astral Rift, no two constellations answer the same call."
+                   },
+                   {
+                       "fieldId":  "ar-field-collector",
+                       "value":  "216/240 ARFT"
+                   },
+                   {
+                       "fieldId":  "ar-field-active",
+                       "value":  "true"
+                   }
+               ],
+    "zoneOverrides":  [
+
+                      ],
+    "requirements":  [
+
+                     ],
+    "keywordIds":  [
+
+                   ],
+    "abilityIds":  [
+                       "ar-ability-unique-ar-card-umbral-036"
+                   ]
+}

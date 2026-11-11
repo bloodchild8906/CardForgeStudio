@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup>
+<TargetFramework>net8.0</TargetFramework>
+<OutputType>Exe</OutputType>
+<ImplicitUsings>enable</ImplicitUsings>
+<Nullable>enable</Nullable>
+</PropertyGroup>
+<ItemGroup>
+<ProjectReference Include="../../Shared/CardForge.DedicatedServer.Validation/CardForge.DedicatedServer.Validation.csproj" />
+<Reference Include="Newtonsoft.Json"><HintPath>../../Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64/Runtime/Newtonsoft.Json.dll</HintPath></Reference>
+</ItemGroup>
+</Project>

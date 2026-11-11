@@ -1,0 +1,41 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-003",
+    "name":  "Umbral Nexus Mana Source - Umbral Signature",
+    "cardId":  "ar-card-umbral-003",
+    "activationTriggerId":  "turn_started",
+    "actionId":  "",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Permanent. Generates 1 mana each of your turns. Friendly creatures gain +1 power and +1 toughness, plus +1/+1 per Mana Source level. Level up (max 3): pay 2 + current level mana. Passive: Mill 1 enemy card(s).",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "mill",
+                        "amount":  1,
+                        "target":  "opponent"
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

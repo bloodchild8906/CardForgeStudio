@@ -46,7 +46,7 @@ Snapshot before destructive resets if you might need the work:
 ## Project layout
 
 ```
-Assets/CardForge/
+Assets/CardForgeStudio/CardForge/
   Runtime/            shipped data + rules + reader
   Runtime/DesignLogic shipped pure geometry
   Editor/             authoring, store, exporters
@@ -54,7 +54,7 @@ Assets/CardForge/
   Editor/UI/          studio shell (UXML/USS/scripts)
   Editor/Extensions/  creator tools (one assembly each)
   Tests/              editor test assemblies
-Assets/CardForgeData/ authored JSON and generated assets
+Assets/CardForgeStudio/CardForgeData/ authored JSON and generated assets
 ProjectSettings/      Unity settings
 Packages/             package manifest and lock
 docs/                 this documentation
@@ -107,7 +107,7 @@ Do not rename existing fields without a migration: old JSON would silently lose 
 - Standalone tools use `[MenuItem("CardForge/<Tool>")]` and open an `EditorWindow`.
 - Add a sidebar entry with `AddToolNavigation` if the tool belongs in the studio.
 - Add a quick-open entry in `BuildToolEntries`.
-- Keep tool windows on the shared style sheet (`Assets/CardForge/Editor/UI/USS/CardForge.uss`) and `ThemeController`.
+- Keep tool windows on the shared style sheet (`Assets/CardForgeStudio/CardForge/Editor/UI/USS/CardForge.uss`) and `ThemeController`.
 
 ## UI conventions
 
@@ -133,7 +133,7 @@ The codebase is compact C#:
 ## Docs
 
 - This `docs/` tree is the long-form documentation. Update it with behavior changes.
-- `Assets/CardForge/ARCHITECTURE.md` is the short original brief; keep it consistent.
+- `Assets/CardForgeStudio/CardForge/ARCHITECTURE.md` is the short original brief; keep it consistent.
 - Use ASCII punctuation in docs to avoid encoding problems in mixed Windows tooling.
 - Link to related pages; every `docs/*.md` should be reachable from `docs/README.md`.
 - Document limits (file sizes, row counts, frame counts) next to the feature that enforces them.

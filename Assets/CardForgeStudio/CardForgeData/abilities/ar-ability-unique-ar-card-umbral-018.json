@@ -1,0 +1,47 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-018",
+    "name":  "Hollow Artificer - Umbral Signature",
+    "cardId":  "ar-card-umbral-018",
+    "activationTriggerId":  "action:ar-play-creature",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Deal 2 damage to an enemy player. Mill 1 enemy card(s).",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  -2,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "mill",
+                        "amount":  1,
+                        "target":  "opponent"
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

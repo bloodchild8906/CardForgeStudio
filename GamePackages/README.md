@@ -1,5 +1,5 @@
-# Game packages
+# CardForge exported game packages
 
-Unity batch publishing and the **Game Package Publisher** write `.cardforge` archives here by default. Generated archives are ignored by source control; keep only deliberate release samples.
+The `.cardforge` archives in this directory are authoring/distribution artifacts, not separate server binaries. Generate a current sample through **CardForge > Generate Sample Game**. The native publisher extracts compiled rules and stages images to `Assets/StreamingAssets/CardForge` for the Unity Dedicated Server. When playing against a local native demo host, **CardForge > Play Sample Game** can upload compatible rule and artwork changes directly.
 
-`core-1.0.0.cardforge` was produced from the copied Core Set during integration verification and was accepted and activated by the authoritative server importer.
+Do not launch or import packages through an old ASP.NET API; the native Unity process is the sole runtime server.

@@ -1,0 +1,169 @@
+var astralPath = @"D:\CardForgeStudio\Assets\StreamingAssets\CardForgeStudio\CardForge\Rules\astral-rift.json";
+if (System.IO.File.Exists(astralPath))
+{
+    var options = new System.Text.Json.JsonSerializerOptions
+    {
+        PropertyNameCaseInsensitive = true, IncludeFields = true
+    };
+    var astral = System.Text.Json.JsonSerializer.Deserialize<SimRulePack>(
+        System.IO.File.ReadAllText(astralPath), options)!;
+
+    Check(astral.version == "3.0.0", "Astral Rift 3 ruleset not staged");
+    Check(astral.cards.Count == 240 && astral.cards.Select(c => c.id).Distinct().Count() == 240,
+        "Expected exactly 240 distinct cards");
+    Check(astral.cards.GroupBy(c => c.name).All(g => g.Count() == 1),
+        "All cards must have distinct printed names");
+    Check(astral.cards.All(c => c.abilities.Count > 0 && c.abilities.Any(a =>
+        a.id == "ar-ability-unique-" + c.id && a.effects.Count > 0)),
+        "Every card needs an executable, unique signature ability");
+    foreach (var (type, expected) in new[] {
+        ("Commander", 4), ("ManaSource", 12), ("Creature", 128),
+        ("Spell", 48), ("QuickSpell", 48) })
+        Check(astral.cards.Count(c => DeckLegality.TypeMatches(c.type, type)) == expected,
+            "Incorrect 240-card type distribution: " + type);
+    Check(astral.starterDecks.Count == 3, "Must have exactly three starter decks");
+    foreach (var starter in astral.starterDecks)
+    {
+        Check(starter.cardIds.Count == 42 && starter.cardIds.Distinct().Count() == 42,
+            "Starter requires 42 distinct cards");
+        Check(starter.cardIds.Count(id =>
+            astral.cards.Any(c => c.id == id && DeckLegality.TypeMatches(c.type, "ManaSource"))) == 1,
+            "Starter requires one Mana Source");
+        Check(starter.cardIds.Count(id =>
+            astral.cards.Any(c => c.id == id && DeckLegality.TypeMatches(c.type, "Commander"))) == 1,
+            "Starter requires one Commander");
+        Check(DeckLegality.ValidateDeck(astral, starter.cardIds).Count == 0,
+            "Starter is illegal: " + starter.name);
+    }
+    Check(astral.zones.Single(z => z.id == "command").visibility == "public" &&
+        astral.zones.Single(z => z.id == "command").returnOnLeave &&
+        astral.zones.Single(z => z.id == "mana-source").visibility == "public" &&
+        astral.zones.Single(z => z.id == "mana-source").immovable,
+        "Public commander and permanent Mana Source board zones required");
+    Check(astral.zones.Single(z => z.id == "hand").visibility == "owner" &&
+        astral.zones.Single(z => z.id == "deck").visibility == "hidden",
+        "Private hand and deck visibility required");
+
+    var engine = new SimulationEngine();
+    engine.Register(astral);
+    var game = engine.Create("astral-rift", new[] { "human" }, 1, true, 19);
+    var botId = game.players.Single(id => id != "human");
+    var command = game.zones.Single(z => z.ownerId == "human" && z.zoneId == "command");
+    var mana = game.zones.Single(z => z.ownerId == "human" && z.zoneId == "mana-source");
+    var field = game.zones.Single(z => z.ownerId == "human" && z.zoneId == "battlefield");
+    var hand = game.zones.Single(z => z.ownerId == "human" && z.zoneId == "hand");
+    var library = game.zones.Single(z => z.ownerId == "human" && z.zoneId == "deck");
+    var botHand = game.zones.Single(z => z.ownerId == botId && z.zoneId == "hand");
+    var energy = game.resources.Single(r => r.ownerId == "human" && r.resourceId == "energy");
+    Check(command.cards.Count == 1 && mana.cards.Count == 1,
+        "Commander and Mana Source must be on board from match creation");
+    Check(library.cards.Count == 35 && hand.cards.Count == 5,
+        "40-card main deck must shuffle and draw an initial five");
+    Check(energy.value >= 1, "Mana Source must generate one mana on first turn");
+    var ownView = engine.View(game, "human");
+    var enemyView = engine.View(game, botId);
+    Check(ownView.zones.Single(z => z.ownerId == botId && z.zoneId == "hand")
+        .cards.All(c => string.IsNullOrWhiteSpace(c.cardId)),
+        "Opponent hand must remain hidden");
+    Check(ownView.zones.Single(z => z.ownerId == botId && z.zoneId == "command")
+        .cards.Single().cardId != "",
+        "All players' Commanders must be inspectable");
+    Check(enemyView.zones.Single(z => z.ownerId == "human" && z.zoneId == "mana-source")
+        .cards.Single().cardId != "",
+        "All players' Mana Sources must be inspectable");
+
+    var manaId = mana.cards.Single().instanceId;
+    game.currentPhaseId = "ar-main";
+    energy.value = 20;
+    for (var level = 1; level <= 3; level++)
+    {
+        var before = energy.value;
+        engine.Execute(game, "human", new SimActionRequest {
+            actionId = "ar-level-mana", sourceInstanceId = manaId });
+        Check(energy.value == before - (level + 1),
+            "Mana Source levels must cost 2, 3 and 4 mana");
+        Check(game.data.Any(d => d.key == "level:" + manaId && d.value == level.ToString()),
+            "Mana Source level missing in game data");
+    }
+    var levelRejected = false;
+    try
+    {
+        engine.Execute(game, "human", new SimActionRequest {
+            actionId = "ar-level-mana", sourceInstanceId = manaId });
+    }
+    catch (InvalidOperationException) { levelRejected = true; }
+    Check(levelRejected, "Mana Source must cap out at level 3");
+
+    var commander = command.cards.Single();
+    var commanderCard = astral.cards.Single(c => c.id == commander.cardId);
+    energy.value = 20;
+    var beforeCast = energy.value;
+    engine.Execute(game, "human", new SimActionRequest {
+        actionId = "ar-cast-commander", sourceInstanceId = commander.instanceId });
+    Check(command.cards.Count == 0 && field.cards.Any(c => c.instanceId == commander.instanceId),
+        "Commander must enter battlefield when cast");
+    Check(energy.value <= beforeCast - commanderCard.cost,
+        "Commander base mana cost was not charged");
+
+    var removeCommander = new SimAction
+    {
+        id = "astral-test-remove-commander", name = "Defeat commander",
+        sourceZone = "battlefield", destinationZone = "discard"
+    };
+    astral.actions.Add(removeCommander);
+    astral.phases.Single(p => p.id == "ar-main").allowedActions.Add(removeCommander.id);
+    engine.Execute(game, "human", new SimActionRequest {
+        actionId = removeCommander.id, sourceInstanceId = commander.instanceId });
+    Check(command.cards.Count == 1 &&
+        command.cards.Single().instanceId == commander.instanceId,
+        "Defeated commander must return to its public zone");
+    Check(game.data.Any(item => item.key == "tax:" + commander.instanceId && item.value == "1"),
+        "Defeated commander must gain +2 mana recast tax");
+    energy.value = 20;
+    var recastBefore = energy.value;
+    engine.Execute(game, "human", new SimActionRequest {
+        actionId = "ar-cast-commander", sourceInstanceId = commander.instanceId });
+    Check(energy.value <= recastBefore - commanderCard.cost - 2,
+        "Commander recast must cost exactly two extra mana before ability gains");
+    astral.actions.Remove(removeCommander);
+    astral.phases.Single(p => p.id == "ar-main").allowedActions.Remove(removeCommander.id);
+
+    // Public battlefield combat uses attack power plus the leveled Mana Source aura.
+    var creature = astral.cards.First(card => DeckLegality.TypeMatches(card.type, "Creature"));
+    var instance = new SimCardInstance("test-creature", creature.id, "human");
+    field.cards.Add(instance);
+    game.currentPhaseId = "ar-clash";
+    var enemyLife = game.resources.Single(r => r.ownerId == botId && r.resourceId == "life");
+    var oldLife = enemyLife.value;
+    engine.Execute(game, "human", new SimActionRequest {
+        actionId = "ar-attack-player", sourceInstanceId = instance.instanceId, targetPlayerId = botId });
+    Check(enemyLife.value == oldLife - creature.power - 4,
+        "Creature attacks must include level-three Mana Source +4 power");
+    var doubleAttack = false;
+    try
+    {
+        engine.Execute(game, "human", new SimActionRequest {
+            actionId = "ar-attack-player", sourceInstanceId = instance.instanceId, targetPlayerId = botId });
+    }
+    catch (InvalidOperationException) { doubleAttack = true; }
+    Check(doubleAttack, "Creatures cannot attack twice in a turn");
+
+    // Fast QuickSpells remain legally playable in the opponent's turn.
+    game.activePlayerId = botId;
+    game.currentPhaseId = "ar-main";
+    var quick = astral.cards.First(c => DeckLegality.TypeMatches(c.type, "QuickSpell"));
+    hand.cards.Add(new SimCardInstance("test-quickspell", quick.id, "human"));
+    energy.value = 20;
+    Check(engine.View(game, "human").allowedActions.Contains("ar-cast-quickspell"),
+        "Nonactive player must see QuickSpell response action");
+    engine.Execute(game, "human", new SimActionRequest {
+        actionId = "ar-cast-quickspell", sourceInstanceId = "test-quickspell" });
+    Check(game.zones.Single(z => z.ownerId == "human" && z.zoneId == "discard")
+        .cards.Any(c => c.instanceId == "test-quickspell"),
+        "Reactive QuickSpell must resolve to discard");
+
+    Check(mana.cards.Single().instanceId == manaId,
+        "Mana Source must never leave its permanent zone");
+    Console.WriteLine("Astral Rift 3: 240 distinct cards, three 42-card unique starters, levels, tax, combat, hidden zones, fast spells verified.");
+}
+else Console.WriteLine("Astral Rift 3 rules not staged; base simulation tests only.");

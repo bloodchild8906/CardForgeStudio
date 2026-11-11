@@ -14,4 +14,4 @@ Validate a real editor-produced archive with:
 dotnet run --project Tests/CardForgeStudio.IntegrationTests/CardForgeStudio.IntegrationTests.csproj -c Release -- --package GamePackages/core-1.0.0.cardforge
 ```
 
-Unity EditMode tests remain under `Assets/CardForge/Tests` and run through Unity Test Framework.
+Unity EditMode tests remain under `Assets/CardForgeStudio/CardForge/Tests` and run through Unity Test Framework.

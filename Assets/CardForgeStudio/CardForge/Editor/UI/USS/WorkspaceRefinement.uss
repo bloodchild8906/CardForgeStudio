@@ -1,0 +1,19 @@
+/* Shared workspace refinements: reduce chrome, maintain context and support keyboard navigation. */
+.cf-studio .cf-workspace-header { min-height: 62px; padding: 10px 22px; }
+.cf-studio .cf-workspace-header__heading { margin-right: 14px; }
+.cf-studio .cf-workspace-header__title { font-size: 18px; }
+.cf-studio .cf-workspace-header__context { font-size: 11px; margin-top: 4px; }
+.cf-studio .cf-header-create { min-height: 34px; min-width: 104px; padding: 7px 14px; margin-right: 10px; border-radius: 7px; -unity-font-style: bold; }
+.cf-studio .cf-header-create:hover { background-color: var(--cf-color-accent-strong); }
+.cf-studio .cf-workspace-header__back { min-height: 33px; padding: 6px 11px; border-radius: 7px; }
+.cf-studio .cf-navigation__item:focus { border-left-color: var(--cf-color-accent); background-color: var(--cf-color-accent-soft); }
+.cf-studio .cf-navigation__tool { min-height: 34px; padding-left: 13px; border-radius: 7px; }
+.cf-studio .cf-navigation__preferences > * { margin-top: 5px; }
+.cf-studio .cf-navigation__preferences .cf-exit-button { min-height: 34px; }
+.cf-studio .cf-navigation__preferences .cf-exit-button:focus,
+.cf-studio .cf-header-create:focus,
+.cf-studio .cf-workspace-header__back:focus { border-color: var(--cf-color-accent); }
+.cf-studio .cf-block-context { padding: 3px 12px 14px 12px; }
+.cf-studio .cf-block-context #block-picker { min-height: 32px; }
+.cf-studio .cf-screen-host { overflow: hidden; }
+.cf-studio.cf-theme-light .cf-header-create { color: #ffffff; }

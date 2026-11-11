@@ -1,14 +1,20 @@
-# `.cardforge` package format
+# CardForge authored package format
 
-A game package is a ZIP archive with `manifest.json` at its root. Package schema `1.0` declares immutable `packageId` + semantic `version` identity, its compiled rule pack, victory definitions, a content summary, and every other file with content kind, byte length, and SHA-256.
+A `.cardforge` file is a ZIP with `manifest.json`, content hashes, authoring documents, compiled rules and references to art. It is not an executable.
 
-Required content kinds are `cards`, `zones`, `frames`, `assets`, `actions`, `abilities`, `keywords`, `turn-flow`, `rules`, and `victory`. Triggers, block metadata, and the editor field schema are also carried when available.
+Important entries include:
 
-Canonical executable definitions are:
+| Path | Purpose |
+|---|---|
+| `manifest.json` | Archive version, game ID, package ID, SHA-256 file list |
+| `rules/rule-pack.json` | Cards, zones, nonphysical resources, phases, actions, abilities and triggers |
+| `rules/victory.json` | Game-end conditions and outcomes |
+| `cards/`, `frames/`, `actions/`, `abilities/` | Designer source documents |
+| `zones/game-zones.json` | Resource and card-zone definitions |
+| `assets/` | Images and other referenced content |
 
-- `rules/rule-pack.json` — schema-v2 zones, resources, phases, actions, cards, and abilities consumed by the authoritative engine.
-- `rules/victory.json` — declarative resource-threshold, empty-zone, last-player-standing, or turn-limit outcomes.
+The native content publisher converts the serialized rule pack into `SimRulePack`. Starter decks select card IDs but do not override shared board restrictions. Game-level zones define `allowedCardTypes`, `initialCardIds`, `capacity`, and optional `deckStartCardType`, `returnOnLeave`, and `immovable`. Astral Rift 2.1.0 requires 40 main-deck cards plus one Commander and one Mana Source; the special cards start in one-slot zones, outside the shuffled main deck. A cast Commander enters the battlefield and returns to Command on removal; the Mana Source cannot move. Action `costs` objects become lists of `{resourceId,amount}`. Effect `parameters` objects become lists of `{key,value}`; victory rules are attached to the pack. Unsupported designer effects must be implemented in the portable engine before those rules can run.
 
-All other entries preserve editor intent and visual assets so a release is portable and auditable. Paths are forward-slash relative paths. Absolute paths, traversal segments, undeclared entries, duplicate paths, oversized archives, and hash mismatches are rejected.
+The server validates the resulting rules before accepting a new published version. Hot ruleset replacement is blocked while an unfinished match uses that ruleset. Card artwork is independently versioned through the asset-manifest's SHA-256 and can be downloaded on demand.
 
-Schemas live under `Shared/CardForge.GamePackages/Schemas`.
+The archive format is retained for editor portability; the former ASP.NET package-import endpoint is **not used**. An Addressables scene catalog is a separate build artifact, not just another card image. Produce, upload and verify real remote bundles before advertising an updated scene.

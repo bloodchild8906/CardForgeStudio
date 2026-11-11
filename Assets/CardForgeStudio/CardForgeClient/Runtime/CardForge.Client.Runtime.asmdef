@@ -1,0 +1,28 @@
+﻿{
+    "name":  "CardForge.Client.Runtime",
+    "rootNamespace":  "TcgServer.Client",
+    "references":  [
+                       "Unity.InputSystem",
+                       "UnityEngine.UI",
+                       "CardForge.GamePackages"
+                   ],
+    "includePlatforms":  [
+
+                         ],
+    "excludePlatforms":  [
+
+                         ],
+    "allowUnsafeCode":  false,
+    "overrideReferences":  false,
+    "precompiledReferences":  [
+
+                              ],
+    "autoReferenced":  true,
+    "defineConstraints":  [
+
+                          ],
+    "versionDefines":  [
+
+                       ],
+    "noEngineReferences":  false
+}

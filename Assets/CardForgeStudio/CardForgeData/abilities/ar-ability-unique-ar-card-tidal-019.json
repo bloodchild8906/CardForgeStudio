@@ -1,0 +1,46 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-tidal-019",
+    "name":  "Nacre Hound - Tidal Signature",
+    "cardId":  "ar-card-tidal-019",
+    "activationTriggerId":  "action:ar-play-creature",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Execute server-authoritative ability effects",
+    "effect":  "Gain 1 renown. Gain 3 shield per friendly creature.",
+    "priority":  30,
+    "scope":  "Source card",
+    "responseTiming":  "On source activation",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "renown",
+                        "amount":  1
+                    },
+                    {
+                        "kind":  "scale_resource",
+                        "resourceId":  "shield",
+                        "amount":  3
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

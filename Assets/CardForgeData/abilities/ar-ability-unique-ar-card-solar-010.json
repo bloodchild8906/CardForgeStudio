@@ -1,0 +1,46 @@
+{
+    "version": 1,
+    "id": "ar-ability-unique-ar-card-solar-010",
+    "name": "Glassborn Vanguard — Sunforged Protocol",
+    "cardId": "ar-card-solar-010",
+    "activationTriggerId": "ar-trigger-deploy",
+    "actionId": "ar-deploy",
+    "phaseId": "",
+    "condition": "",
+    "operation": "Execute server-authoritative ability effects",
+    "effect": "gain 1 shield; gain 1 momentum",
+    "priority": 33,
+    "scope": "Source card and game state",
+    "responseTiming": "After its source action resolves",
+    "responseResolution": "Resolve in priority order",
+    "responseActionIds": [],
+    "causeTriggerIds": [],
+    "rules": [],
+    "effects": [
+        {
+            "kind": "modify_resource",
+            "target": "",
+            "resourceId": "shield",
+            "fromZone": "",
+            "toZone": "",
+            "eventType": "",
+            "message": "",
+            "amount": 1,
+            "parameters": []
+        },
+        {
+            "kind": "modify_resource",
+            "target": "",
+            "resourceId": "momentum",
+            "fromZone": "",
+            "toZone": "",
+            "eventType": "",
+            "message": "",
+            "amount": 1,
+            "parameters": []
+        }
+    ],
+    "conditions": [],
+    "graphNodes": [],
+    "graphLinks": []
+}
