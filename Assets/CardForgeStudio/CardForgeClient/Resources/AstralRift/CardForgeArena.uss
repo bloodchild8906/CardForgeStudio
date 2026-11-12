@@ -106,3 +106,34 @@
 .cf-deck-card:hover { background-color: #283A52; }
 .cf-textfield { margin-bottom: 5px; color: #E5EFFC; }
 .cf-scroll { flex-grow: 1; }
+
+/* Arcane arena refresh: stronger tabletop identity and clearer play actions. */
+.cf-nav { background-color: #171326; border-bottom-color: #74513A; color: #EAD9BC; border-top-left-radius: 12px; border-top-right-radius: 12px; }
+.cf-nav:hover { background-color: #34243C; border-bottom-color: #FFC875; }
+.cf-nav--active { background-color: #3A263B; color: #FFE6B1; border-bottom-color: #FFCA75; }
+.cf-hero { background-color: #21192D; border-top-color: #8C6549; border-bottom-color: #8C6549; border-left-color: #8C6549; border-right-color: #8C6549; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+.cf-panel { background-color: #211A2D; border-top-color: #60495D; border-bottom-color: #60495D; border-left-color: #60495D; border-right-color: #60495D; border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+.cf-primary { height: 50px; min-width: 148px; color: #2D1923; background-color: #F1BE6A; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; font-size: 15px; }
+.cf-primary:hover { background-color: #FFE0A0; }
+.cf-secondary { height: 44px; background-color: #3B2B43; color: #F4E4D2; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+.cf-secondary:hover { background-color: #594064; }
+.cf-filter--active { background-color: #E7AD63; color: #291B29; }
+.cf-card-face:hover { translate: 0px -7px; }
+.cf-card-face:focus { translate: 0px -7px; }
+.cf-card-back { border-top-color: #F1BE6A; }
+.cf-deck-card:hover { background-color: #44304A; }
+
+/* Readability and keyboard affordances across every playable screen. */
+.cf-nav { height: 43px; min-width: 82px; padding-left: 13px; padding-right: 13px; font-size: 13px; }
+.cf-primary { font-size: 15px; }
+.cf-secondary { font-size: 14px; }
+.cf-filter { min-width: 85px; }
+.cf-textfield { color: #F4EAD8; font-size: 14px; }
+.cf-textfield .unity-base-field__label { font-size: 13px; color: #E3D0E0; }
+.cf-textfield .unity-base-text-field__input { min-height: 32px; font-size: 14px; color: #F6EEE2; }
+.cf-textfield .unity-base-popup-field__input { min-height: 32px; font-size: 14px; }
+.cf-primary:focus, .cf-secondary:focus, .cf-nav:focus {
+    border-top-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-right-width: 2px;
+    border-top-color: #FFE5A5; border-bottom-color: #FFE5A5; border-left-color: #FFE5A5; border-right-color: #FFE5A5;
+}
+.cf-panel Label, .cf-hero Label { white-space: normal; }

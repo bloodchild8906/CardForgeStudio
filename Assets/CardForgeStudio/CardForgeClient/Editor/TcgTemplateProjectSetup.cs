@@ -12,6 +12,7 @@ namespace TcgServer.Client.Editor
         public const string SettingsPath = "Assets/CardForgeStudio/CardForgeClient/Resources/TcgConnectionSettings.asset";
         public const string ScenePath = "Assets/CardForgeStudio/CardForgeClient/Scenes/TcgClient.unity";
         public const string PanelSettingsPath = "Assets/CardForgeStudio/CardForgeClient/Resources/AstralRift/CardForgePanelSettings.asset";
+        public const string EditableArenaPath = "Assets/CardForgeStudio/CardForgeClient/UI/AstralRiftArena.uxml";
 
         public static void CreateTemplateScene()
         {
@@ -28,13 +29,50 @@ namespace TcgServer.Client.Editor
             }
 
             var panelSettings = CardForgeClientVisualAssets.Ensure();
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var root = new GameObject("CardForge Client");
-            root.AddComponent<TcgClientSession>();
-            var rest = root.AddComponent<TcgRestClient>();
-            root.AddComponent<TcgGameConnection>();
-            var app = root.AddComponent<CardForgeToolkitClient>();
-            root.AddComponent<UIDocument>().panelSettings = panelSettings;
+            // Reopen the generated scene instead of destroying designer changes
+            // whenever the demo is prepared again.
+            var activeScene = EditorSceneManager.GetActiveScene();
+            var scene = string.Equals(activeScene.path, ScenePath,
+                    System.StringComparison.OrdinalIgnoreCase)
+                ? activeScene
+                : File.Exists(ScenePath)
+                    ? EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single)
+                    : EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var root = scene.GetRootGameObjects().FirstOrDefault(gameObject => gameObject.name == "CardForge Client");
+            if (root == null) root = new GameObject("CardForge Client");
+            if (root.GetComponent<TcgClientSession>() == null) root.AddComponent<TcgClientSession>();
+            var rest = root.GetComponent<TcgRestClient>() ?? root.AddComponent<TcgRestClient>();
+            if (root.GetComponent<TcgGameConnection>() == null) root.AddComponent<TcgGameConnection>();
+            var app = root.GetComponent<CardForgeToolkitClient>() ?? root.AddComponent<CardForgeToolkitClient>();
+            var document = root.GetComponent<UIDocument>() ?? root.AddComponent<UIDocument>();
+            document.panelSettings = panelSettings;
+            AssetDatabase.ImportAsset(EditableArenaPath, ImportAssetOptions.ForceSynchronousImport);
+            var arena = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(EditableArenaPath);
+            if (arena == null)
+                throw new FileNotFoundException("Editable arena UI Toolkit layout could not be loaded.", EditableArenaPath);
+            document.visualTreeAsset = arena;
+
+            var designerRoot = root.transform.Find("Arena Presentation (editable in Inspector)");
+            if (designerRoot == null)
+            {
+                var guide = new GameObject("Arena Presentation (editable in Inspector)");
+                guide.transform.SetParent(root.transform, false);
+                designerRoot = guide.transform;
+            }
+            if (designerRoot.GetComponent<CardForgeSceneLayout>() == null)
+                designerRoot.gameObject.AddComponent<CardForgeSceneLayout>();
+
+            var camera = scene.GetRootGameObjects().Select(gameObject => gameObject.GetComponent<Camera>())
+                .FirstOrDefault(component => component != null);
+            if (camera == null)
+            {
+                var cameraObject = new GameObject("Arena Camera");
+                camera = cameraObject.AddComponent<Camera>();
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.backgroundColor = new Color(0.08f, 0.06f, 0.11f, 1f);
+                camera.orthographic = true;
+                cameraObject.transform.position = new Vector3(0f, 0f, -10f);
+            }
 
             // Both components read server settings through a serialized field, so bind them explicitly.
             Bind(app, "settings", settings);

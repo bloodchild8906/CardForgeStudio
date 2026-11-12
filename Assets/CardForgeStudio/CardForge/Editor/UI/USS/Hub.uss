@@ -1,0 +1,592 @@
+/* A game-first creator hub: compact editorial hierarchy, dark astral surfaces,
+   gold controls and real illustration instead of an administration dashboard. */
+
+.cf-hub {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    width: 100%;
+    background-color: #15121C;
+}
+.cf-hub .unity-scroll-view__content-container {
+    min-width: 0;
+}
+.cf-hub__hero {
+    flex-direction: column;
+    width: 100%;
+    flex-shrink: 0;
+    padding: 17px 24px;
+    margin-bottom: 13px;
+    background-color: #2A2337;
+    border-width: 1px;
+    border-color: #B18A5B;
+    border-radius: 15px;
+}
+.cf-hub__hero-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+.cf-hub__hero-copy {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 530px;
+    min-width: 310px;
+    padding-right: 22px;
+}
+.cf-hub__eyebrow {
+    color: #E5B978;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    -unity-font-style: bold;
+    white-space: normal;
+}
+.cf-hub__title {
+    color: #FFF2D9;
+    font-size: 33px;
+    letter-spacing: .1px;
+    -unity-font-style: bold;
+    white-space: normal;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.cf-hub__intro {
+    color: #D6C9DF;
+    font-size: 15px;
+    white-space: normal;
+    max-width: 520px;
+    margin-bottom: 12px;
+}
+.cf-hub__hero-actions,
+.cf-hub__link-row,
+.cf-hub__more-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    min-width: 0;
+}
+.cf-hub__hero-actions {
+    margin-bottom: 8px;
+}
+.cf-hub__cta,
+.cf-hub__cta-alt {
+    min-height: 42px;
+    min-width: 155px;
+    border-radius: 9px;
+    padding: 10px 17px;
+    margin-right: 11px;
+    margin-bottom: 9px;
+    font-size: 14px;
+    -unity-font-style: bold;
+}
+.cf-hub__cta {
+    color: #1F1824;
+    background-color: #E7BA77;
+    border-width: 1px;
+    border-color: #F7D99E;
+}
+.cf-hub__cta:hover, .cf-hub__cta:focus {
+    background-color: #FFE2A9;
+    border-color: #FFEDD1;
+}
+.cf-hub__cta-alt {
+    color: #F3E9FE;
+    background-color: #574361;
+    border-width: 1px;
+    border-color: #AB8BA9;
+}
+.cf-hub__cta-alt:hover, .cf-hub__cta-alt:focus {
+    background-color: #705776;
+}
+.cf-hub__text-link {
+    align-self: flex-start;
+    min-height: 29px;
+    padding: 4px 8px;
+    background-color: transparent;
+    color: #E1C692;
+    border-width: 0;
+    font-size: 12px;
+}
+.cf-hub__text-link:hover, .cf-hub__text-link:focus {
+    color: #FFE8B6;
+    background-color: #3C3448;
+}
+.cf-hub__featured {
+    width: 185px;
+    flex-shrink: 0;
+    align-items: center;
+    background-color: #171525;
+    border-width: 1px;
+    border-color: #B89B68;
+    border-radius: 10px;
+    padding: 9px;
+    margin-left: 9px;
+}
+.cf-hub__art {
+    width: 164px;
+    height: 172px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    border-radius: 6px;
+}
+.cf-hub__featured-label {
+    color: #E3C47F;
+    font-size: 10px;
+    letter-spacing: 1px;
+    -unity-font-style: bold;
+}
+.cf-hub__featured-name {
+    color: #FAEBD5;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+.cf-hub__pulse {
+    flex-direction: column;
+    width: 100%;
+    background-color: #1E1B2A;
+    border-width: 1px;
+    border-color: #4D4056;
+    border-radius: 12px;
+    padding: 12px 18px 11px 18px;
+    margin-bottom: 25px;
+}
+.cf-hub__pulse-heading {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 0;
+}
+.cf-hub__stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+    margin-top: 6px;
+}
+.cf-hub__stat {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 175px;
+    min-width: 165px;
+    margin-right: 10px;
+    margin-top: 5px;
+    padding: 8px 12px;
+    background-color: #2B2639;
+    border-radius: 8px;
+}
+.cf-hub__stat-line {
+    flex-direction: row;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+.cf-hub__stat-value {
+    font-size: 27px;
+    color: #FFE0A4;
+    -unity-font-style: bold;
+    margin-right: 10px;
+}
+.cf-hub__stat-title {
+    font-size: 11px;
+    color: #E0CFDA;
+    -unity-font-style: bold;
+}
+.cf-hub__stat-note {
+    font-size: 11px;
+    color: #AEB5C9;
+}
+.cf-hub__section-heading {
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+.cf-hub__section-title {
+    font-size: 21px;
+    color: #F8E7C8;
+    -unity-font-style: bold;
+}
+.cf-hub__section-subtitle {
+    font-size: 13px;
+    color: #C3B4C7;
+    margin-top: 4px;
+}
+.cf-hub__primary-grid,
+.cf-hub__journey {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+    margin-bottom: 23px;
+}
+.cf-hub__path {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 420px;
+    min-width: 285px;
+    min-height: 225px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    padding: 19px 21px 14px 21px;
+    border-width: 1px;
+    border-radius: 12px;
+}
+.cf-hub__path-cards {
+    background-color: #25302F;
+    border-color: #577A65;
+}
+.cf-hub__path-rules {
+    background-color: #29243A;
+    border-color: #79618B;
+}
+.cf-hub__path-title {
+    color: #FFF0D9;
+    font-size: 23px;
+    -unity-font-style: bold;
+    margin-top: 10px;
+    margin-bottom: 9px;
+    white-space: normal;
+}
+.cf-hub__path-desc {
+    color: #CCD2D0;
+    font-size: 13px;
+    white-space: normal;
+    min-height: 46px;
+    margin-bottom: 13px;
+}
+.cf-hub__path-button {
+    min-height: 36px;
+    min-width: 115px;
+    flex-grow: 1;
+    flex-basis: 115px;
+    margin-right: 7px;
+    margin-bottom: 8px;
+    padding: 7px 10px;
+    color: #F9E8CD;
+    background-color: #41384F;
+    border-width: 1px;
+    border-color: #807091;
+    border-radius: 7px;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+.cf-hub__path-cards .cf-hub__path-button {
+    background-color: #354D43;
+    border-color: #688E75;
+}
+.cf-hub__path-button:hover, .cf-hub__path-button:focus {
+    color: #FFF6E5;
+    background-color: #725A78;
+    border-color: #C8A7CA;
+}
+.cf-hub__path-cards .cf-hub__path-button:hover {
+    background-color: #486B58;
+    border-color: #A4D9B1;
+}
+.cf-hub__step {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 240px;
+    min-width: 215px;
+    margin-right: 11px;
+    margin-bottom: 13px;
+    padding: 17px 18px;
+    background-color: #221F2F;
+    border-width: 1px;
+    border-color: #5F526B;
+    border-radius: 11px;
+}
+.cf-hub__step-head {
+    flex-direction: row;
+    align-items: center;
+}
+.cf-hub__step-number {
+    font-size: 23px;
+    color: #DAB176;
+    -unity-font-style: bold;
+    margin-right: 11px;
+}
+.cf-hub__step-title {
+    font-size: 15px;
+    color: #F8E5C9;
+    -unity-font-style: bold;
+}
+.cf-hub__step-detail {
+    color: #C9C0D3;
+    font-size: 12px;
+    min-height: 37px;
+    white-space: normal;
+    margin-top: 9px;
+    margin-bottom: 11px;
+}
+.cf-hub__step-action {
+    min-height: 34px;
+    align-self: stretch;
+    background-color: #3D354D;
+    border-width: 1px;
+    border-color: #91769C;
+    border-radius: 7px;
+    color: #EAD5EE;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+.cf-hub__step-action:hover, .cf-hub__step-action:focus {
+    background-color: #564563;
+    border-color: #D1B5D7;
+}
+.cf-hub__more {
+    flex-shrink: 0;
+    width: 100%;
+    background-color: #1E1A28;
+    border-width: 1px;
+    border-color: #514258;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 4px;
+}
+.cf-hub__more .unity-foldout__toggle {
+    color: #E6C999;
+    -unity-font-style: bold;
+    font-size: 13px;
+}
+.cf-hub__more-grid {
+    width: 100%;
+    margin-top: 13px;
+}
+.cf-hub__tool {
+    min-height: 34px;
+    flex-basis: 165px;
+    flex-grow: 1;
+    min-width: 145px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    padding: 6px 9px;
+    background-color: #352B42;
+    border-width: 1px;
+    border-color: #625572;
+    border-radius: 7px;
+    color: #F4E4D2;
+    font-size: 11px;
+}
+.cf-hub__tool:hover, .cf-hub__tool:focus {
+    background-color: #503B5C;
+    border-color: #C8A3C2;
+}
+.cf-hub__footnote {
+    align-self: center;
+    margin-top: 22px;
+    color: #82768D;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+/* Game Overview: visually separate command centre, live readiness, faction identity. */
+.cf-hub__overview {
+    width: 100%;
+    flex-shrink: 0;
+    padding: 20px 19px 18px 19px;
+    margin-bottom: 25px;
+    background-color: #1F1A2B;
+    border-width: 1px;
+    border-color: #6B5877;
+    border-radius: 13px;
+}
+.cf-hub__overview-head {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 13px;
+}
+.cf-hub__overview-title {
+    font-size: 23px;
+    color: #FAE9CF;
+    -unity-font-style: bold;
+    margin-top: 5px;
+}
+.cf-hub__overview-banner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    background-color: #2B3C34;
+    border-left-width: 3px;
+    border-left-color: #C9B473;
+    border-radius: 9px;
+}
+.cf-hub__overview-status {
+    color: #FAE4B2;
+    font-size: 15px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+.cf-hub__overview-summary {
+    color: #CEDBD1;
+    font-size: 12px;
+    white-space: normal;
+}
+.cf-hub__overview-play {
+    min-height: 39px;
+    min-width: 142px;
+    margin-left: 9px;
+    margin-top: 6px;
+    color: #251C28;
+    background-color: #EAC080;
+    border-radius: 7px;
+    border-width: 1px;
+    border-color: #F5D7A1;
+    font-size: 12px;
+    -unity-font-style: bold;
+}
+.cf-hub__overview-play:hover, .cf-hub__overview-play:focus {
+    background-color: #FFDEA3;
+}
+.cf-hub__overview-body {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+.cf-hub__overview-readiness,
+.cf-hub__overview-factions {
+    min-width: 275px;
+    flex-shrink: 1;
+    padding: 15px 14px 16px 14px;
+    background-color: #272333;
+    border-width: 1px;
+    border-color: #4C415A;
+    border-radius: 10px;
+}
+.cf-hub__overview-readiness {
+    flex-basis: 300px;
+    flex-grow: 1;
+    margin-right: 11px;
+    margin-bottom: 10px;
+}
+.cf-hub__overview-factions {
+    flex-basis: 520px;
+    flex-grow: 2;
+    margin-bottom: 10px;
+}
+.cf-hub__overview-block-title {
+    font-size: 14px;
+    color: #EFD1A0;
+    -unity-font-style: bold;
+    letter-spacing: .3px;
+    margin-bottom: 5px;
+    white-space: normal;
+}
+.cf-hub__overview-explainer {
+    color: #BDB6C8;
+    font-size: 12px;
+    margin-bottom: 14px;
+    white-space: normal;
+}
+.cf-hub__ready-row {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    padding: 7px 2px;
+    border-bottom-width: 1px;
+    border-bottom-color: #403749;
+}
+.cf-hub__ready-indicator {
+    width: 20px;
+    margin-right: 7px;
+    font-size: 19px;
+}
+.cf-hub__ready-title {
+    font-size: 11px;
+    color: #F2E6CE;
+    -unity-font-style: bold;
+    white-space: normal;
+}
+.cf-hub__ready-note {
+    font-size: 11px;
+    color: #B8B6C8;
+    white-space: normal;
+}
+.cf-hub__ready-link {
+    min-width: 46px;
+    height: 29px;
+    padding: 5px 7px;
+    color: #EBC98F;
+    background-color: #3B3048;
+    border-width: 1px;
+    border-color: #695875;
+    border-radius: 6px;
+    font-size: 10px;
+}
+.cf-hub__ready-link:hover, .cf-hub__ready-link:focus {
+    background-color: #5E486D;
+}
+.cf-hub__overview-deck-head {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.cf-hub__deck-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+}
+.cf-hub__deck {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 155px;
+    min-width: 148px;
+    margin-right: 7px;
+    margin-bottom: 7px;
+    padding: 9px;
+    background-color: #1D1B29;
+    border-width: 1px;
+    border-color: #6B5A70;
+    border-radius: 9px;
+}
+.cf-hub__deck-solar { border-top-width: 3px; border-top-color: #DDA962; }
+.cf-hub__deck-tidal { border-top-width: 3px; border-top-color: #69A6DB; }
+.cf-hub__deck-verdant { border-top-width: 3px; border-top-color: #82BE8A; }
+.cf-hub__deck-art {
+    width: 100%;
+    height: 112px;
+    border-radius: 6px;
+    margin-bottom: 9px;
+}
+.cf-hub__deck-name {
+    font-size: 12px;
+    color: #FFE0AF;
+    -unity-font-style: bold;
+    margin-bottom: 7px;
+    white-space: normal;
+}
+.cf-hub__deck-description {
+    flex-grow: 1;
+    font-size: 11px;
+    color: #D4C9D7;
+    white-space: normal;
+    min-height: 51px;
+    margin-bottom: 8px;
+}
+.cf-hub__deck-count {
+    font-size: 9px;
+    color: #AEABC2;
+    white-space: normal;
+    margin-bottom: 7px;
+}
+.cf-hub__deck-action {
+    min-height: 30px;
+    color: #F4DBB6;
+    background-color: #4A3C5C;
+    border-width: 1px;
+    border-color: #78658B;
+    border-radius: 6px;
+    font-size: 10px;
+    -unity-font-style: bold;
+}
+.cf-hub__deck-action:hover, .cf-hub__deck-action:focus { background-color: #6C517E; }

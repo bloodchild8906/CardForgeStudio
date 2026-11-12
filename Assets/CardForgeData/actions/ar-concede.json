@@ -1,58 +1,37 @@
 {
-    "version": 1,
-    "id": "ar-concede",
-    "name": "Concede",
-    "triggerId": "",
-    "resolution": "Validate, pay costs, apply effect, resolve abilities, emit events, then evaluate victory.",
-    "effect": "Finish the match immediately for demonstration purposes.",
-    "condition": "Available in its assigned phase.",
-    "cost": "No resource cost",
-    "targets": "Acting player or selected card",
-    "orientationChange": 0,
-    "orientationTarget": "Target card",
-    "causeTriggerIds": [],
-    "graphNodes": [
-        {
-            "id": "ar-concede-validate",
-            "title": "Validate request",
-            "detail": "Check phase, player priority, targets, conditions, and costs.",
-            "tone": "check",
-            "x": 70.0,
-            "y": 90.0,
-            "causesStateChange": false,
-            "emitsTriggers": false
-        },
-        {
-            "id": "ar-concede-apply",
-            "title": "Apply authoritative effect",
-            "detail": "Finish the match immediately for demonstration purposes.",
-            "tone": "process",
-            "x": 360.0,
-            "y": 90.0,
-            "causesStateChange": true,
-            "emitsTriggers": false
-        }
-    ],
-    "graphLinks": [
-        {
-            "from": "ar-concede-validate",
-            "to": "ar-concede-apply",
-            "label": "valid"
-        }
-    ],
-    "requiresActivePlayer": true,
-    "serverEffectKind": "finish_game",
-    "sourceZoneId": "",
-    "destinationZoneId": "",
-    "resourceId": "",
-    "effectAmount": 0,
-    "effectTarget": "",
-    "eventType": "",
-    "costResourceId": "",
-    "costAmount": 0,
-    "conditionKind": "",
-    "conditionKey": "",
-    "conditionValue": "",
-    "dataKey": "",
-    "dataValue": ""
+    "version":  1,
+    "id":  "ar-concede",
+    "name":  "Concede",
+    "triggerId":  "",
+    "resolution":  "Validate phase, source, targets and cost; apply the server effect; evaluate victory.",
+    "effect":  "Concede",
+    "condition":  "Server phase and source validation",
+    "cost":  "Card cost or no fixed cost",
+    "targets":  "",
+    "orientationChange":  0,
+    "orientationTarget":  "Target card",
+    "causeTriggerIds":  [
+
+                        ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ],
+    "requiresActivePlayer":  true,
+    "serverEffectKind":  "finish_game",
+    "sourceZoneId":  "",
+    "destinationZoneId":  "",
+    "resourceId":  "",
+    "effectAmount":  0,
+    "effectTarget":  "",
+    "eventType":  "",
+    "costResourceId":  "",
+    "costAmount":  0,
+    "conditionKind":  "",
+    "conditionKey":  "",
+    "conditionValue":  "",
+    "dataKey":  "",
+    "dataValue":  ""
 }

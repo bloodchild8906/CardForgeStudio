@@ -1,0 +1,36 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="AstralRiftArena.uss" />
+    <!-- Editable in Unity UI Builder; runtime fills the named page-content slot. -->
+    <ui:VisualElement name="cf-stage" class="cf-scene-stage">
+        <ui:VisualElement name="cf-header" class="cf-scene-header">
+            <ui:VisualElement name="cf-brand" class="cf-scene-brand">
+                <ui:Label text="CARDFORGE" class="cf-scene-brand-title" />
+                <ui:Label text="ASTRAL RIFT  •  CONVERGENCE" class="cf-scene-brand-subtitle" />
+            </ui:VisualElement>
+            <ui:VisualElement name="cf-tabs" class="cf-scene-tabs">
+                <ui:Label text="BATTLE  /  DECKS  /  COLLECTION  /  BAZAAR  /  HERO" class="cf-scene-edit-preview" />
+            </ui:VisualElement>
+            <ui:VisualElement name="cf-player-status" class="cf-scene-status">
+                <ui:Label name="cf-identity" text="YOUR PLAYER" class="cf-scene-status-text" />
+                <ui:Label name="cf-notice" text="Ready to enter the arena" class="cf-scene-status-note" />
+                <ui:Button name="cf-retry" text="RECONNECT" class="cf-scene-reconnect" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="cf-page-content" class="cf-scene-content">
+            <ui:VisualElement class="cf-scene-preview">
+                <ui:Label text="ASTRAL RIFT  /  ARENA" class="cf-scene-preview-kicker" />
+                <ui:Label text="Build your decks. Command the stars." class="cf-scene-preview-title" />
+                <ui:Label text="Design-time layout preview · the authoritative game fills this area at runtime." class="cf-scene-preview-note" />
+                <ui:VisualElement class="cf-scene-example-zone">
+                    <ui:Label text="OPPONENT BATTLEFIELD" class="cf-scene-zone-caption" />
+                </ui:VisualElement>
+                <ui:VisualElement class="cf-scene-example-zone">
+                    <ui:Label text="YOUR BATTLEFIELD" class="cf-scene-zone-caption" />
+                </ui:VisualElement>
+                <ui:VisualElement class="cf-scene-example-hand">
+                    <ui:Label text="YOUR HAND  •  COMMANDER  •  MANA SOURCE" class="cf-scene-zone-caption" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

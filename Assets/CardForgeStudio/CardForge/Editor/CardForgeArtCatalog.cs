@@ -14,9 +14,18 @@ namespace CardForge.Editor
             root.AddToClassList("cf-art-catalog");
             var search = new TextField("Search art") { value = "" };
             root.Add(search);
+            var resultCount = new Label();
+            resultCount.style.marginTop = 5;
+            resultCount.style.marginBottom = 5;
+            resultCount.style.fontSize = 12;
+            root.Add(resultCount);
+            var scroller = new ScrollView(ScrollViewMode.Vertical);
+            scroller.style.maxHeight = 330;
+            scroller.verticalScrollerVisibility = ScrollerVisibility.Auto;
+            root.Add(scroller);
             var grid = new VisualElement();
             grid.AddToClassList("cf-art-catalog__grid");
-            root.Add(grid);
+            scroller.Add(grid);
 
             void Rebuild(string query)
             {
@@ -29,6 +38,9 @@ namespace CardForge.Editor
                     .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
                     .Take(160)
                     .ToList();
+                resultCount.text = paths.Count == 160
+                    ? "Showing first 160 illustrations. Search to narrow the results."
+                    : paths.Count + " illustrations found";
                 if (paths.Count == 0)
                 {
                     grid.Add(new Label("No texture assets match this search."));
@@ -39,7 +51,7 @@ namespace CardForge.Editor
                     var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
                     if (texture == null) continue;
                     var localPath = path;
-                    var tile = new VisualElement();
+                    var tile = new Button(() => onSelected(localPath));
                     tile.AddToClassList("cf-art-catalog__tile");
                     if (string.Equals(localPath, selectedPath, StringComparison.OrdinalIgnoreCase)) tile.AddToClassList("is-selected");
                     tile.tooltip = localPath;
@@ -49,7 +61,6 @@ namespace CardForge.Editor
                     var label = new Label(System.IO.Path.GetFileNameWithoutExtension(localPath)) { pickingMode = PickingMode.Ignore };
                     label.AddToClassList("cf-art-catalog__label");
                     tile.Add(label);
-                    tile.RegisterCallback<ClickEvent>(_ => onSelected(localPath));
                     grid.Add(tile);
                 }
             }

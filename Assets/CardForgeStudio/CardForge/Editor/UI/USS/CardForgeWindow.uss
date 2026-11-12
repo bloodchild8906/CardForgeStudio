@@ -211,9 +211,29 @@
 .requirement-row { padding: 8px; margin: 5px 0; background-color: #142532; border-width: 1px; border-color: #2b4656; border-radius: 5px; }
 .zone-layer-view { overflow: hidden; }
 .cf-art-catalog { margin-top: 8px; padding: 8px; background-color: #101e2b; border-width: 1px; border-color: #2d4658; border-radius: 6px; }
-.cf-art-catalog__grid { flex-direction: row; flex-wrap: wrap; max-height: 330px; overflow-y: scroll; padding-top: 6px; }
+.cf-art-catalog__grid { flex-direction: row; flex-wrap: wrap; padding-top: 6px; }
 .cf-art-catalog__tile { width: 104px; height: 108px; margin: 3px; padding: 4px; background-color: #182c3b; border-width: 1px; border-color: #2b4759; border-radius: 5px; }
-.cf-art-catalog__tile:hover { background-color: #244351; border-color: #54d6bf; }
+.cf-art-catalog__tile:hover, .cf-art-catalog__tile:focus { background-color: #3B314E; border-color: #F1C67A; }
 .cf-art-catalog__tile.is-selected { background-color: #3a3c35; border-color: #d7b878; }
 .cf-art-catalog__preview { width: 94px; height: 76px; background-color: #0b1621; }
 .cf-art-catalog__label { margin-top: 5px; color: #c8d6df; font-size: 9px; -unity-text-overflow-position: end; white-space: nowrap; overflow: hidden; }
+
+/* Tooling ergonomics: readable inspector fields and navigation that wraps. */
+.cf-root .app-header { height: auto; min-height: 76px; flex-wrap: wrap; padding-top: 5px; padding-bottom: 5px; }
+.cf-root .main-tabs { height: auto; flex-wrap: wrap; min-width: 0; flex-grow: 1; }
+.cf-root .tab { height: 39px; padding-left: 11px; padding-right: 11px; font-size: 12px; }
+.cf-root .section-title { font-size: 17px; margin-top: 15px; margin-bottom: 9px; }
+.cf-root .section-kicker { font-size: 11px; margin-bottom: 8px; }
+.cf-root .muted { font-size: 12px; }
+.cf-root .unity-base-field { min-height: 32px; }
+.cf-root .unity-base-field__label { font-size: 12px; min-width: 105px; width: 38%; max-width: 142px; }
+.cf-root .unity-base-text-field__input, .cf-root .unity-base-popup-field__input,
+.cf-root .unity-enum-field__input, .cf-root .unity-object-field__input {
+    min-height: 31px; font-size: 13px; padding-top: 5px; padding-bottom: 5px;
+}
+.cf-root .list-entry { min-height: 36px; font-size: 12px; }
+.cf-root .primary-button, .cf-root .ghost-button { min-height: 33px; font-size: 12px; }
+.cf-root .small-button, .cf-root .small-danger { min-height: 27px; font-size: 11px; }
+.cf-root .design-toolbar ToolbarMenu { min-height: 32px; font-size: 12px; }
+.cf-root .catalog-row Label { font-size: 12px; }
+.cf-root .cf-art-catalog__label { font-size: 10px; }

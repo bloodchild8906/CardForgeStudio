@@ -331,7 +331,17 @@ namespace CardForge.Editor.Graph
             if (nodes.Count == 0) return;
             var ids = nodes.Select(node => node.Id).ToList();
             var pairs = links.Select(link => new KeyValuePair<string, string>(link.FromId, link.ToId)).ToList();
-            var settings = new GraphLayoutSettings { NodeHeight = Mathf.Max(GraphNodeView.DefaultHeight, viewsById.Values.Max(view => view.MeasuredHeight)) };
+            // The Action editor has wider, taller narrative nodes. Tidy must use
+            // actual node dimensions or it will overlap explanations and ports.
+            var nodeWidth = Mathf.Max(GraphNodeView.DefaultWidth,
+                viewsById.Values.Max(view => view.MeasuredWidth));
+            var settings = new GraphLayoutSettings
+            {
+                NodeWidth = nodeWidth,
+                NodeHeight = Mathf.Max(GraphNodeView.DefaultHeight,
+                    viewsById.Values.Max(view => view.MeasuredHeight)),
+                MaximumColumns = nodeWidth > 260f ? 3 : 5
+            };
             var moves = new List<GraphNodeMove>();
             foreach (var placement in GraphLayout.Arrange(ids, pairs, settings))
             {

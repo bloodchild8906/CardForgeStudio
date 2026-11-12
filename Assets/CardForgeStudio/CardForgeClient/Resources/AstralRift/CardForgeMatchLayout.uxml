@@ -1,0 +1,40 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="CardForgeMatchLayout.uss" />
+    <!-- Full match layout. Open in UI Builder to move/resize slots and change appearance.
+         Live player data is injected into the named containers at runtime. -->
+    <ui:VisualElement name="cf-match-root" class="cf-match-root">
+        <ui:VisualElement name="cf-match-title" class="cf-match-title">
+            <ui:Label text="ASTRAL RIFT  •  MATCH" class="cf-match-preview-title" />
+            <ui:Label text="TURN 1  •  YOUR MOVE" class="cf-match-preview-subtitle" />
+        </ui:VisualElement>
+        <ui:VisualElement name="cf-match-main" class="cf-match-main">
+            <ui:VisualElement name="cf-match-field" class="cf-match-field">
+                <ui:VisualElement class="cf-match-preview-seat">
+                    <ui:Label text="OPPONENT" class="cf-match-preview-title" />
+                    <ui:Label text="COMMANDER     MANA SOURCE     FRONTLINE     DECK     DISCARD     EXILE" class="cf-match-preview-hint" />
+                </ui:VisualElement>
+                <ui:VisualElement class="cf-match-divider">
+                    <ui:Label text="BATTLEFIELD  •  TURN ACTIONS &amp; REACTIONS" class="cf-match-preview-hint" />
+                </ui:VisualElement>
+                <ui:VisualElement class="cf-match-preview-seat">
+                    <ui:Label text="YOUR FIELD" class="cf-match-preview-title" />
+                    <ui:Label text="COMMANDER     MANA SOURCE     FRONTLINE     DECK     DISCARD     EXILE" class="cf-match-preview-hint" />
+                </ui:VisualElement>
+                <ui:VisualElement class="cf-match-preview-hand">
+                    <ui:Label text="YOUR HAND  •  FACE-UP TO YOU" class="cf-match-preview-title" />
+                    <ui:Label text="Card thumbnails are shown here when you enter a match." class="cf-match-preview-hint" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="cf-match-inspector" class="cf-match-inspector">
+                <ui:Label text="CARD INSPECTOR" class="cf-match-preview-title" />
+                <ui:Label text="Inspect a visible card to see its art, abilities and costs." class="cf-match-preview-hint" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="cf-match-action-host" class="cf-match-action-host">
+            <ui:Label text="ACTION STRIP  •  Play cards, activate abilities, end phases" class="cf-match-preview-hint" />
+        </ui:VisualElement>
+        <ui:VisualElement name="cf-match-log" class="cf-match-log">
+            <ui:Label text="MATCH LOG  •  Recent events appear here" class="cf-match-preview-hint" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

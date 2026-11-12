@@ -1,0 +1,13 @@
+{
+    "version":  1,
+    "id":  "ar-keyword-haste",
+    "name":  "Haste",
+    "rulesText":  "haste",
+    "reminderText":  "",
+    "abilityIds":  [
+
+                   ],
+    "tags":  [
+
+             ]
+}

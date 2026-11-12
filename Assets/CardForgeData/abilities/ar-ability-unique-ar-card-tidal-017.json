@@ -1,35 +1,47 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-tidal-017",
-    "name": "Stormforged Wayfinder — Echo Protocol",
-    "cardId": "ar-card-tidal-017",
-    "activationTriggerId": "ar-trigger-deploy",
-    "actionId": "ar-deploy",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "recover 1 from discard",
-    "priority": 31,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "reclaim",
-            "target": "",
-            "resourceId": "",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-tidal-017",
+    "name":  "Riverglass Knight - Tidal Signature",
+    "cardId":  "ar-card-tidal-017",
+    "activationTriggerId":  "",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Deal 3 damage to an enemy player. Mill 1 enemy card(s).",
+    "priority":  31,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-play-creature",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  -3,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "mill",
+                        "amount":  1,
+                        "target":  "opponent"
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

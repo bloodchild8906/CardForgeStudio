@@ -1,22 +1,33 @@
 {
     "version": 1,
     "id": "ar-ability-unique-ar-card-tidal-016",
-    "name": "Radiant Wayfinder — Echo Protocol",
+    "name": "Abyssal Ranger - Tidal Signature",
     "cardId": "ar-card-tidal-016",
-    "activationTriggerId": "ar-trigger-deploy",
-    "actionId": "ar-deploy",
+    "activationTriggerId": "",
+    "actionId": "ar-play-creature",
     "phaseId": "",
     "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "draw 1",
+    "operation": "Resolve structured server effects",
+    "effect": "Gain 3 mana. Draw 1 card(s).",
     "priority": 30,
     "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
+    "responseTiming": "On action:ar-play-creature",
     "responseResolution": "Resolve in priority order",
     "responseActionIds": [],
     "causeTriggerIds": [],
     "rules": [],
     "effects": [
+        {
+            "kind": "modify_resource",
+            "target": "",
+            "resourceId": "energy",
+            "fromZone": "",
+            "toZone": "",
+            "eventType": "",
+            "message": "",
+            "amount": 3,
+            "parameters": []
+        },
         {
             "kind": "draw",
             "target": "",
@@ -30,6 +41,108 @@
         }
     ],
     "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "graphNodes": [
+        {
+            "id": "e48f06df5d974ffc8790dd66bdde77bb",
+            "title": "Activation",
+            "detail": "Action: ar-play-creature",
+            "tone": "trigger",
+            "x": 50.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "f62e7e63a3214bed86278e7d44e3166b",
+            "title": "Conditions",
+            "detail": "0 structured conditions",
+            "tone": "process",
+            "x": 300.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "784ff1fa514e4dd4a68dff1482cec39f",
+            "title": "Target scope",
+            "detail": "Source card and game state",
+            "tone": "process",
+            "x": 550.0,
+            "y": 250.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "0718b856ae204b9b8c16718dadf3a653",
+            "title": "Executable effects",
+            "detail": "2 server effects",
+            "tone": "process",
+            "x": 800.0,
+            "y": 110.0,
+            "causesStateChange": true,
+            "emitsTriggers": false
+        },
+        {
+            "id": "4e7e8cab533e48328d9f763c82003652",
+            "title": "Response actions",
+            "detail": "0 actions",
+            "tone": "effect",
+            "x": 1050.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        },
+        {
+            "id": "0facc33811fc4d72a9ecec6ae0311d5b",
+            "title": "Trigger outputs",
+            "detail": "0 triggers",
+            "tone": "process",
+            "x": 1300.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": true
+        },
+        {
+            "id": "e0cb2359e1284ac6b7cfe38a7bae4a97",
+            "title": "Resolution",
+            "detail": "Resolve in priority order",
+            "tone": "process",
+            "x": 1550.0,
+            "y": 110.0,
+            "causesStateChange": false,
+            "emitsTriggers": false
+        }
+    ],
+    "graphLinks": [
+        {
+            "from": "e48f06df5d974ffc8790dd66bdde77bb",
+            "to": "f62e7e63a3214bed86278e7d44e3166b",
+            "label": "next"
+        },
+        {
+            "from": "f62e7e63a3214bed86278e7d44e3166b",
+            "to": "784ff1fa514e4dd4a68dff1482cec39f",
+            "label": "next"
+        },
+        {
+            "from": "784ff1fa514e4dd4a68dff1482cec39f",
+            "to": "0718b856ae204b9b8c16718dadf3a653",
+            "label": "next"
+        },
+        {
+            "from": "0718b856ae204b9b8c16718dadf3a653",
+            "to": "4e7e8cab533e48328d9f763c82003652",
+            "label": "next"
+        },
+        {
+            "from": "4e7e8cab533e48328d9f763c82003652",
+            "to": "0facc33811fc4d72a9ecec6ae0311d5b",
+            "label": "next"
+        },
+        {
+            "from": "0facc33811fc4d72a9ecec6ae0311d5b",
+            "to": "e0cb2359e1284ac6b7cfe38a7bae4a97",
+            "label": "next"
+        }
+    ]
 }

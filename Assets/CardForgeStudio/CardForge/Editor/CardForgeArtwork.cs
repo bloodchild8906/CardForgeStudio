@@ -31,9 +31,9 @@ namespace CardForge.Editor
             var banner=new VisualElement();banner.AddToClassList("cf-art-banner");
             if(Enabled){var art=new Image{image=Workspace(screen),scaleMode=ScaleMode.ScaleAndCrop,pickingMode=PickingMode.Ignore};art.AddToClassList("cf-art-banner__image");banner.Add(art);}
             var tint=new VisualElement{pickingMode=PickingMode.Ignore};tint.AddToClassList("cf-art-banner__tint");banner.Add(tint);
-            var kicker=new Label("STUDIO  /  LIBRARY"){pickingMode=PickingMode.Ignore};kicker.AddToClassList("cf-art-banner__kicker");banner.Add(kicker);
+            var kicker=new Label(screen=="home"||screen=="overview"?"STUDIO  /  WORKSPACE":"STUDIO  /  LIBRARY"){pickingMode=PickingMode.Ignore};kicker.AddToClassList("cf-art-banner__kicker");banner.Add(kicker);
             var label=new Label(title){pickingMode=PickingMode.Ignore};label.AddToClassList("cf-art-banner__title");banner.Add(label);
-            var subtitle=new Label(screen=="layouts"?"Shape every detail. Build reusable fronts, backs and variants.":screen=="cards"?"Bring your cards together. Edit, import and preview live data.":screen=="blocks"?"Build editions, manage reprints and export your game assets.":screen=="turnflow"?"Map phases, checks and resolution with connected visual flows.":screen=="icons"?"Craft reusable symbols with editable vector layers.":"Define reusable rules and connect them to your game."){pickingMode=PickingMode.Ignore};subtitle.AddToClassList("cf-art-banner__subtitle");banner.Add(subtitle);
+            var subtitle=new Label(screen=="layouts"?"Shape every detail. Build reusable fronts, backs and variants.":screen=="cards"?"Bring your cards together. Edit, import and preview live data.":screen=="blocks"?"Build editions, manage reprints and export your game assets.":screen=="turnflow"?"Map phases, checks and resolution with connected visual flows.":screen=="icons"?"Craft reusable symbols with editable vector layers.":screen=="home"?"Project workspace, playtesting and creation tools.":screen=="overview"?"Review game content, readiness, starter decks and server status.":"Define reusable rules and connect them to your game."){pickingMode=PickingMode.Ignore};subtitle.AddToClassList("cf-art-banner__subtitle");banner.Add(subtitle);
             return banner;
         }
     }

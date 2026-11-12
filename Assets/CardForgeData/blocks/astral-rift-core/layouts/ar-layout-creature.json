@@ -1,0 +1,475 @@
+{
+    "version":  1,
+    "id":  "ar-layout-creature",
+    "name":  "Creature - Astral Rift Front",
+    "isBack":  false,
+    "width":  360,
+    "height":  504,
+    "backgroundAssetPath":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/frames/front-creature.png",
+    "backgroundColor":  "#101F23",
+    "templates":  [
+                      {
+                          "id":  "ar-template-title-creature",
+                          "name":  "Title glass",
+                          "backgroundAssetPath":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/ui/title-panel.png",
+                          "backgroundColor":  "#294F40DD",
+                          "imageScaleMode":  4,
+                          "sliceLeft":  14,
+                          "sliceRight":  14,
+                          "sliceTop":  14,
+                          "sliceBottom":  14
+                      },
+                      {
+                          "id":  "ar-template-rules-creature",
+                          "name":  "Rules glass",
+                          "backgroundAssetPath":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/ui/rules-panel.png",
+                          "backgroundColor":  "#101F23E8",
+                          "imageScaleMode":  4,
+                          "sliceLeft":  18,
+                          "sliceRight":  18,
+                          "sliceTop":  18,
+                          "sliceBottom":  18
+                      }
+                  ],
+    "zones":  [
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-title",
+                      "name":  "Title",
+                      "kind":  0,
+                      "fieldId":  "5aa8e06473ef4906ad1207722c38f824",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  28.0,
+                      "y":  25.0,
+                      "width":  267.0,
+                      "height":  42.0,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  22,
+                      "fontAssetPath":  "",
+                      "color":  "#FFF3D9",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "ar-template-title-creature",
+                      "bold":  true,
+                      "visible":  true,
+                      "alignment":  "MiddleLeft",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-cost",
+                      "name":  "Energy cost",
+                      "kind":  1,
+                      "fieldId":  "d3122d6a7a2e455b85aa4159a16b59dd",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  303.0,
+                      "y":  23.0,
+                      "width":  34.0,
+                      "height":  38.0,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  24.0,
+                      "fontAssetPath":  "",
+                      "color":  "#92D4B0",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "ar-template-title-creature",
+                      "bold":  true,
+                      "visible":  true,
+                      "alignment":  "MiddleCenter",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-art",
+                      "name":  "Artwork",
+                      "kind":  3,
+                      "fieldId":  "a923c2a162ad467899a0e29c0acad459",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  31.0,
+                      "y":  97,
+                      "width":  298.0,
+                      "height":  209,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  14.0,
+                      "fontAssetPath":  "",
+                      "color":  "#F4F7FF",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "",
+                      "bold":  false,
+                      "visible":  true,
+                      "alignment":  "MiddleCenter",
+                      "layers":  [
+                                     {
+                                         "id":  "ar-layer-art-binding",
+                                         "name":  "Bound artwork",
+                                         "order":  0,
+                                         "visible":  true,
+                                         "blendMode":  "Normal",
+                                         "opacity":  1.0,
+                                         "backgroundColor":  "#00000000",
+                                         "assetPath":  "",
+                                         "templateId":  "",
+                                         "bindingPath":  "art",
+                                         "requiredCardType":  "",
+                                         "requirements":  [
+
+                                                          ],
+                                         "imageScaleMode":  1,
+                                         "sliceLeft":  12,
+                                         "sliceRight":  12,
+                                         "sliceTop":  12,
+                                         "sliceBottom":  12
+                                     },
+                                     {
+                                         "id":  "ar-layer-mythic-foil",
+                                         "name":  "Mythic prism overlay",
+                                         "order":  1,
+                                         "visible":  true,
+                                         "blendMode":  "Screen",
+                                         "opacity":  0.699999988079071,
+                                         "backgroundColor":  "#00000000",
+                                         "assetPath":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/ui/foil-overlay.png",
+                                         "templateId":  "",
+                                         "bindingPath":  "",
+                                         "requiredCardType":  "",
+                                         "requirements":  [
+                                                              {
+                                                                  "id":  "ar-layer-mythic",
+                                                                  "fieldId":  "ar-field-rarity",
+                                                                  "comparison":  "Equals",
+                                                                  "expectedValue":  "Mythic",
+                                                                  "message":  "Mythic foil overlay"
+                                                              }
+                                                          ],
+                                         "imageScaleMode":  1,
+                                         "sliceLeft":  12,
+                                         "sliceRight":  12,
+                                         "sliceTop":  12,
+                                         "sliceBottom":  12
+                                     }
+                                 ],
+                      "variants":  [
+                                       {
+                                           "id":  "ar-variant-mythic",
+                                           "name":  "Mythic full-bleed",
+                                           "layerId":  "ar-layer-mythic-foil",
+                                           "staticText":  "",
+                                           "staticAssetPath":  "",
+                                           "x":  27.0,
+                                           "y":  72.0,
+                                           "width":  306.0,
+                                           "height":  213.0,
+                                           "fontSize":  21.0,
+                                           "color":  "#F2F0EB",
+                                           "visible":  true,
+                                           "requirements":  [
+                                                                {
+                                                                    "id":  "ar-variant-mythic-req",
+                                                                    "fieldId":  "ar-field-rarity",
+                                                                    "comparison":  "Equals",
+                                                                    "expectedValue":  "Mythic",
+                                                                    "message":  "Mythic art treatment"
+                                                                }
+                                                            ]
+                                       }
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-type",
+                      "name":  "Type line",
+                      "kind":  0,
+                      "fieldId":  "3fdb6418da2c449cb610ce5ac43a97a2",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  32.0,
+                      "y":  312,
+                      "width":  244.0,
+                      "height":  29.0,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  14,
+                      "fontAssetPath":  "",
+                      "color":  "#92D4B0",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "ar-template-title-creature",
+                      "bold":  true,
+                      "visible":  true,
+                      "alignment":  "MiddleLeft",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-affinity",
+                      "name":  "Affinity icon",
+                      "kind":  2,
+                      "fieldId":  "ar-field-affinity-icon",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  292.0,
+                      "y":  312,
+                      "width":  34.0,
+                      "height":  29.0,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  12.0,
+                      "fontAssetPath":  "",
+                      "color":  "#F4F7FF",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "ar-template-title-creature",
+                      "bold":  false,
+                      "visible":  true,
+                      "alignment":  "MiddleCenter",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-rules",
+                      "name":  "Rules",
+                      "kind":  0,
+                      "fieldId":  "1fa832ace0bb4ffd980ff9350beb90ed",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  32.0,
+                      "y":  347,
+                      "width":  296.0,
+                      "height":  80,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  14,
+                      "fontAssetPath":  "",
+                      "color":  "#F4F7FF",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "ar-template-rules-creature",
+                      "bold":  false,
+                      "visible":  true,
+                      "alignment":  "UpperLeft",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-flavor",
+                      "name":  "Flavor",
+                      "kind":  0,
+                      "fieldId":  "ar-field-flavor",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  42.0,
+                      "y":  433,
+                      "width":  276.0,
+                      "height":  18,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  11,
+                      "fontAssetPath":  "",
+                      "color":  "#F4F7FF",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "ar-template-rules-creature",
+                      "bold":  false,
+                      "visible":  true,
+                      "alignment":  "UpperLeft",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-power",
+                      "name":  "Power",
+                      "kind":  1,
+                      "fieldId":  "89c7fee71dd74befaa68a04dd3abceee",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  29.0,
+                      "y":  448.0,
+                      "width":  38.0,
+                      "height":  34.0,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  20.0,
+                      "fontAssetPath":  "",
+                      "color":  "#F4F7FF",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "ar-template-title-creature",
+                      "bold":  true,
+                      "visible":  true,
+                      "alignment":  "MiddleCenter",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-toughness",
+                      "name":  "Integrity",
+                      "kind":  1,
+                      "fieldId":  "ar-field-toughness",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  292.0,
+                      "y":  448.0,
+                      "width":  38.0,
+                      "height":  34.0,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  20.0,
+                      "fontAssetPath":  "",
+                      "color":  "#F4F7FF",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "ar-template-title-creature",
+                      "bold":  true,
+                      "visible":  true,
+                      "alignment":  "MiddleCenter",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-collector",
+                      "name":  "Collector",
+                      "kind":  0,
+                      "fieldId":  "ar-field-collector",
+                      "staticText":  "",
+                      "staticAssetPath":  "",
+                      "x":  91.0,
+                      "y":  460.0,
+                      "width":  178.0,
+                      "height":  18.0,
+                      "order":  0,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  9.0,
+                      "fontAssetPath":  "",
+                      "color":  "#F4F7FF",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "",
+                      "bold":  false,
+                      "visible":  true,
+                      "alignment":  "MiddleCenter",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-set-mark",
+                      "name":  "Set mark",
+                      "kind":  4,
+                      "fieldId":  "",
+                      "staticText":  "✦ ASTRAL RIFT ✦",
+                      "staticAssetPath":  "",
+                      "x":  112.0,
+                      "y":  480.0,
+                      "width":  136.0,
+                      "height":  14.0,
+                      "order":  11,
+                      "offsetX":  0.0,
+                      "offsetY":  0.0,
+                      "fontSize":  8.0,
+                      "fontAssetPath":  "",
+                      "color":  "#BFD7FF",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "",
+                      "bold":  false,
+                      "visible":  true,
+                      "alignment":  "MiddleCenter",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  },
+                  {
+                      "locked":  false,
+                      "id":  "ar-zone-kind-creature",
+                      "name":  "Card family label",
+                      "kind":  4,
+                      "fieldId":  "",
+                      "staticText":  "CREATURE",
+                      "staticAssetPath":  "",
+                      "x":  110,
+                      "y":  77,
+                      "width":  140,
+                      "height":  16,
+                      "order":  12,
+                      "offsetX":  0,
+                      "offsetY":  0,
+                      "fontSize":  11,
+                      "fontAssetPath":  "",
+                      "color":  "#92D4B0",
+                      "backgroundColor":  "#00000000",
+                      "templateId":  "",
+                      "bold":  true,
+                      "visible":  true,
+                      "alignment":  "MiddleCenter",
+                      "layers":  [
+
+                                 ],
+                      "variants":  [
+
+                                   ]
+                  }
+              ],
+    "layoutType":  "Creature portrait",
+    "requirements":  [
+                         {
+                             "id":  "ar-layout-affinity",
+                             "fieldId":  "ar-field-affinity",
+                             "comparison":  "NotEquals",
+                             "expectedValue":  "",
+                             "message":  "Every showcase card must declare an affinity."
+                         }
+                     ]
+}

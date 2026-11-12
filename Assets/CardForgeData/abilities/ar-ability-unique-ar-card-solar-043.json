@@ -1,35 +1,45 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-solar-043",
-    "name": "Restless Standard — Sunforged Protocol",
-    "cardId": "ar-card-solar-043",
-    "activationTriggerId": "ar-trigger-relic",
-    "actionId": "ar-install-relic",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "gain 1 energy",
-    "priority": 30,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "energy",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-solar-043",
+    "name":  "Firesong Cataclysm - Solar Signature",
+    "cardId":  "ar-card-solar-043",
+    "activationTriggerId":  "",
+    "actionId":  "ar-cast-spell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Restore 3 life. Draw 1 card(s).",
+    "priority":  30,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-cast-spell",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  3
+                    },
+                    {
+                        "kind":  "draw",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

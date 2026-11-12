@@ -1,46 +1,46 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-umbral-055",
-    "name": "Stormforged Whisperer — Nullwake Protocol",
-    "cardId": "ar-card-umbral-055",
-    "activationTriggerId": "ar-trigger-event",
-    "actionId": "ar-cast-event",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "retire an opposing unit; gain 1 momentum",
-    "priority": 33,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "destroy_target",
-            "target": "opponent",
-            "resourceId": "",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 0,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "momentum",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-055",
+    "name":  "Shrouded Surge - Umbral Signature",
+    "cardId":  "ar-card-umbral-055",
+    "activationTriggerId":  "",
+    "actionId":  "ar-cast-quickspell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Fast: cast during any player turn. Gain 2 shield. Gain 1 renown.",
+    "priority":  33,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-cast-quickspell",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  2
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "renown",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

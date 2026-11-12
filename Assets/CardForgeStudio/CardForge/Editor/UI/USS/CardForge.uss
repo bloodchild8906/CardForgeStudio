@@ -19,4 +19,7 @@
 @import url("Light/LightCardPreview.uss");
 @import url("Light/LightPolish.uss");
 @import url("WorkspaceRefinement.uss");
-@import url("WorkspaceRefinement.uss");
+@import url("Workbench.uss");
+@import url("Hub.uss");
+@import url("OverviewIntegration.uss");
+@import url("DashboardIntegration.uss");

@@ -9,9 +9,9 @@ namespace TcgServer.Client
     // Runtime UI Toolkit presentation. Only the server executes game rules.
     public sealed partial class CardForgeToolkitClient
     {
-        private static readonly Color ArenaInk = ColorFrom("#090F1D");
-        private static readonly Color ArenaPanel = ColorFrom("#131E32");
-        private static readonly Color ArenaTrim = ColorFrom("#30425B");
+        private static readonly Color ArenaInk = ColorFrom("#14101C");
+        private static readonly Color ArenaPanel = ColorFrom("#211A2C");
+        private static readonly Color ArenaTrim = ColorFrom("#756077");
         private static readonly Color CreatureTone = ColorFrom("#5AB58F");
         private static readonly Color SpellTone = ColorFrom("#8A91F2");
         private static readonly Color QuickTone = ColorFrom("#F0A565");
@@ -46,16 +46,73 @@ namespace TcgServer.Client
             view.style.borderBottomRightRadius = radius;
         }
 
+        private bool BindAuthoredSceneShell()
+        {
+            // A real UXML document in the Unity scene is the design-time source
+            // of the header and page layout. Only gameplay content is dynamic.
+            var stage = root.Q<VisualElement>("cf-stage");
+            var authoredHeader = root.Q<VisualElement>("cf-header");
+            var tabs = root.Q<VisualElement>("cf-tabs");
+            var pageContent = root.Q<VisualElement>("cf-page-content");
+            var playerIdentity = root.Q<Label>("cf-identity");
+            var connectionNotice = root.Q<Label>("cf-notice");
+            var retry = root.Q<Button>("cf-retry");
+            if (stage == null || authoredHeader == null || tabs == null ||
+                pageContent == null || playerIdentity == null || connectionNotice == null ||
+                retry == null) return false;
+
+            header = authoredHeader;
+            sidebar = tabs;
+            identity = playerIdentity;
+            notice = connectionNotice;
+            content = pageContent;
+            sidebar.Clear();
+            foreach (var tab in new[]
+            {
+                (page: "Play", label: "BATTLE"),
+                (page: "Decks", label: "DECKS"),
+                (page: "Inventory", label: "COLLECTION"),
+                (page: "Store", label: "BAZAAR"),
+                (page: "Profile", label: "HERO")
+            })
+            {
+                var targetPage = tab.page;
+                var button = new Button(() => Show(targetPage)) { text = tab.label };
+                button.AddToClassList("cf-nav");
+                sidebar.Add(button);
+                navigation[targetPage] = button;
+            }
+            retry.clicked += () => StartCoroutine(ConnectDemo());
+            content.Clear();
+
+            var sceneLayout = GetComponentInChildren<CardForgeSceneLayout>(true);
+            if (sceneLayout != null)
+            {
+                stage.style.backgroundColor = sceneLayout.ArenaBackground;
+                header.style.backgroundColor = sceneLayout.HeaderBackground;
+                header.style.minHeight = sceneLayout.HeaderMinimumHeight;
+                Frame(header, sceneLayout.TrimColor);
+                content.style.paddingLeft = sceneLayout.PagePadding;
+                content.style.paddingRight = sceneLayout.PagePadding;
+                content.style.paddingTop = sceneLayout.PagePadding;
+                content.style.paddingBottom = sceneLayout.PagePadding;
+            }
+            return true;
+        }
+
         private void BuildArenaShell()
         {
+            if (BindAuthoredSceneShell()) return;
             root.Clear();
             var shell = Flex();
             shell.style.flexGrow = 1;
             shell.style.backgroundColor = ArenaInk;
             root.Add(shell);
             header = Flex(true);
-            header.style.height = 69;
+            header.style.height = new StyleLength(StyleKeyword.Auto);
+            header.style.minHeight = 69;
             header.style.flexShrink = 0;
+            header.style.flexWrap = Wrap.Wrap;
             header.style.alignItems = Align.Center;
             header.style.backgroundColor = ArenaPanel;
             header.style.paddingLeft = 22;
@@ -64,30 +121,41 @@ namespace TcgServer.Client
             shell.Add(header);
 
             var brand = Flex();
-            brand.style.width = 180;
+            brand.style.width = 154;
+            brand.style.flexShrink = 0;
             brand.Add(Label("CARDFORGE", 22, CommandTone));
             brand.Add(Label("ASTRAL RIFT", 10, Soft));
             header.Add(brand);
             sidebar = Flex(true);
             sidebar.style.alignItems = Align.Center;
             sidebar.style.flexGrow = 1;
+            sidebar.style.flexWrap = Wrap.Wrap;
+            sidebar.style.minWidth = 0;
             header.Add(sidebar);
-            foreach (var tab in new[] { "Play", "Decks", "Inventory", "Store", "Profile" })
+            foreach (var tab in new[]
             {
-                var name = tab;
-                var button = new Button(() => Show(name)) { text = tab.ToUpperInvariant() };
+                (page: "Play", label: "BATTLE"),
+                (page: "Decks", label: "DECKS"),
+                (page: "Inventory", label: "COLLECTION"),
+                (page: "Store", label: "BAZAAR"),
+                (page: "Profile", label: "HERO")
+            })
+            {
+                var name = tab.page;
+                var button = new Button(() => Show(name)) { text = tab.label };
                 button.AddToClassList("cf-nav");
                 sidebar.Add(button);
                 navigation[name] = button;
             }
             var right = Flex();
-            right.style.width = 238;
+            right.style.width = 205;
+            right.style.flexShrink = 0;
             right.style.alignItems = Align.FlexEnd;
             identity = Label("SIGNING IN", 12, CommandTone);
             right.Add(identity);
             notice = Label("Connecting...", 10, Soft);
             notice.style.unityTextAlign = TextAnchor.MiddleRight;
-            notice.style.maxWidth = 225;
+            notice.style.maxWidth = 195;
             right.Add(notice);
             var reconnect = UiButton("RETRY", () => StartCoroutine(ConnectDemo()));
             reconnect.style.minWidth = 74;
@@ -417,6 +485,7 @@ namespace TcgServer.Client
         {
             var panel = Flex(true);
             panel.AddToClassList("cf-seat");
+            panel.AddToClassList("cf-match-preview-seat");
             panel.style.flexGrow = 1;
             panel.style.flexShrink = 1;
             panel.style.minHeight = seatCount >= 4 ? 96 : seatCount == 3 ? 109 : 149;
@@ -525,14 +594,45 @@ namespace TcgServer.Client
             content.Clear();
             arenaInspector = null;
             hoveredArenaCard = null;
-            var titleBar = Flex(true);
-            titleBar.style.height = 43;
-            titleBar.style.flexShrink = 0;
-            titleBar.style.alignItems = Align.Center;
+
+            // The full match layout is a UI Builder asset, not a hard-coded
+            // anonymous screen. Designers can move its title, lanes, inspector,
+            // action strip and log without touching gameplay code.
+            var template = Resources.Load<VisualTreeAsset>("AstralRift/CardForgeMatchLayout");
+            var templateInstance = template?.CloneTree();
+            var authoredTitle = templateInstance?.Q<VisualElement>("cf-match-title");
+            var authoredMain = templateInstance?.Q<VisualElement>("cf-match-main");
+            var authoredField = templateInstance?.Q<VisualElement>("cf-match-field");
+            var authoredInspector = templateInstance?.Q<VisualElement>("cf-match-inspector");
+            var authoredActionHost = templateInstance?.Q<VisualElement>("cf-match-action-host");
+            var authoredLog = templateInstance?.Q<VisualElement>("cf-match-log");
+            bool usesAuthoredLayout = authoredTitle != null && authoredMain != null &&
+                authoredField != null && authoredInspector != null &&
+                authoredActionHost != null && authoredLog != null;
+            if (usesAuthoredLayout)
+            {
+                templateInstance.style.flexGrow = 1;
+                templateInstance.style.flexShrink = 1;
+                templateInstance.style.minHeight = 0;
+                content.Add(templateInstance);
+            }
+
+            var titleBar = usesAuthoredLayout ? authoredTitle : Flex(true);
+            titleBar.Clear();
+            if (!usesAuthoredLayout)
+            {
+                titleBar.style.height = 43;
+                titleBar.style.flexShrink = 0;
+                titleBar.style.alignItems = Align.Center;
+            }
             titleBar.Add(Label("ASTRAL RIFT", 22, CommandTone));
-            var stateText = match == null ? "CONNECTING TO ARENA..." :
-                "  |  TURN " + match.turn + "  |  " + match.currentPhaseId +
-                (match.activePlayerId == session.User?.id ? "  |  YOUR TURN" : "  |  OPPONENT TURN");
+            var phase = match?.currentPhaseId ?? "";
+            var phaseName = phase == "ar-clash" ? "COMBAT" :
+                phase == "ar-draw-phase" ? "DRAW" :
+                phase.Replace("ar-", "").ToUpperInvariant();
+            var stateText = match == null ? "ENTERING THE ARENA..." :
+                "  |  TURN " + match.turn + "  |  " + phaseName +
+                (match.activePlayerId == session.User?.id ? "  |  YOUR MOVE" : "  |  OPPONENT'S MOVE");
             var state = Label(stateText, 13, Pale);
             state.style.flexGrow = 1;
             state.style.marginLeft = 14;
@@ -543,29 +643,76 @@ namespace TcgServer.Client
                 if (polling != null) StopCoroutine(polling);
                 Show("Play");
             }));
-            content.Add(titleBar);
-            if (match == null) { content.Add(Label("Waiting for server game state...", 15)); return; }
+            if (!usesAuthoredLayout) content.Add(titleBar);
+            if (match == null)
+            {
+                if (usesAuthoredLayout)
+                {
+                    authoredField.Clear();
+                    authoredField.Add(Label("Waiting for server game state...", 15));
+                }
+                else content.Add(Label("Waiting for server game state...", 15));
+                return;
+            }
             if (match.finished)
             {
-                content.Add(Label(match.winnerPlayerId == session.User?.id ? "VICTORY" : "DEFEAT", 45, CommandTone));
+                var results = UiSurface(true);
+                results.style.marginTop = 22;
+                results.style.maxWidth = 700;
+                results.style.alignItems = Align.Center;
+                var victory = match.winnerPlayerId == session.User?.id;
+                results.Add(Label(victory ? "VICTORY" : "THE RIFT CLAIMS ANOTHER", 42,
+                    victory ? CommandTone : QuickTone));
+                results.Add(Label(victory ? "Your legend grows. Another challenger awaits." :
+                    "Every defeat reveals a new strategy. Return to the arena.", 15, Soft));
+                var choices = Flex(true);
+                choices.style.marginTop = 20;
+                choices.style.flexWrap = Wrap.Wrap;
+                choices.Add(UiButton("PLAY AGAIN", () => BeginAiMatch(1), true));
+                choices.Add(UiButton("CHOOSE A DECK", () =>
+                {
+                    matchId = null;
+                    match = null;
+                    selected = null;
+                    targetAction = null;
+                    if (polling != null) StopCoroutine(polling);
+                    Show("Play");
+                }));
+                results.Add(choices);
+                if (usesAuthoredLayout)
+                {
+                    authoredMain.Clear();
+                    authoredMain.Add(results);
+                    authoredActionHost.style.display = DisplayStyle.None;
+                    authoredLog.style.display = DisplayStyle.None;
+                }
+                else content.Add(results);
                 return;
             }
 
-            var layout = Flex(true);
-            layout.style.flexGrow = 1;
-            layout.style.minHeight = 0;
-            content.Add(layout);
-            var field = Flex();
-            field.style.flexGrow = 1;
-            field.style.flexShrink = 1;
-            field.style.minWidth = 0;
-            field.style.marginRight = 10;
-            layout.Add(field);
+            var layout = usesAuthoredLayout ? authoredMain : Flex(true);
+            if (!usesAuthoredLayout)
+            {
+                layout.style.flexGrow = 1;
+                layout.style.minHeight = 0;
+                content.Add(layout);
+            }
+            var field = usesAuthoredLayout ? authoredField : Flex();
+            if (usesAuthoredLayout) field.Clear();
+            else
+            {
+                field.style.flexGrow = 1;
+                field.style.flexShrink = 1;
+                field.style.minWidth = 0;
+                field.style.marginRight = 10;
+                layout.Add(field);
+            }
             var opponents = (match.players ?? Array.Empty<string>())
                 .Where(id => id != session.User?.id).ToArray();
             for (var i = 0; i < opponents.Length; i++)
                 ArenaSeat(field, opponents[i], "OPPONENT " + (i + 1), true, opponents.Length);
             var centerLine = Flex(true);
+            centerLine.AddToClassList("cf-match-divider");
             centerLine.style.height = opponents.Length >= 3 ? 19 : 26;
             centerLine.style.flexShrink = 0;
             centerLine.style.alignItems = Align.Center;
@@ -575,6 +722,7 @@ namespace TcgServer.Client
             field.Add(centerLine);
             ArenaSeat(field, session.User?.id, "YOU", false, opponents.Length);
             var handLane = Flex();
+            handLane.AddToClassList("cf-match-preview-hand");
             handLane.style.flexGrow = 0;
             handLane.style.flexShrink = 0;
             handLane.style.paddingTop = 6;
@@ -605,38 +753,60 @@ namespace TcgServer.Client
             handLane.Add(hand);
             field.Add(handLane);
 
-            var inspector = Flex();
-            inspector.style.width = opponents.Length >= 3 ? 238 : 278;
-            inspector.style.flexShrink = 0;
-            inspector.style.backgroundColor = ArenaPanel;
-            inspector.style.paddingTop = 12;
-            inspector.style.paddingLeft = 10;
-            inspector.style.paddingRight = 10;
-            inspector.style.paddingBottom = 10;
-            Frame(inspector, ArenaTrim);
-            Round(inspector);
-            layout.Add(inspector);
+            var inspector = usesAuthoredLayout ? authoredInspector : Flex();
+            if (usesAuthoredLayout)
+            {
+                // Preserve the designer-authored inspector dimensions and palette.
+                inspector.Clear();
+            }
+            else
+            {
+                inspector.style.width = opponents.Length >= 3 ? 238 : 278;
+                inspector.style.flexShrink = 0;
+                inspector.style.backgroundColor = ArenaPanel;
+                inspector.style.paddingTop = 12;
+                inspector.style.paddingLeft = 10;
+                inspector.style.paddingRight = 10;
+                inspector.style.paddingBottom = 10;
+                Frame(inspector, ArenaTrim);
+                Round(inspector);
+                layout.Add(inspector);
+            }
             arenaInspector = inspector;
             RenderArenaInspector();
-            actionBar = Flex(true);
-            actionBar.style.flexWrap = Wrap.Wrap;
-            actionBar.style.minHeight = 52;
-            actionBar.style.maxHeight = 103;
-            actionBar.style.flexShrink = 0;
+            // Match actions may exceed the width of a laptop display. Keep every
+            // action accessible in a horizontal strip instead of clipping rows.
+            var actionStrip = new ScrollView(ScrollViewMode.Horizontal);
+            actionStrip.style.height = usesAuthoredLayout ? Length.Percent(100) : 69;
+            actionStrip.style.flexGrow = usesAuthoredLayout ? 1 : 0;
+            actionStrip.style.flexShrink = 0;
+            actionStrip.style.backgroundColor = ColorFrom("#30243D");
+            actionStrip.horizontalScrollerVisibility = ScrollerVisibility.Auto;
+            actionStrip.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+            actionBar = actionStrip.contentContainer;
+            actionBar.style.flexDirection = FlexDirection.Row;
+            actionBar.style.flexWrap = Wrap.NoWrap;
             actionBar.style.alignItems = Align.Center;
-            actionBar.style.backgroundColor = ColorFrom("#23344B");
             actionBar.style.paddingTop = 5;
             actionBar.style.paddingLeft = 10;
-            content.Add(actionBar);
+            if (usesAuthoredLayout)
+            {
+                authoredActionHost.Clear();
+                authoredActionHost.Add(actionStrip);
+            }
+            else content.Add(actionStrip);
             DrawActions();
             var recent = match.events?.LastOrDefault();
-            if (recent != null)
+            var eventLine = Label("MATCH LOG  •  " +
+                (recent?.message ?? "The battle has begun."), 11, Soft);
+            eventLine.style.height = 18;
+            eventLine.style.flexShrink = 0;
+            if (usesAuthoredLayout)
             {
-                var eventLine = Label("MATCH LOG  •  " + recent.message, 11, Soft);
-                eventLine.style.height = 18;
-                eventLine.style.flexShrink = 0;
-                content.Add(eventLine);
+                authoredLog.Clear();
+                authoredLog.Add(eventLine);
             }
+            else content.Add(eventLine);
         }
     }
 }

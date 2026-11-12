@@ -86,6 +86,11 @@ namespace CardForge.DedicatedServer
                     demo = Register("demo", "cardforge-demo");
                 // Existing demo accounts are upgraded without replacing collections or decks.
                 SeedCards(demo, startingRules);
+                // Demo accounts from older releases can hold invalid starter
+                // lists. Bring canonical starters forward without touching
+                // their custom legal decks or account credentials.
+                foreach (var existing in State.users.Where(user => user.id != demo.id))
+                    SeedCards(existing, startingRules);
                 // Admin privileges are granted ONLY when the host is in local demo mode.
                 demo.role = "admin";
                 Save();
@@ -290,9 +295,9 @@ namespace CardForge.DedicatedServer
 
         public void SeedCards(NativeUser user, SimRulePack rules)
         {
-            // Starter ownership is idempotent across sign-in and MongoDB restarts.
-            // The full 240-card catalog is not granted: only cards required by
-            // the four 40-card starter decks and their four starting Command cards.
+            // Starter ownership is idempotent across sign-in and restarts.
+            // Grant only the cards required by the three 42-card starter decks,
+            // with one Commander and one Mana Source in each list.
             var starters = rules.starterDecks ?? new List<SimStarterDeck>();
             if (starters.Count > 0)
             {

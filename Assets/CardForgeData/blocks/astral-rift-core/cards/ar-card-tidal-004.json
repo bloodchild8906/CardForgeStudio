@@ -1,72 +1,78 @@
 {
-    "version": 1,
-    "id": "ar-card-tidal-004",
-    "name": "Patient Wayfinder",
-    "cardNumber": "073",
-    "layoutId": "ar-layout-front",
-    "backLayoutId": "ar-layout-back",
-    "sourceBlockId": "",
-    "sourceCardId": "",
-    "cardType": "Unit",
-    "variantId": "uncommon",
-    "values": [
-        {
-            "fieldId": "5aa8e06473ef4906ad1207722c38f824",
-            "value": "Patient Wayfinder"
-        },
-        {
-            "fieldId": "d3122d6a7a2e455b85aa4159a16b59dd",
-            "value": "4"
-        },
-        {
-            "fieldId": "3fdb6418da2c449cb610ce5ac43a97a2",
-            "value": "Unit — Tidal"
-        },
-        {
-            "fieldId": "1fa832ace0bb4ffd980ff9350beb90ed",
-            "value": "draw 1."
-        },
-        {
-            "fieldId": "89c7fee71dd74befaa68a04dd3abceee",
-            "value": "5"
-        },
-        {
-            "fieldId": "ar-field-toughness",
-            "value": "5"
-        },
-        {
-            "fieldId": "a923c2a162ad467899a0e29c0acad459",
-            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-tidal-004.png"
-        },
-        {
-            "fieldId": "ar-field-affinity",
-            "value": "Tidal"
-        },
-        {
-            "fieldId": "ar-field-affinity-icon",
-            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/tidal.png"
-        },
-        {
-            "fieldId": "ar-field-rarity",
-            "value": "Uncommon"
-        },
-        {
-            "fieldId": "ar-field-flavor",
-            "value": "No constellation follows the same course twice."
-        },
-        {
-            "fieldId": "ar-field-collector",
-            "value": "073/240 · ARFT"
-        },
-        {
-            "fieldId": "ar-field-active",
-            "value": "true"
-        }
-    ],
-    "zoneOverrides": [],
-    "requirements": [],
-    "keywordIds": [],
-    "abilityIds": [
-        "ar-ability-unique-ar-card-tidal-004"
-    ]
+    "version":  1,
+    "id":  "ar-card-tidal-004",
+    "name":  "Tidal Sanctum Mana Source",
+    "cardNumber":  "064",
+    "layoutId":  "ar-layout-manasource",
+    "backLayoutId":  "ar-layout-back",
+    "sourceBlockId":  "",
+    "sourceCardId":  "",
+    "cardType":  "ManaSource",
+    "variantId":  "rare",
+    "values":  [
+                   {
+                       "fieldId":  "5aa8e06473ef4906ad1207722c38f824",
+                       "value":  "Tidal Sanctum Mana Source"
+                   },
+                   {
+                       "fieldId":  "d3122d6a7a2e455b85aa4159a16b59dd",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "3fdb6418da2c449cb610ce5ac43a97a2",
+                       "value":  "ManaSource - Tidal"
+                   },
+                   {
+                       "fieldId":  "1fa832ace0bb4ffd980ff9350beb90ed",
+                       "value":  "Permanent. Generates 1 mana each of your turns. Friendly creatures gain +1 power and +1 toughness, plus +1/+1 per Mana Source level. Level up (max 3): pay 2 + current level mana. Passive: Gain 1 renown."
+                   },
+                   {
+                       "fieldId":  "89c7fee71dd74befaa68a04dd3abceee",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "ar-field-toughness",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "a923c2a162ad467899a0e29c0acad459",
+                       "value":  "Assets/CardForgeStudio/CardForgeClient/Resources/AstralRift/Illustrations/ar-card-tidal-004.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity",
+                       "value":  "Tidal"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity-icon",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/tidal.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-rarity",
+                       "value":  "Rare"
+                   },
+                   {
+                       "fieldId":  "ar-field-flavor",
+                       "value":  "Within the Astral Rift, no two constellations answer the same call."
+                   },
+                   {
+                       "fieldId":  "ar-field-collector",
+                       "value":  "064/240  ARFT"
+                   },
+                   {
+                       "fieldId":  "ar-field-active",
+                       "value":  "true"
+                   }
+               ],
+    "zoneOverrides":  [
+
+                      ],
+    "requirements":  [
+
+                     ],
+    "keywordIds":  [
+
+                   ],
+    "abilityIds":  [
+                       "ar-ability-unique-ar-card-tidal-004"
+                   ]
 }

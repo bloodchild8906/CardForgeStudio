@@ -1,0 +1,26 @@
+/* Editable Arena shell. The demo client inserts dynamic game screens into cf-page-content. */
+.cf-scene-stage { flex-grow: 1; flex-direction: column; min-height: 0; background-color: #14101C; }
+.cf-scene-header { flex-direction: row; flex-wrap: wrap; align-items: center; min-height: 70px;
+    background-color: #242032; border-bottom-width: 2px; border-bottom-color: #9C7951;
+    padding-left: 20px; padding-right: 16px; padding-top: 7px; padding-bottom: 7px; }
+.cf-scene-brand { width: 168px; flex-shrink: 0; justify-content: center; }
+.cf-scene-brand-title { color: #E9C47A; font-size: 21px; -unity-font-style: bold; letter-spacing: 1px; }
+.cf-scene-brand-subtitle { color: #C3B3C9; font-size: 10px; margin-top: 3px; }
+.cf-scene-tabs { flex-direction: row; flex-wrap: wrap; flex-grow: 1; align-items: center; min-width: 0; }
+.cf-scene-edit-preview { color: #C5BCD5; font-size: 12px; }
+.cf-scene-status { min-width: 190px; width: 205px; flex-shrink: 0; align-items: flex-end; justify-content: center; }
+.cf-scene-status-text { color: #ECD092; font-size: 12px; }
+.cf-scene-status-note { color: #C1BDD1; font-size: 11px; white-space: normal; }
+.cf-scene-reconnect { min-height: 27px; padding: 4px 9px; border-radius: 7px;
+    background-color: #45364D; color: #FFE2B4; font-size: 10px; }
+.cf-scene-content { flex-grow: 1; flex-shrink: 1; min-height: 0;
+    padding: 12px; background-color: #16111F; }
+.cf-scene-preview { flex-grow: 1; padding: 22px; }
+.cf-scene-preview-kicker { color: #F0C981; font-size: 13px; letter-spacing: 1px; }
+.cf-scene-preview-title { color: #F4E8D7; font-size: 29px; -unity-font-style: bold; margin-top: 9px; }
+.cf-scene-preview-note { color: #BDB3C7; font-size: 13px; margin-top: 10px; margin-bottom: 19px; }
+.cf-scene-example-zone { height: 145px; min-height: 85px; flex-shrink: 1; margin-top: 9px;
+    padding: 13px; background-color: #2A2234; border-width: 1px; border-color: #715977; border-radius: 13px; }
+.cf-scene-example-hand { min-height: 70px; margin-top: 11px; padding: 16px;
+    background-color: #372940; border-width: 1px; border-color: #AF8763; border-radius: 12px; }
+.cf-scene-zone-caption { color: #D4BDA8; font-size: 12px; -unity-font-style: bold; }

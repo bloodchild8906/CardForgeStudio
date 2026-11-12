@@ -1,0 +1,242 @@
+/* Dashboard uses the exact Studio theme tokens and control scale.
+   Keep this file imported after Hub.uss and OverviewIntegration.uss. */
+.cf-dashboard-workspace {
+    min-width: 0;
+    min-height: 0;
+    flex-grow: 1;
+    background-color: var(--cf-color-bg);
+}
+.cf-dashboard-workspace .cf-hub {
+    width: 100%;
+    min-height: 0;
+    background-color: var(--cf-color-bg);
+}
+.cf-dashboard-workspace .cf-hub__page {
+    flex-direction: column;
+    min-width: 0;
+}
+.cf-dashboard-workspace .cf-hub__hero {
+    flex-direction: column;
+    padding: 13px 16px;
+    margin-top: 0;
+    margin-bottom: 13px;
+    min-height: 94px;
+    background-color: var(--cf-color-surface);
+    border-width: 1px;
+    border-color: var(--cf-color-border);
+    border-radius: 8px;
+}
+.cf-dashboard-workspace .cf-hub__hero-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+}
+.cf-dashboard-workspace .cf-hub__hero-copy {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 280px;
+    min-width: 230px;
+    margin-bottom: 5px;
+    padding-right: 13px;
+}
+.cf-dashboard-workspace .cf-hub__eyebrow {
+    color: var(--cf-color-accent);
+    letter-spacing: .65px;
+    font-size: 10px;
+    -unity-font-style: bold;
+}
+.cf-dashboard-workspace .cf-hub__title {
+    font-size: 20px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    color: var(--cf-color-text);
+    -unity-font-style: bold;
+}
+.cf-dashboard-workspace .cf-hub__intro {
+    max-width: 500px;
+    font-size: 12px;
+    margin-bottom: 0;
+    color: var(--cf-color-text-muted);
+    white-space: normal;
+}
+.cf-dashboard-workspace .cf-hub__hero-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-grow: 0;
+    margin-top: 4px;
+    margin-bottom: 0;
+    min-width: 0;
+}
+.cf-dashboard-workspace .cf-hub__cta,
+.cf-dashboard-workspace .cf-hub__cta-alt {
+    min-width: 112px;
+    min-height: 35px;
+    height: 35px;
+    padding: 6px 10px;
+    margin-right: 7px;
+    margin-bottom: 5px;
+    font-size: 11px;
+    -unity-font-style: bold;
+    border-radius: 6px;
+}
+.cf-dashboard-workspace .cf-hub__cta {
+    background-color: #d8b574;
+    border-color: #dfc18a;
+    color: #172536;
+}
+.cf-dashboard-workspace .cf-hub__cta:hover,
+.cf-dashboard-workspace .cf-hub__cta:focus {
+    background-color: #edd09a;
+    border-color: #f6e5bf;
+}
+.cf-dashboard-workspace .cf-hub__cta-alt {
+    color: var(--cf-color-text);
+    background-color: var(--cf-color-surface-raised);
+    border-color: var(--cf-color-border);
+}
+.cf-dashboard-workspace .cf-hub__cta-alt:hover,
+.cf-dashboard-workspace .cf-hub__cta-alt:focus {
+    background-color: var(--cf-color-accent-soft);
+    border-color: var(--cf-color-accent);
+}
+.cf-dashboard-workspace .cf-hub__overview {
+    background-color: var(--cf-color-surface);
+    border-color: var(--cf-color-border);
+    margin-bottom: 16px;
+    border-radius: 8px;
+    padding: 14px 15px;
+}
+.cf-dashboard-workspace .cf-hub__section-heading {
+    flex-direction: column;
+    padding-bottom: 8px;
+    border-bottom-width: 1px;
+    border-bottom-color: var(--cf-color-border);
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+.cf-dashboard-workspace .cf-hub__section-title {
+    font-size: 17px;
+    -unity-font-style: bold;
+    color: var(--cf-color-text);
+}
+.cf-dashboard-workspace .cf-hub__section-subtitle {
+    font-size: 11px;
+    margin-top: 3px;
+    color: var(--cf-color-text-muted);
+}
+.cf-dashboard-workspace .cf-hub__primary-grid,
+.cf-dashboard-workspace .cf-hub__journey {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    margin-bottom: 13px;
+}
+.cf-dashboard-workspace .cf-hub__path {
+    min-height: 170px;
+    padding: 15px 16px 11px 16px;
+    margin-bottom: 10px;
+    margin-right: 12px;
+    border-radius: 8px;
+    background-color: var(--cf-color-surface);
+    border-color: var(--cf-color-border);
+    border-width: 1px;
+}
+.cf-dashboard-workspace .cf-hub__path-cards,
+.cf-dashboard-workspace .cf-hub__path-rules {
+    background-color: var(--cf-color-surface);
+    border-color: var(--cf-color-border);
+}
+.cf-dashboard-workspace .cf-hub__path-title {
+    font-size: 17px;
+    margin-top: 5px;
+    margin-bottom: 6px;
+    -unity-font-style: bold;
+    color: var(--cf-color-text);
+}
+.cf-dashboard-workspace .cf-hub__path-desc {
+    font-size: 12px;
+    min-height: 34px;
+    margin-bottom: 10px;
+    white-space: normal;
+    color: var(--cf-color-text-muted);
+}
+.cf-dashboard-workspace .cf-hub__path-button,
+.cf-dashboard-workspace .cf-hub__path-cards .cf-hub__path-button {
+    min-width: 105px;
+    min-height: 34px;
+    padding: 6px 10px;
+    margin-bottom: 7px;
+    margin-right: 7px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--cf-color-text);
+    background-color: var(--cf-color-surface-raised);
+    border-color: var(--cf-color-border);
+}
+.cf-dashboard-workspace .cf-hub__path-button:hover,
+.cf-dashboard-workspace .cf-hub__path-cards .cf-hub__path-button:hover {
+    color: var(--cf-color-accent);
+    background-color: var(--cf-color-accent-soft);
+    border-color: var(--cf-color-accent);
+}
+.cf-dashboard-workspace .cf-hub__step {
+    min-height: 138px;
+    margin-bottom: 10px;
+    padding: 13px 14px;
+    border-radius: 8px;
+    background-color: var(--cf-color-surface);
+    border-color: var(--cf-color-border);
+}
+.cf-dashboard-workspace .cf-hub__step-number {
+    font-size: 19px;
+    color: var(--cf-color-accent);
+}
+.cf-dashboard-workspace .cf-hub__step-title {
+    font-size: 13px;
+    color: var(--cf-color-text);
+}
+.cf-dashboard-workspace .cf-hub__step-detail {
+    font-size: 11px;
+    min-height: 32px;
+    color: var(--cf-color-text-muted);
+}
+.cf-dashboard-workspace .cf-hub__step-action {
+    min-height: 32px;
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--cf-color-text);
+    background-color: var(--cf-color-surface-raised);
+    border-color: var(--cf-color-border);
+}
+.cf-dashboard-workspace .cf-hub__step-action:hover,
+.cf-dashboard-workspace .cf-hub__step-action:focus {
+    color: var(--cf-color-accent);
+    background-color: var(--cf-color-accent-soft);
+    border-color: var(--cf-color-accent);
+}
+.cf-dashboard-workspace .cf-hub__more {
+    margin-top: 3px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    background-color: var(--cf-color-surface);
+    border-color: var(--cf-color-border);
+}
+.cf-dashboard-workspace .cf-hub__more .unity-foldout__toggle {
+    color: var(--cf-color-text);
+    font-size: 12px;
+}
+.cf-dashboard-workspace .cf-hub__tool {
+    background-color: var(--cf-color-surface-raised);
+    border-color: var(--cf-color-border);
+    border-radius: 6px;
+    color: var(--cf-color-text);
+    font-size: 11px;
+}
+.cf-dashboard-workspace .cf-hub__tool:hover,
+.cf-dashboard-workspace .cf-hub__tool:focus {
+    background-color: var(--cf-color-accent-soft);
+    border-color: var(--cf-color-accent);
+    color: var(--cf-color-accent);
+}

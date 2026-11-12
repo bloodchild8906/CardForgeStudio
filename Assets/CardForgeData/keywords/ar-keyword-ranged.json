@@ -1,0 +1,13 @@
+{
+    "version":  1,
+    "id":  "ar-keyword-ranged",
+    "name":  "Ranged",
+    "rulesText":  "ranged",
+    "reminderText":  "",
+    "abilityIds":  [
+
+                   ],
+    "tags":  [
+
+             ]
+}

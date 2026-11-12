@@ -1,72 +1,78 @@
 {
-    "version": 1,
-    "id": "ar-card-umbral-003",
-    "name": "Gilded Shade",
-    "cardNumber": "186",
-    "layoutId": "ar-layout-front",
-    "backLayoutId": "ar-layout-back",
-    "sourceBlockId": "",
-    "sourceCardId": "",
-    "cardType": "Unit",
-    "variantId": "common",
-    "values": [
-        {
-            "fieldId": "5aa8e06473ef4906ad1207722c38f824",
-            "value": "Gilded Shade"
-        },
-        {
-            "fieldId": "d3122d6a7a2e455b85aa4159a16b59dd",
-            "value": "3"
-        },
-        {
-            "fieldId": "3fdb6418da2c449cb610ce5ac43a97a2",
-            "value": "Unit — Umbral"
-        },
-        {
-            "fieldId": "1fa832ace0bb4ffd980ff9350beb90ed",
-            "value": "With a friendly unit on the field: reduce 1 life against the enemy team; gain 1 momentum; gain 1 renown; gain 2 shield."
-        },
-        {
-            "fieldId": "89c7fee71dd74befaa68a04dd3abceee",
-            "value": "6"
-        },
-        {
-            "fieldId": "ar-field-toughness",
-            "value": "4"
-        },
-        {
-            "fieldId": "a923c2a162ad467899a0e29c0acad459",
-            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-umbral-003.png"
-        },
-        {
-            "fieldId": "ar-field-affinity",
-            "value": "Umbral"
-        },
-        {
-            "fieldId": "ar-field-affinity-icon",
-            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/umbral.png"
-        },
-        {
-            "fieldId": "ar-field-rarity",
-            "value": "Common"
-        },
-        {
-            "fieldId": "ar-field-flavor",
-            "value": "No constellation follows the same course twice."
-        },
-        {
-            "fieldId": "ar-field-collector",
-            "value": "186/240 · ARFT"
-        },
-        {
-            "fieldId": "ar-field-active",
-            "value": "true"
-        }
-    ],
-    "zoneOverrides": [],
-    "requirements": [],
-    "keywordIds": [],
-    "abilityIds": [
-        "ar-ability-unique-ar-card-umbral-003"
-    ]
+    "version":  1,
+    "id":  "ar-card-umbral-003",
+    "name":  "Umbral Nexus Mana Source",
+    "cardNumber":  "183",
+    "layoutId":  "ar-layout-manasource",
+    "backLayoutId":  "ar-layout-back",
+    "sourceBlockId":  "",
+    "sourceCardId":  "",
+    "cardType":  "ManaSource",
+    "variantId":  "rare",
+    "values":  [
+                   {
+                       "fieldId":  "5aa8e06473ef4906ad1207722c38f824",
+                       "value":  "Umbral Nexus Mana Source"
+                   },
+                   {
+                       "fieldId":  "d3122d6a7a2e455b85aa4159a16b59dd",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "3fdb6418da2c449cb610ce5ac43a97a2",
+                       "value":  "ManaSource - Umbral"
+                   },
+                   {
+                       "fieldId":  "1fa832ace0bb4ffd980ff9350beb90ed",
+                       "value":  "Permanent. Generates 1 mana each of your turns. Friendly creatures gain +1 power and +1 toughness, plus +1/+1 per Mana Source level. Level up (max 3): pay 2 + current level mana. Passive: Mill 1 enemy card(s)."
+                   },
+                   {
+                       "fieldId":  "89c7fee71dd74befaa68a04dd3abceee",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "ar-field-toughness",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "a923c2a162ad467899a0e29c0acad459",
+                       "value":  "Assets/CardForgeStudio/CardForgeClient/Resources/AstralRift/Illustrations/ar-card-umbral-003.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity",
+                       "value":  "Umbral"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity-icon",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/umbral.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-rarity",
+                       "value":  "Rare"
+                   },
+                   {
+                       "fieldId":  "ar-field-flavor",
+                       "value":  "Within the Astral Rift, no two constellations answer the same call."
+                   },
+                   {
+                       "fieldId":  "ar-field-collector",
+                       "value":  "183/240  ARFT"
+                   },
+                   {
+                       "fieldId":  "ar-field-active",
+                       "value":  "true"
+                   }
+               ],
+    "zoneOverrides":  [
+
+                      ],
+    "requirements":  [
+
+                     ],
+    "keywordIds":  [
+
+                   ],
+    "abilityIds":  [
+                       "ar-ability-unique-ar-card-umbral-003"
+                   ]
 }

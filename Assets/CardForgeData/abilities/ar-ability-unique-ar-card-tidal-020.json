@@ -1,65 +1,46 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-tidal-020",
-    "name": "Dawnlit Undertow — Echo Protocol",
-    "cardId": "ar-card-tidal-020",
-    "activationTriggerId": "ar-trigger-deploy",
-    "actionId": "ar-deploy",
-    "phaseId": "",
-    "condition": "After turn 1",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "steal 1 energy; gain 1 shield; recover 1 from discard",
-    "priority": 34,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "drain_resource",
-            "target": "opponent",
-            "resourceId": "energy",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "shield",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        },
-        {
-            "kind": "reclaim",
-            "target": "",
-            "resourceId": "",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [
-        {
-            "kind": "turn_at_least",
-            "subject": "",
-            "key": "",
-            "op": "",
-            "value": "2"
-        }
-    ],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-tidal-020",
+    "name":  "Cloudwake Vanguard - Tidal Signature",
+    "cardId":  "ar-card-tidal-020",
+    "activationTriggerId":  "",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Mill 2 enemy card(s). Gain 3 mana.",
+    "priority":  34,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-play-creature",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "mill",
+                        "amount":  2,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "energy",
+                        "amount":  3
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

@@ -28,12 +28,12 @@ namespace CardForge.Learn
 
         static bool HasRepositoryStructure(string path)
         {
-            return Directory.Exists(Path.Combine(path, "Assets", "CardForgeDedicatedServer")) &&
+            return Directory.Exists(Path.Combine(path, "Assets", "CardForgeStudio", "CardForgeDedicatedServer")) &&
                    Directory.Exists(Path.Combine(path, "Shared"));
         }
 
         public static string GamePackagesFolder { get { return RepoRoot == null ? null : Path.Combine(RepoRoot, "GamePackages"); } }
-        public static string ServerFolder { get { return RepoRoot == null ? null : Path.Combine(RepoRoot, "Assets", "CardForgeDedicatedServer"); } }
+        public static string ServerFolder { get { return RepoRoot == null ? null : Path.Combine(RepoRoot, "Assets", "CardForgeStudio", "CardForgeDedicatedServer"); } }
         public static string ServerLauncher { get { return RepoRoot == null ? null : Path.Combine(RepoRoot, "Demo", "Start-CardForgeDedicatedServer.ps1"); } }
         public static string DocumentationFolder { get { return RepoRoot == null ? null : Path.Combine(RepoRoot, "Documentation"); } }
         public static string CardForgeDataFolder { get { return Path.Combine(Application.dataPath, "CardForgeData"); } }

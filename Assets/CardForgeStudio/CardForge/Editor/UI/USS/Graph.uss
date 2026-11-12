@@ -197,3 +197,27 @@
     font-size: 10px;
     color: #62798a;
 }
+
+/* Action flow: sentence-length explanations stay readable in the node itself.
+   Three-column snake layout avoids a nine-step horizontal strip. */
+.cf-action-narrated .cf-graph-node {
+    width: 300px;
+    min-height: 173px;
+    padding: 13px 15px;
+    background-color: #22312D;
+    border-color: #62745B;
+}
+.cf-action-narrated .cf-graph-node__title { font-size: 15px; color: #F9EACD; }
+.cf-action-narrated .cf-graph-node__detail {
+    font-size: 12px;
+    max-height: 108px;
+    color: #D3DCCF;
+    white-space: normal;
+    overflow: hidden;
+}
+.cf-action-narrated .cf-graph-node__kicker { font-size: 10px; color: #E0BD77; }
+.cf-action-narrated .cf-graph-node--selected {
+    border-color: #F5CF86;
+    background-color: #344237;
+}
+.cf-action-narrated .cf-graph-node__badges { margin-top: 9px; }

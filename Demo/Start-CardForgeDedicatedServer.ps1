@@ -99,6 +99,10 @@ if (Test-Path $settings) {
         ('  baseUrl: http://127.0.0.1:' + $port))
     $yaml = [regex]::Replace($yaml, '(?m)^  defaultRulePackId: .*$',
         '  defaultRulePackId: astral-rift')
+    $yaml = [regex]::Replace($yaml, '(?m)^  activePackageId: .*$',
+        '  activePackageId: astral-rift')
+    $yaml = [regex]::Replace($yaml, '(?m)^  activePackageVersion: .*$',
+        '  activePackageVersion: 3.0.0')
     [IO.File]::WriteAllText($settings, $yaml, [Text.UTF8Encoding]::new($false))
 }
 Write-Output ("CARDFORGE_NATIVE_READY http://127.0.0.1:{0}" -f $port)

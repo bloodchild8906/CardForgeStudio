@@ -31,6 +31,9 @@ namespace CardForge.EditorUI.Grid
         private readonly VisualElement bulkBar;
         private readonly Label bulkLabel;
         private readonly Label statusBar;
+        private readonly VisualElement scopeBar;
+        private readonly Label scopeTitle;
+        private HashSet<string> scopedRowIds;
         private readonly SidebarFilterController filters;
         private readonly InspectorController inspector;
         private readonly ListView gallery;
@@ -67,6 +70,30 @@ namespace CardForge.EditorUI.Grid
             gallery = Root.Q<ListView>("gallery");
 
             Root.Q("main-pane").Insert(0, CardForge.Editor.CardForgeArtwork.Banner(definition.Id, definition.Title));
+            scopeBar = new VisualElement { name = "deck-scope-bar" };
+            scopeBar.AddToClassList("cf-scope-bar");
+            scopeBar.style.flexDirection = FlexDirection.Row;
+            scopeBar.style.flexWrap = Wrap.Wrap;
+            scopeBar.style.alignItems = Align.Center;
+            scopeBar.style.backgroundColor = new Color(0.19f, 0.25f, 0.23f);
+            scopeBar.style.paddingLeft = 14;
+            scopeBar.style.paddingRight = 10;
+            scopeBar.style.paddingTop = 7;
+            scopeBar.style.paddingBottom = 7;
+            scopeBar.style.marginBottom = 5;
+            scopeTitle = new Label { name = "deck-scope-title" };
+            scopeTitle.style.color = new Color(0.95f, 0.85f, 0.67f);
+            scopeTitle.style.fontSize = 13;
+            scopeTitle.style.flexGrow = 1;
+            scopeTitle.style.whiteSpace = WhiteSpace.Normal;
+            scopeBar.Add(scopeTitle);
+            var clearScope = new Button(ClearScope) { text = "SHOW ALL CARDS" };
+            clearScope.style.minHeight = 29;
+            clearScope.style.backgroundColor = new Color(0.32f, 0.28f, 0.37f);
+            clearScope.style.color = new Color(0.96f, 0.89f, 0.78f);
+            scopeBar.Add(clearScope);
+            scopeBar.AddToClassList("cf-hidden");
+            Root.Q("main-pane").Insert(1, scopeBar);
             ConfigureToolbar();
             ConfigureBulkBar();
             ConfigureShortcuts();
@@ -80,6 +107,32 @@ namespace CardForge.EditorUI.Grid
 
         /// <summary>Root element to place in the screen host.</summary>
         public VisualElement Root { get; }
+
+        /// <summary>
+        /// Limit a collection to exact card IDs, never a fuzzy name search.
+        /// Used by the dashboard starter-deck previews.
+        /// </summary>
+        public void ShowOnly(IReadOnlyCollection<string> ids, string caption)
+        {
+            scopedRowIds = ids == null ? null :
+                new HashSet<string>(ids.Where(id => !string.IsNullOrWhiteSpace(id)),
+                    StringComparer.OrdinalIgnoreCase);
+            scopeTitle.text = (caption ?? "Selected cards") + "  /  " +
+                (scopedRowIds?.Count ?? 0) + " cards";
+            scopeBar.EnableInClassList("cf-hidden", scopedRowIds == null);
+            Root.Q<Button>("add-button").SetEnabled(scopedRowIds == null);
+            if (scopedRowIds == null) searchField.SetValueWithoutNotify("");
+            ApplyFilters();
+        }
+
+        public void ClearScope()
+        {
+            scopedRowIds = null;
+            scopeBar.AddToClassList("cf-hidden");
+            Root.Q<Button>("add-button").SetEnabled(true);
+            searchField.SetValueWithoutNotify("");
+            ApplyFilters();
+        }
 
         /// <summary>Reloads rows from the source and refreshes filters and grid.</summary>
         public void Reload()
@@ -119,7 +172,7 @@ namespace CardForge.EditorUI.Grid
             searchField.tooltip = "Search " + definition.Title.ToLowerInvariant();
             Root.Q<Button>("empty-action").clicked += () => {
                 if(allRows.Count == 0) RaiseAction("Create", Array.Empty<GridRowViewModel>());
-                else { searchField.SetValueWithoutNotify(""); filters.Clear(); }
+                else { ClearScope(); filters.Clear(); }
             };
         }
 
@@ -188,7 +241,9 @@ namespace CardForge.EditorUI.Grid
             var selectedIds = GetSelectedRows().Select(r => r.Id).ToHashSet();
             refreshingSelection = true;
             visibleRows.Clear();
-            visibleRows.AddRange(allRows.Where(row => filters.Matches(row) && row.MatchesQuery(searchField.value)));
+            visibleRows.AddRange(allRows.Where(row =>
+                (scopedRowIds == null || scopedRowIds.Contains(row.Id)) &&
+                filters.Matches(row) && row.MatchesQuery(searchField.value)));
             GridRowSorter.Sort(visibleRows, grid.sortedColumns);
             grid.ClearSelection();
             grid.RefreshItems();

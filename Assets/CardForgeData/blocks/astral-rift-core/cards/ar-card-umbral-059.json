@@ -1,0 +1,78 @@
+{
+    "version":  1,
+    "id":  "ar-card-umbral-059",
+    "name":  "Umbrafire Snap",
+    "cardNumber":  "239",
+    "layoutId":  "ar-layout-quickspell",
+    "backLayoutId":  "ar-layout-back",
+    "sourceBlockId":  "",
+    "sourceCardId":  "",
+    "cardType":  "QuickSpell",
+    "variantId":  "common",
+    "values":  [
+                   {
+                       "fieldId":  "5aa8e06473ef4906ad1207722c38f824",
+                       "value":  "Umbrafire Snap"
+                   },
+                   {
+                       "fieldId":  "d3122d6a7a2e455b85aa4159a16b59dd",
+                       "value":  "3"
+                   },
+                   {
+                       "fieldId":  "3fdb6418da2c449cb610ce5ac43a97a2",
+                       "value":  "QuickSpell - Umbral"
+                   },
+                   {
+                       "fieldId":  "1fa832ace0bb4ffd980ff9350beb90ed",
+                       "value":  "Fast: cast during any player turn. Drain 1 enemy mana. Gain 1 shield."
+                   },
+                   {
+                       "fieldId":  "89c7fee71dd74befaa68a04dd3abceee",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "ar-field-toughness",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "a923c2a162ad467899a0e29c0acad459",
+                       "value":  "Assets/CardForgeStudio/CardForgeClient/Resources/AstralRift/Illustrations/ar-card-umbral-059.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity",
+                       "value":  "Umbral"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity-icon",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/solar.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-rarity",
+                       "value":  "Common"
+                   },
+                   {
+                       "fieldId":  "ar-field-flavor",
+                       "value":  "Within the Astral Rift, no two constellations answer the same call."
+                   },
+                   {
+                       "fieldId":  "ar-field-collector",
+                       "value":  "239/240  ARFT"
+                   },
+                   {
+                       "fieldId":  "ar-field-active",
+                       "value":  "true"
+                   }
+               ],
+    "zoneOverrides":  [
+
+                      ],
+    "requirements":  [
+
+                     ],
+    "keywordIds":  [
+
+                   ],
+    "abilityIds":  [
+                       "ar-ability-unique-ar-card-umbral-059"
+                   ]
+}

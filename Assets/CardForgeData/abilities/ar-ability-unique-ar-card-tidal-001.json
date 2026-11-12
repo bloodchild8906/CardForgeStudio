@@ -1,46 +1,51 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-tidal-001",
-    "name": "Dawnlit Wayfinder — Echo Protocol",
-    "cardId": "ar-card-tidal-001",
-    "activationTriggerId": "ar-trigger-command",
-    "actionId": "ar-activate-command",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "gain 2 shield; gain 1 momentum",
-    "priority": 33,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "shield",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 2,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "momentum",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-tidal-001",
+    "name":  "Tidal Tidebound Oracle - Tidal Signature",
+    "cardId":  "ar-card-tidal-001",
+    "activationTriggerId":  "",
+    "actionId":  "ar-cast-commander",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Starts in Command, visible to all. When defeated, returns to Command; each recast costs +2. On cast: Draw 3 card(s). Drain 2 enemy mana. Gain 1 shield.",
+    "priority":  33,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-cast-commander",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "draw",
+                        "amount":  3
+                    },
+                    {
+                        "kind":  "drain_resource",
+                        "resourceId":  "energy",
+                        "amount":  2,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

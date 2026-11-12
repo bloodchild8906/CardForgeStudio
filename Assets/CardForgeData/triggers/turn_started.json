@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "id": "turn_started",
+  "name": "Turn started",
+  "eventType": "Turn started",
+  "source": "Any object",
+  "fromZone": "",
+  "toZone": "",
+  "orientation": "",
+  "rules": [],
+  "condition": "",
+  "responseWindow": "Immediate response",
+  "priority": 0,
+  "causeActionIds": [],
+  "causeAbilityIds": [],
+  "responseActionIds": []
+}

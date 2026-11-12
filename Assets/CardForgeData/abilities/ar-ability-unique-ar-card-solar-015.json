@@ -1,46 +1,45 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-solar-015",
-    "name": "Whispering Vanguard — Sunforged Protocol",
-    "cardId": "ar-card-solar-015",
-    "activationTriggerId": "ar-trigger-deploy",
-    "actionId": "ar-deploy",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "gain 1 renown; gain 1 energy",
-    "priority": 32,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "renown",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "energy",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-solar-015",
+    "name":  "Horizon Beast - Solar Signature",
+    "cardId":  "ar-card-solar-015",
+    "activationTriggerId":  "",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Draw 1 card(s). Gain 2 shield.",
+    "priority":  32,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-play-creature",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "draw",
+                        "amount":  1
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  2
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

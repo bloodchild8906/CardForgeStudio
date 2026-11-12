@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CardForge.Editor;
@@ -53,14 +54,82 @@ namespace CardForge.Learn
                 throw new InvalidOperationException("Exit Play mode before preparing the sample.");
             SetStatus("Preparing Astral Rift 3.0: 240 cards, three unique starters and matched illustrations...");
             var rules = AstralRiftNativeContent.Prepare();
-            if (!File.Exists(TcgTemplateProjectSetup.ScenePath))
-                TcgTemplateProjectSetup.CreateTemplateScene();
+            EnsureEditableAuthoring();
+            // Populates or upgrades a real editable UXML-backed Unity scene;
+            // existing transforms and Inspector overrides are preserved.
+            TcgTemplateProjectSetup.CreateTemplateScene();
             TcgTemplateProjectSetup.ConfigureConnection(BaseUrl, AstralRiftNativeContent.PackId,
                 AstralRiftNativeContent.PackId, AstralRiftNativeContent.Version);
             EditorPrefs.SetBool(Configured, true);
             SetStatus("Astral Rift 3.0 staged. Build the native host if needed, then press Play.");
             return rules;
         }
+        private static void EnsureEditableAuthoring()
+        {
+            var root = Directory.GetParent(Application.dataPath)?.FullName ??
+                throw new InvalidOperationException("Unity project directory missing.");
+            var game = Path.Combine(root, "Assets", "CardForgeData",
+                "game-definitions", "astral-rift-core.json");
+            bool requiresSync = true;
+            if (File.Exists(game))
+            {
+                try
+                {
+                    var data = JObject.Parse(File.ReadAllText(game));
+                    var blockPath = Path.Combine(root, "Assets", "CardForgeData",
+                        "blocks", "astral-rift-core", "block.json");
+                    var block = JObject.Parse(File.ReadAllText(blockPath));
+                    requiresSync = (string)data["packageVersion"] != AstralRiftNativeContent.Version ||
+                        (block["cardIds"] as JArray)?.Count != 240 ||
+                        (data["sampleDecks"] as JArray)?.Count != 3;
+                }
+                catch (Exception exception) when (exception is IOException ||
+                    exception is Newtonsoft.Json.JsonException ||
+                    exception is NullReferenceException)
+                {
+                    requiresSync = true;
+                }
+            }
+
+            if (requiresSync)
+                RunAuthoringScript(root, "Sync-AstralRiftAuthoring.ps1");
+
+            // Generate type-specific card fronts without clobbering edited
+            // versions; the script only creates missing layouts and links cards.
+            RunAuthoringScript(root, "Ensure-AstralRiftTypeLayouts.ps1");
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+        }
+
+        private static void RunAuthoringScript(string root, string filename)
+        {
+            var script = Path.Combine(root, "Demo", filename);
+            if (Application.platform != RuntimePlatform.WindowsEditor)
+                throw new PlatformNotSupportedException(
+                    "The Astral Rift authoring importer currently needs the Windows editor.");
+            if (!File.Exists(script))
+                throw new FileNotFoundException("Missing Astral Rift authoring importer.", script);
+
+            using (var process = Process.Start(new ProcessStartInfo("powershell.exe")
+            {
+                Arguments = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -File \"" + script + "\"",
+                WorkingDirectory = root,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            }))
+            {
+                if (process == null)
+                    throw new InvalidOperationException("Could not start authoring preparation.");
+                var output = process.StandardOutput.ReadToEnd();
+                var errors = process.StandardError.ReadToEnd();
+                if (!process.WaitForExit(180000) || process.ExitCode != 0)
+                    throw new InvalidOperationException(
+                        "Astral Rift authoring preparation failed: " + errors + "\n" + output);
+                UnityEngine.Debug.Log(output.Trim());
+            }
+        }
+
         public static void PlaySample()
         {
             if (busy || EditorApplication.isPlayingOrWillChangePlaymode) return;

@@ -1,0 +1,45 @@
+{
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-verdant-059",
+    "name":  "Groveborn Snap - Verdant Signature",
+    "cardId":  "ar-card-verdant-059",
+    "activationTriggerId":  "",
+    "actionId":  "ar-cast-quickspell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Fast: cast during any player turn. Restore 3 life. Draw 1 card(s).",
+    "priority":  30,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-cast-quickspell",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  3
+                    },
+                    {
+                        "kind":  "draw",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
+}

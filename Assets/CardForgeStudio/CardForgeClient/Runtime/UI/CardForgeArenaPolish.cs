@@ -10,6 +10,7 @@ namespace TcgServer.Client
     public sealed partial class CardForgeToolkitClient
     {
         private string selectedDeckName;
+        private int selectedOpponentCount = 1;
 
         private void ShowLoadingState(string section)
         {
@@ -141,6 +142,7 @@ namespace TcgServer.Client
             {
                 actionBusy = false;
                 SetNotice("Unable to create match: " + error);
+                Debug.LogError("CardForge native match creation failed: " + error);
             }, selectedDeckId, opponentCount));
         }
 
@@ -165,13 +167,13 @@ namespace TcgServer.Client
             copy.style.minWidth = 340;
             copy.style.paddingRight = 12;
             heroRow.Add(copy);
-            copy.Add(Label("THE ASTRAL RIFT", 12, CommandTone));
-            var heading = Label("Build your legend.\nCommand the battlefield.", 35, Pale);
+            copy.Add(Label("ENTER THE ASTRAL RIFT", 12, CommandTone));
+            var heading = Label("Forge your deck.\nClaim the stars.", 35, Pale);
             heading.AddToClassList("cf-heading");
             heading.style.marginTop = 9;
             heading.style.marginBottom = 11;
             copy.Add(heading);
-            copy.Add(Label("Every turn matters. Build a 40-card strategy, bind a Commander and evolve your Mana Source.", 15, Soft));
+            copy.Add(Label("Summon creatures, weave Quickspells, and lead your Commander into battle. Every turn counts.", 15, Soft));
             var stats = Flex(true);
             stats.style.marginTop = 14;
             foreach (var line in new[] { "240 ORIGINAL CARDS", "3 STARTER DECKS", "5 CARD TYPES" })
@@ -194,26 +196,62 @@ namespace TcgServer.Client
 
             var play = UiSurface();
             play.style.marginBottom = 15;
-            play.Add(Label("QUICK PLAY", 16, CommandTone));
-            play.Add(Label("Play against server-controlled opponents. Your selected deck is used for the match.", 12, Soft));
+            play.Add(Label("BATTLE", 16, CommandTone));
+            play.Add(Label("Challenge a server-controlled rival with your chosen deck.", 12, Soft));
             var controls = Flex(true);
             controls.style.alignItems = Align.Center;
+            controls.style.flexWrap = Wrap.Wrap;
             controls.style.marginTop = 15;
-            var modes = new DropdownField("OPPONENTS",
-                new List<string> { "1 opponent", "2 opponents", "3 opponents", "4 opponents" }, 0);
-            modes.style.width = 220;
-            modes.style.marginRight = 18;
-            modes.AddToClassList("cf-textfield");
-            controls.Add(modes);
-            controls.Add(UiButton("START AI MATCH", () => BeginAiMatch(modes.index + 1), true));
-            controls.Add(UiButton("EDIT YOUR DECK", () => Show("Decks")));
+
+            // The generic DropdownField rendered without a selected value in
+            // the game theme. Explicit numbered controls are readable, keyboard
+            // focusable and show exactly how many AI rivals will join.
+            var opponentChoices = Flex(true);
+            opponentChoices.style.flexWrap = Wrap.Wrap;
+            opponentChoices.style.alignItems = Align.Center;
+            opponentChoices.style.marginRight = 15;
+            var opponentCaption = Label("RIVALS", 12, Soft);
+            opponentCaption.style.marginRight = 9;
+            opponentChoices.Add(opponentCaption);
+            var choiceButtons = new List<Button>();
+            void RefreshOpponentChoices()
+            {
+                for (var index = 0; index < choiceButtons.Count; index++)
+                {
+                    bool isSelected = index + 1 == selectedOpponentCount;
+                    choiceButtons[index].style.backgroundColor = isSelected ? Gold : Raised;
+                    choiceButtons[index].style.color = isSelected ? Night : Pale;
+                    choiceButtons[index].tooltip = (index + 1) + " AI rival" +
+                        (index == 0 ? "" : "s");
+                }
+            }
+            for (int index = 1; index <= 4; index++)
+            {
+                int opponentCount = index;
+                var button = UiButton(index.ToString(), () =>
+                {
+                    selectedOpponentCount = opponentCount;
+                    RefreshOpponentChoices();
+                });
+                button.style.width = 39;
+                button.style.minWidth = 39;
+                button.style.height = 39;
+                button.style.fontSize = 14;
+                button.style.marginRight = 5;
+                choiceButtons.Add(button);
+                opponentChoices.Add(button);
+            }
+            RefreshOpponentChoices();
+            controls.Add(opponentChoices);
+            controls.Add(UiButton("ENTER BATTLE", () => BeginAiMatch(selectedOpponentCount), true));
+            controls.Add(UiButton("FORGE DECK", () => Show("Decks")));
             play.Add(controls);
             play.Add(Label("ACTIVE DECK  /  " +
                 (string.IsNullOrWhiteSpace(selectedDeckName) ? "Choose a starter below or select a saved deck" : selectedDeckName),
                 12, CommandTone));
             scroll.Add(play);
 
-            var sectionTitle = Label("CHOOSE YOUR STRATEGY", 19, Pale);
+            var sectionTitle = Label("CHOOSE YOUR STARTER", 19, Pale);
             sectionTitle.style.marginBottom = 11;
             scroll.Add(sectionTitle);
             var decks = Flex(true);
@@ -297,7 +335,7 @@ namespace TcgServer.Client
             content.Add(layout);
 
             var left = new ScrollView(ScrollViewMode.Vertical);
-            left.style.width = 415;
+            left.style.width = 340;
             left.style.flexShrink = 0;
             left.style.marginRight = 12;
             left.AddToClassList("cf-panel");
@@ -315,6 +353,7 @@ namespace TcgServer.Client
                 var current = deck;
                 var row = Flex(true);
                 row.style.alignItems = Align.Center;
+                row.style.flexWrap = Wrap.Wrap;
                 row.style.marginTop = 7;
                 var name = Label(current.name + "  /  " + (current.cardIds?.Length ?? 0), 12,
                     selectedDeckId == current.id ? CommandTone : Pale);
@@ -361,6 +400,7 @@ namespace TcgServer.Client
             var validity = Label("", 11, Soft);
             editPanel.Add(validity);
             var actionRow = Flex(true);
+            actionRow.style.flexWrap = Wrap.Wrap;
             var save = UiButton("SAVE DECK", () =>
             {
                 var errors = ClientDeckLegality.Validate(rules, draft);
@@ -419,12 +459,27 @@ namespace TcgServer.Client
             gallery.style.flexWrap = Wrap.Wrap;
             browse.Add(gallery);
             var cardPreview = UiSurface();
-            cardPreview.style.width = 258;
+            cardPreview.style.width = 228;
             cardPreview.style.flexShrink = 0;
             cardPreview.style.marginLeft = 8;
             cardPreview.Add(Label("CARD DETAILS", 14, CommandTone));
             cardPreview.Add(Label("Hover or select an owned card to read its full rules.", 11, Soft));
             galleryWorkspace.Add(cardPreview);
+            // Compact editor windows stack the deck list above the card browser,
+            // avoiding a three-column squeeze and inaccessible controls.
+            bool compactLayout = false;
+            layout.RegisterCallback<GeometryChangedEvent>(evt =>
+            {
+                var compact = evt.newRect.width < 1010f;
+                if (compactLayout == compact && evt.oldRect.width > 0f) return;
+                compactLayout = compact;
+                layout.style.flexDirection = compact ? FlexDirection.Column : FlexDirection.Row;
+                left.style.width = compact ? Length.Percent(100) : 340f;
+                left.style.height = compact ? 225f : new StyleLength(StyleKeyword.Auto);
+                left.style.marginRight = compact ? 0 : 12f;
+                left.style.marginBottom = compact ? 10f : 0;
+                cardPreview.style.width = evt.newRect.width < 1330f ? 228f : 258f;
+            });
             var resultsLabel = Label("", 11, Soft);
             right.Add(resultsLabel);
             string activeType = "ALL";
@@ -493,7 +548,7 @@ namespace TcgServer.Client
                     TypeColor(CardKind(definition)));
                 category.style.marginBottom = 6;
                 cardPreview.Add(category);
-                cardPreview.Add(MakeCardFace(definition, 207, null));
+                cardPreview.Add(MakeCardFace(definition, 177, null));
                 cardPreview.Add(Label("OWNED " + ownedCount + " COPY/COPIES", 11, CommandTone));
                 var rulesScroll = new ScrollView(ScrollViewMode.Vertical);
                 rulesScroll.style.flexGrow = 1;

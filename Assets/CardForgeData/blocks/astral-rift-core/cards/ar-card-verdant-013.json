@@ -1,72 +1,78 @@
 {
-    "version": 1,
-    "id": "ar-card-verdant-013",
-    "name": "Starlit Warden",
-    "cardNumber": "139",
-    "layoutId": "ar-layout-front",
-    "backLayoutId": "ar-layout-back",
-    "sourceBlockId": "",
-    "sourceCardId": "",
-    "cardType": "Unit",
-    "variantId": "uncommon",
-    "values": [
-        {
-            "fieldId": "5aa8e06473ef4906ad1207722c38f824",
-            "value": "Starlit Warden"
-        },
-        {
-            "fieldId": "d3122d6a7a2e455b85aa4159a16b59dd",
-            "value": "1"
-        },
-        {
-            "fieldId": "3fdb6418da2c449cb610ce5ac43a97a2",
-            "value": "Unit — Verdant"
-        },
-        {
-            "fieldId": "1fa832ace0bb4ffd980ff9350beb90ed",
-            "value": "gain 1 energy."
-        },
-        {
-            "fieldId": "89c7fee71dd74befaa68a04dd3abceee",
-            "value": "3"
-        },
-        {
-            "fieldId": "ar-field-toughness",
-            "value": "3"
-        },
-        {
-            "fieldId": "a923c2a162ad467899a0e29c0acad459",
-            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-verdant-013.png"
-        },
-        {
-            "fieldId": "ar-field-affinity",
-            "value": "Verdant"
-        },
-        {
-            "fieldId": "ar-field-affinity-icon",
-            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/verdant.png"
-        },
-        {
-            "fieldId": "ar-field-rarity",
-            "value": "Uncommon"
-        },
-        {
-            "fieldId": "ar-field-flavor",
-            "value": "No constellation follows the same course twice."
-        },
-        {
-            "fieldId": "ar-field-collector",
-            "value": "139/240 · ARFT"
-        },
-        {
-            "fieldId": "ar-field-active",
-            "value": "true"
-        }
-    ],
-    "zoneOverrides": [],
-    "requirements": [],
-    "keywordIds": [],
-    "abilityIds": [
-        "ar-ability-unique-ar-card-verdant-013"
-    ]
+    "version":  1,
+    "id":  "ar-card-verdant-013",
+    "name":  "Canopy Guardian",
+    "cardNumber":  "133",
+    "layoutId":  "ar-layout-creature",
+    "backLayoutId":  "ar-layout-back",
+    "sourceBlockId":  "",
+    "sourceCardId":  "",
+    "cardType":  "Creature",
+    "variantId":  "mythic",
+    "values":  [
+                   {
+                       "fieldId":  "5aa8e06473ef4906ad1207722c38f824",
+                       "value":  "Canopy Guardian"
+                   },
+                   {
+                       "fieldId":  "d3122d6a7a2e455b85aa4159a16b59dd",
+                       "value":  "6"
+                   },
+                   {
+                       "fieldId":  "3fdb6418da2c449cb610ce5ac43a97a2",
+                       "value":  "Creature - Verdant"
+                   },
+                   {
+                       "fieldId":  "1fa832ace0bb4ffd980ff9350beb90ed",
+                       "value":  "Mill 2 enemy card(s). Gain 3 mana."
+                   },
+                   {
+                       "fieldId":  "89c7fee71dd74befaa68a04dd3abceee",
+                       "value":  "4"
+                   },
+                   {
+                       "fieldId":  "ar-field-toughness",
+                       "value":  "6"
+                   },
+                   {
+                       "fieldId":  "a923c2a162ad467899a0e29c0acad459",
+                       "value":  "Assets/CardForgeStudio/CardForgeClient/Resources/AstralRift/Illustrations/ar-card-verdant-013.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity",
+                       "value":  "Verdant"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity-icon",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/verdant.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-rarity",
+                       "value":  "Mythic"
+                   },
+                   {
+                       "fieldId":  "ar-field-flavor",
+                       "value":  "Within the Astral Rift, no two constellations answer the same call."
+                   },
+                   {
+                       "fieldId":  "ar-field-collector",
+                       "value":  "133/240  ARFT"
+                   },
+                   {
+                       "fieldId":  "ar-field-active",
+                       "value":  "true"
+                   }
+               ],
+    "zoneOverrides":  [
+
+                      ],
+    "requirements":  [
+
+                     ],
+    "keywordIds":  [
+
+                   ],
+    "abilityIds":  [
+                       "ar-ability-unique-ar-card-verdant-013"
+                   ]
 }

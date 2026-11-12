@@ -21,7 +21,7 @@ namespace TcgServer.Client
         private UIDocument document;
         private VisualElement root, content, sidebar, header, board, actionBar;
         private Label notice, identity;
-        private string page = "Play", matchId, lastViewKey, selectedDeckId;
+        private string page = "Play", matchId, lastViewKey, selectedDeckId, pendingRecipientId;
         private RulePackDto rulePack;
         private ClientGameViewDto match;
         private CardInstanceDto selected;
@@ -31,9 +31,9 @@ namespace TcgServer.Client
         private readonly Dictionary<string, Button> navigation = new Dictionary<string, Button>();
         private readonly Dictionary<string, Texture2D> artwork = new();
 
-        private static readonly Color Night = ColorFrom("#0B1020");
-        private static readonly Color Surface = ColorFrom("#172139");
-        private static readonly Color Raised = ColorFrom("#243451");
+        private static readonly Color Night = ColorFrom("#14101C");
+        private static readonly Color Surface = ColorFrom("#211A2C");
+        private static readonly Color Raised = ColorFrom("#44304A");
         private static readonly Color Gold = ColorFrom("#E9BE69");
         private static readonly Color Pale = ColorFrom("#F3F0E9");
         private static readonly Color Soft = ColorFrom("#B2C3DD");
@@ -92,15 +92,7 @@ namespace TcgServer.Client
             if (arenaStyle != null && !root.styleSheets.Contains(arenaStyle))
                 root.styleSheets.Add(arenaStyle);
             BuildArenaShell();
-            root.RegisterCallback<KeyDownEvent>(evt =>
-            {
-                if (evt.keyCode != KeyCode.Escape || string.IsNullOrEmpty(matchId)) return;
-                if (selected == null && targetAction == null) return;
-                selected = null;
-                targetAction = null;
-                ShowMatch();
-                evt.StopPropagation();
-            });
+            RegisterRuntimeShortcuts();
             Show("Play");
             StartCoroutine(ConnectDemo());
         }
@@ -231,6 +223,42 @@ namespace TcgServer.Client
 
         private void SetNotice(string message) { if (notice != null) notice.text = message; }
 
+        // Shared game-facing layout for secondary screens: scrollable content,
+        // readable hierarchy and a consistent illustration-friendly surface.
+        private ScrollView BeginGameScreen(string eyebrow, string heading, string description)
+        {
+            content.Clear();
+            var scroll = new ScrollView(ScrollViewMode.Vertical);
+            scroll.style.flexGrow = 1;
+            scroll.style.minHeight = 0;
+            scroll.AddToClassList("cf-scroll");
+            var hero = UiSurface(true);
+            hero.style.marginBottom = 15;
+            hero.Add(Label(eyebrow, 11, CommandTone));
+            var title = Label(heading, 29, Pale);
+            title.style.marginTop = 5;
+            title.style.marginBottom = 7;
+            hero.Add(title);
+            hero.Add(Label(description, 14, Soft));
+            scroll.Add(hero);
+            content.Add(scroll);
+            return scroll;
+        }
+
+        private static VisualElement GameScreenCard(string heading, string description)
+        {
+            var card = UiSurface();
+            card.style.marginBottom = 12;
+            card.Add(Label(heading, 17, Pale));
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                var detail = Label(description, 13, Soft);
+                detail.style.marginTop = 6;
+                card.Add(detail);
+            }
+            return card;
+        }
+
         private void Show(string tab)
         {
             page = tab;
@@ -254,7 +282,12 @@ namespace TcgServer.Client
             }
         }
 
-        private void ShowPlay() => BuildPlayHub();
+        // Returning to Play must resume the current match, not strand it behind the lobby.
+        private void ShowPlay()
+        {
+            if (!string.IsNullOrEmpty(matchId)) ShowArenaMatch();
+            else BuildPlayHub();
+        }
 
         private IEnumerator LoadRulePackAndMatch()
         {
@@ -264,7 +297,33 @@ namespace TcgServer.Client
                 ShowMatch();
                 if (polling != null) StopCoroutine(polling);
                 polling = StartCoroutine(PollMatch());
-            }, error => SetNotice("Rules unavailable: " + error));
+            }, error =>
+            {
+                SetNotice("Rules unavailable: " + error);
+                ShowMatchLoadError("Could not load this match's rules. Check the server connection and retry.");
+            });
+        }
+
+        private void ShowMatchLoadError(string message)
+        {
+            if (page != "Play" || string.IsNullOrEmpty(matchId) || match != null) return;
+            content.Clear();
+            var panel = UiSurface(true);
+            panel.style.maxWidth = 740;
+            panel.Add(Label("THE ARENA IS UNAVAILABLE", 24, QuickTone));
+            panel.Add(Label(message, 14, Soft));
+            var controls = Flex(true);
+            controls.style.flexWrap = Wrap.Wrap;
+            controls.style.marginTop = 16;
+            controls.Add(UiButton("RETRY MATCH", () => StartCoroutine(LoadRulePackAndMatch()), true));
+            controls.Add(UiButton("BACK TO PLAY", () =>
+            {
+                matchId = null;
+                if (polling != null) { StopCoroutine(polling); polling = null; }
+                Show("Play");
+            }));
+            panel.Add(controls);
+            content.Add(panel);
         }
 
         private IEnumerator PollMatch()
@@ -286,7 +345,11 @@ namespace TcgServer.Client
                         lastViewKey = signature;
                         if (page == "Play") ShowMatch();
                     }
-                }, error => SetNotice("Match refresh: " + error));
+                }, error =>
+                {
+                    SetNotice("Match refresh: " + error);
+                    ShowMatchLoadError("Could not retrieve the match. Retry or return to your decks.");
+                });
                 yield return new WaitForSeconds(1f);
             }
         }
@@ -358,7 +421,11 @@ namespace TcgServer.Client
         {
             if (actionBusy || match == null ||
                 (match.activePlayerId != session.User?.id && action.requiresActivePlayer)) return;
-            if (!string.IsNullOrEmpty(action.sourceZone) && string.IsNullOrEmpty(source)) return;
+            if (!string.IsNullOrEmpty(action.sourceZone) && string.IsNullOrEmpty(source))
+            {
+                SetNotice("Select a card from " + action.sourceZone + " to " + action.name.ToLowerInvariant() + ".");
+                return;
+            }
             actionBusy = true;
             targetAction = null;
             DrawActions();
@@ -420,23 +487,46 @@ namespace TcgServer.Client
             yield return api.Friends(session.Token, friends =>
             {
                 if (page != "Friends") return;
-                var add = Panel();
-                var input = new TextField("Friend user ID"); add.Add(input);
-                add.Add(Action("Add friend", () =>
+                var screen = BeginGameScreen("YOUR ALLIES", "The Fellowship",
+                    "Find familiar faces, forge alliances and challenge your friends.");
+                var invite = GameScreenCard("Invite a player", "Ask a friend for their Player ID, then add them here.");
+                var input = new TextField("Player ID");
+                input.AddToClassList("cf-textfield");
+                invite.Add(input);
+                invite.Add(UiButton("ADD ALLY", () =>
                 {
-                    StartCoroutine(api.AddFriend(session.Token, input.value,
-                        _ => Show("Friends"), error => SetNotice(error.ToString())));
-                }));
-                content.Add(add);
-                foreach (var friend in friends)
+                    if (string.IsNullOrWhiteSpace(input.value))
+                    {
+                        SetNotice("Enter your friend's Player ID first.");
+                        return;
+                    }
+                    StartCoroutine(api.AddFriend(session.Token, input.value.Trim(),
+                        _ => Show("Friends"), error => SetNotice("Could not add ally: " + error)));
+                }, true));
+                screen.Add(invite);
+                screen.Add(Label("YOUR ALLIES  •  " + (friends?.Length ?? 0), 17, CommandTone));
+                if (friends == null || friends.Length == 0)
+                    screen.Add(GameScreenCard("Your party awaits", "Share your Player ID from the Profile screen to make your first connection."));
+                foreach (var friend in friends ?? Array.Empty<FriendConnectionDto>())
                 {
-                    var item = Panel();
-                    item.Add(Label(friend.friendUserId + "  •  " + friend.status, 15, Gold));
-                    item.Add(Action("Remove", () => StartCoroutine(api.RemoveFriend(session.Token, friend.id,
-                        () => Show("Friends"), error => SetNotice(error.ToString())))));
-                    content.Add(item);
+                    var entry = friend;
+                    var otherId = friend.userId == session.User.id ? friend.friendUserId : friend.userId;
+                    var card = GameScreenCard("ALLY  •  " + otherId,
+                        "Connection: " + friend.status);
+                    var actions = Flex(true);
+                    actions.style.flexWrap = Wrap.Wrap;
+                    actions.Add(UiButton("SEND MESSAGE", () =>
+                    {
+                        pendingRecipientId = otherId;
+                        Show("Messages");
+                    }, true));
+                    actions.Add(UiButton("REMOVE", () => StartCoroutine(api.RemoveFriend(
+                        session.Token, entry.id, () => Show("Friends"),
+                        error => SetNotice("Could not remove ally: " + error)))));
+                    card.Add(actions);
+                    screen.Add(card);
                 }
-            }, error => SetNotice(error.ToString()));
+            }, error => SetNotice("Could not load your allies: " + error));
         }
 
         private IEnumerator LoadMessages()
@@ -445,37 +535,87 @@ namespace TcgServer.Client
             yield return api.Messages(session.Token, messages =>
             {
                 if (page != "Messages") return;
-                var form = Panel();
-                var to = new TextField("Recipient user ID");
-                var message = new TextField("Message") { multiline = true };
-                form.Add(to); form.Add(message);
-                form.Add(Action("Send", () =>
+                var screen = BeginGameScreen("RAVEN POST", "Messages",
+                    "Keep in touch with your allies between battles.");
+                var compose = GameScreenCard("Send a message", "Choose a recipient and write a note.");
+                var to = new TextField("Recipient Player ID") { value = pendingRecipientId ?? "" };
+                var message = new TextField("Your message") { multiline = true };
+                to.AddToClassList("cf-textfield");
+                message.AddToClassList("cf-textfield");
+                message.style.minHeight = 75;
+                compose.Add(to);
+                compose.Add(message);
+                compose.Add(UiButton("SEND MESSAGE", () =>
                 {
-                    StartCoroutine(api.SendMessage(session.Token, to.value, message.value,
-                        _ => Show("Messages"), error => SetNotice(error.ToString())));
-                }));
-                content.Add(form);
-                foreach (var item in messages.Reverse())
+                    if (string.IsNullOrWhiteSpace(to.value) || string.IsNullOrWhiteSpace(message.value))
+                    {
+                        SetNotice("Choose a recipient and write a message first.");
+                        return;
+                    }
+                    StartCoroutine(api.SendMessage(session.Token, to.value.Trim(), message.value.Trim(),
+                        _ =>
+                        {
+                            pendingRecipientId = null;
+                            Show("Messages");
+                        }, error => SetNotice("Message not sent: " + error)));
+                }, true));
+                screen.Add(compose);
+                screen.Add(Label("RECENT MESSAGES", 17, CommandTone));
+                if (messages == null || messages.Length == 0)
+                    screen.Add(GameScreenCard("No messages yet", "Your conversations will appear here once an ally writes to you."));
+                foreach (var item in (messages ?? Array.Empty<DirectMessageDto>()).Reverse())
                 {
-                    var panel = Panel();
-                    panel.Add(Label(item.senderId + " → " + item.recipientId, 12, Gold));
-                    panel.Add(Label(item.body));
-                    content.Add(panel);
+                    var outgoing = item.senderId == session.User.id;
+                    var other = outgoing ? item.recipientId : item.senderId;
+                    var card = GameScreenCard((outgoing ? "TO  " : "FROM  ") + other, item.body);
+                    card.style.borderLeftWidth = 3;
+                    card.style.borderLeftColor = outgoing ? CommandTone : ManaTone;
+                    screen.Add(card);
                 }
-            }, error => SetNotice(error.ToString()));
+            }, error => SetNotice("Messages unavailable: " + error));
         }
 
         private void ShowProfile()
         {
             var user = session?.User;
-            var panel = Panel();
-            panel.Add(Label(user == null ? "Sign in to view profile" : user.handle, 22, Gold));
-            if (user != null)
+            var screen = BeginGameScreen("YOUR JOURNEY", user == null ? "The Adventurer" : user.handle,
+                user == null ? "Sign in to begin your story." : "Your victories, collection and allies in the Astral Rift.");
+            if (user == null)
             {
-                panel.Add(Label("Rating: " + user.rating + "\nPlayer ID: " + user.id, 14));
-                panel.Add(Action("Refresh profile", () => Show("Profile")));
+                var card = GameScreenCard("Your story begins here", "Connect to the native game server to load your profile.");
+                card.Add(UiButton("SIGN IN", ShowLogin, true));
+                screen.Add(card);
+                return;
             }
-            content.Add(panel);
+            var stats = Flex(true);
+            stats.style.flexWrap = Wrap.Wrap;
+            stats.style.marginBottom = 10;
+            var rank = GameScreenCard("RATING", user.rating.ToString("N0"));
+            rank.style.flexGrow = 1;
+            rank.style.minWidth = 180;
+            rank.style.marginRight = 10;
+            var decks = GameScreenCard("YOUR DECKS", "Forge a new strategy or refine an old favorite.");
+            decks.style.flexGrow = 1;
+            decks.style.minWidth = 220;
+            decks.Add(UiButton("OPEN DECKS", () => Show("Decks"), true));
+            stats.Add(rank);
+            stats.Add(decks);
+            screen.Add(stats);
+            var share = GameScreenCard("Play with friends",
+                "Give an ally your Player ID so they can add you.");
+            share.Add(Label(user.id, 13, CommandTone));
+            share.Add(UiButton("COPY PLAYER ID", () =>
+            {
+                GUIUtility.systemCopyBuffer = user.id;
+                SetNotice("Player ID copied. Share it with an ally.");
+            }, true));
+            screen.Add(share);
+            var controls = Flex(true);
+            controls.style.flexWrap = Wrap.Wrap;
+            controls.Add(UiButton("MY COLLECTION", () => Show("Inventory")));
+            controls.Add(UiButton("FIND ALLIES", () => Show("Friends")));
+            controls.Add(UiButton("ENTER BATTLE", () => Show("Play"), true));
+            screen.Add(controls);
         }
 
         private IEnumerator LoadStore()
@@ -483,33 +623,58 @@ namespace TcgServer.Client
             yield return api.StoreProducts(products =>
             {
                 if (page != "Store") return;
-                content.Add(Label("CardForge storefront", 18, Gold));
-                if (RequireAccount())
+                var screen = BeginGameScreen("THE TRADING POST", "Astral Bazaar",
+                    "Discover new card packs and expand your collection with in-game gold.");
+                if (session?.IsAuthenticated == true)
+                {
                     StartCoroutine(api.Wallet(session.Token, wallet =>
                     {
                         if (page != "Store") return;
-                        var balances = string.Join("    ", wallet.balances.Select(b => b.currency + ": " + b.amount));
-                        var header = Label("Your balance  •  " + balances, 15, Gold);
-                        content.Insert(Math.Min(1, content.childCount), header);
-                    }, error => SetNotice(error.ToString())));
-                if (products.Length == 0) content.Add(Label("No products are currently on sale.", 14, Soft));
-                foreach (var product in products)
+                        var balances = wallet?.balances ?? Array.Empty<WalletBalanceDto>();
+                        var balance = string.Join("  •  ",
+                            balances.Select(b => b.amount + " " + b.currency.ToUpperInvariant()));
+                        var purse = GameScreenCard("YOUR PURSE", string.IsNullOrEmpty(balance) ? "No currency yet" : balance);
+                        screen.Insert(Math.Min(1, screen.childCount), purse);
+                    }, error => SetNotice("Wallet unavailable: " + error)));
+                }
+                else
+                {
+                    var welcome = GameScreenCard("Sign in to trade",
+                        "Connect your player account to buy packs with earned gold.");
+                    welcome.Add(UiButton("SIGN IN", ShowLogin, true));
+                    screen.Add(welcome);
+                }
+                screen.Add(Label("AVAILABLE WARES", 17, CommandTone));
+                if (products == null || products.Length == 0)
+                    screen.Add(GameScreenCard("The stalls are quiet",
+                        "The bazaar has no packs available right now. Check back after the next event."));
+                var grid = Flex(true);
+                grid.style.flexWrap = Wrap.Wrap;
+                foreach (var product in products ?? Array.Empty<StoreProductDto>())
                 {
                     var item = product;
-                    var panel = Panel();
-                    panel.Add(Label(product.name + "  •  " + product.price + " " + product.currency, 16, Gold));
-                    panel.Add(Label(product.description, 13, Soft));
+                    var card = GameScreenCard(item.name, item.description);
+                    card.style.flexGrow = 1;
+                    card.style.flexBasis = 280;
+                    card.style.minWidth = 255;
+                    card.style.marginRight = 12;
+                    var price = Label(item.price + " " + item.currency.ToUpperInvariant(), 18, CommandTone);
+                    price.style.marginTop = 12;
+                    price.style.marginBottom = 8;
+                    card.Add(price);
                     if (session?.IsAuthenticated == true)
-                        panel.Add(Action("Purchase", () =>
+                        card.Add(UiButton("BUY PACK", () =>
                             StartCoroutine(api.Purchase(session.Token, item.id,
                                 receipt =>
                                 {
-                                    SetNotice("Purchase complete: " + receipt.cards.Length + " cards granted.");
+                                    SetNotice("Pack opened! " + (receipt.cards?.Length ?? 0) +
+                                        " cards added to your collection.");
                                     Show("Store");
-                                }, error => SetNotice("Purchase rejected: " + error)))));
-                    content.Add(panel);
+                                }, error => SetNotice("Trade declined: " + error))), true));
+                    grid.Add(card);
                 }
-            }, error => SetNotice(error.ToString()));
+                screen.Add(grid);
+            }, error => SetNotice("Bazaar unavailable: " + error));
         }
 
         private IEnumerator LoadNews()
@@ -517,15 +682,20 @@ namespace TcgServer.Client
             yield return api.PublicEvents(events =>
             {
                 if (page != "News & Events") return;
-                if (events.Length == 0) content.Add(Label("No upcoming events.", 14, Soft));
-                foreach (var item in events)
+                var screen = BeginGameScreen("WHISPERS FROM THE RIFT", "Tales & Events",
+                    "Discover seasonal challenges, new encounters and happenings across the Rift.");
+                if (events == null || events.Length == 0)
+                    screen.Add(GameScreenCard("The stars are quiet",
+                        "There are no active events at the moment. Return soon for fresh challenges."));
+                foreach (var item in events ?? Array.Empty<PublicEventDto>())
                 {
-                    var panel = Panel();
-                    panel.Add(Label(item.name + "  •  " + item.kind, 17, Gold));
-                    panel.Add(Label(item.description, 13, Soft));
-                    content.Add(panel);
+                    var card = GameScreenCard(item.name, item.description);
+                    var tag = Label(item.kind.ToUpperInvariant() + " EVENT", 11, QuickTone);
+                    card.Insert(0, tag);
+                    screen.Add(card);
                 }
-            }, error => SetNotice(error.ToString()));
+                screen.Add(UiButton("BACK TO BATTLE", () => Show("Play"), true));
+            }, error => SetNotice("Events unavailable: " + error));
         }
     }
 }

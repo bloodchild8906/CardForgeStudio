@@ -1,76 +1,46 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-solar-042",
-    "name": "Patient Standard — Sunforged Protocol",
-    "cardId": "ar-card-solar-042",
-    "activationTriggerId": "ar-trigger-relic",
-    "actionId": "ar-install-relic",
-    "phaseId": "",
-    "condition": "With a friendly unit on the field",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "reduce 1 life against the enemy team; gain 1 momentum; gain 1 renown; gain 2 shield",
-    "priority": 35,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "modify_resource",
-            "target": "enemy_team",
-            "resourceId": "life",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": -1,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "momentum",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "renown",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "shield",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 2,
-            "parameters": []
-        }
-    ],
-    "conditions": [
-        {
-            "kind": "friendly_board_at_least",
-            "subject": "",
-            "key": "",
-            "op": "",
-            "value": "1"
-        }
-    ],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-solar-042",
+    "name":  "Blazewing Oath - Solar Signature",
+    "cardId":  "ar-card-solar-042",
+    "activationTriggerId":  "",
+    "actionId":  "ar-cast-spell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Mill 2 enemy card(s). Gain 3 mana.",
+    "priority":  35,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-cast-spell",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "mill",
+                        "amount":  2,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "energy",
+                        "amount":  3
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

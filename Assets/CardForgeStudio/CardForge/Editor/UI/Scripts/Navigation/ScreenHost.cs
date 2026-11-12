@@ -34,8 +34,19 @@ namespace CardForge.EditorUI.Navigation
         /// <summary>Shows the screen with the given id.</summary>
         public void Show(string screenId)
         {
+            // A direct library visit starts unfiltered, even when the user
+            // previously opened a specific starter deck from the dashboard.
+            controllersByScreenId[screenId].ClearScope();
             container.Clear();
             container.Add(controllersByScreenId[screenId].Root);
+        }
+
+        /// <summary>Restrict the currently displayed collection to exact IDs.</summary>
+        public void ShowOnly(string screenId, IReadOnlyCollection<string> ids, string caption)
+        {
+            if (!controllersByScreenId.TryGetValue(screenId, out var controller))
+                throw new ArgumentException("Unknown library screen: " + screenId, nameof(screenId));
+            controller.ShowOnly(ids, caption);
         }
 
         /// <summary>Reloads every screen from its row source.</summary>

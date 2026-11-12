@@ -15,16 +15,21 @@ namespace CardForge.EditorUI.Navigation
         public SidebarNavigation(VisualElement container, IEnumerable<GridScreenDefinition> definitions)
         {
             var available = new HashSet<string>(definitions.Select(d => d.Id));
-            AddGroup(container, "Content");
+            available.Add("home");
+            available.Add("overview");
+            AddGroup(container, "YOUR STUDIO");
+            Add(container, available, "home", "Dashboard");
+            Add(container, available, "overview", "Overview");
+            AddGroup(container, "DESIGN CARDS");
             Add(container, available, "layouts", "Layouts");
             Add(container, available, "cards", "Cards");
             Add(container, available, "icons", "Icons");
-            AddGroup(container, "Game rules");
+            AddGroup(container, "GAMEPLAY LOGIC");
             Add(container, available, "turnflow", "Turn flows");
             Add(container, available, "triggers", "Triggers");
             Add(container, available, "actions", "Actions");
             Add(container, available, "abilities", "Abilities");
-            AddGroup(container, "Project");
+            AddGroup(container, "GAME & RELEASE");
             Add(container, available, "blocks", "Blocks & editions");
             available.Add("schema");
             Add(container, available, "schema", "Data fields");
@@ -61,6 +66,8 @@ namespace CardForge.EditorUI.Navigation
                     void Line(params Vector2[] points) { p.BeginPath();p.MoveTo(points[0]);foreach(var point in points.Skip(1))p.LineTo(point);p.Stroke(); }
                     void Box(float x,float y,float w,float h) { Line(new Vector2(x,y),new Vector2(x+w,y),new Vector2(x+w,y+h),new Vector2(x,y+h),new Vector2(x,y)); }
                     switch(id) {
+                        case "home":Box(2,4,12,11);Line(new Vector2(1,5),new Vector2(8,1),new Vector2(15,5));break;
+                        case "overview":Box(1,1,14,14);Box(3,4,3,3);Line(new Vector2(8,5),new Vector2(13,5));Line(new Vector2(3,11),new Vector2(6,11));Line(new Vector2(8,11),new Vector2(13,11));break;
                         case "layouts":Box(2,1,12,14);Line(new Vector2(2,5),new Vector2(14,5));Box(4,7,8,4);break;
                         case "cards":Box(5,4,9,11);Line(new Vector2(3,12),new Vector2(1,2),new Vector2(10,1));break;
                         case "icons":Line(new Vector2(8,1),new Vector2(14,8),new Vector2(8,15),new Vector2(2,8),new Vector2(8,1));break;

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: CardForge.Client.Runtime::TcgServer.Client.TcgConnectionSettings
   baseUrl: http://127.0.0.1:5168
   defaultRulePackId: astral-rift
-  activePackageId: astral-rift-demo
-  activePackageVersion: 2.1.0
+  activePackageId: astral-rift
+  activePackageVersion: 3.0.0
   gamePollIntervalSeconds: 1
   lobbyRefreshIntervalSeconds: 5

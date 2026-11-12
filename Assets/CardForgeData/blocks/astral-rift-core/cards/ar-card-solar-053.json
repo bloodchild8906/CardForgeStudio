@@ -1,72 +1,78 @@
 {
-    "version": 1,
-    "id": "ar-card-solar-053",
-    "name": "Whispering Standard",
-    "cardNumber": "065",
-    "layoutId": "ar-layout-front",
-    "backLayoutId": "ar-layout-back",
-    "sourceBlockId": "",
-    "sourceCardId": "",
-    "cardType": "Event",
-    "variantId": "common",
-    "values": [
-        {
-            "fieldId": "5aa8e06473ef4906ad1207722c38f824",
-            "value": "Whispering Standard"
-        },
-        {
-            "fieldId": "d3122d6a7a2e455b85aa4159a16b59dd",
-            "value": "1"
-        },
-        {
-            "fieldId": "3fdb6418da2c449cb610ce5ac43a97a2",
-            "value": "Event — Solar"
-        },
-        {
-            "fieldId": "1fa832ace0bb4ffd980ff9350beb90ed",
-            "value": "After turn 1: deal 1 life per friendly unit; gain 1 shield; recover 1 from discard."
-        },
-        {
-            "fieldId": "89c7fee71dd74befaa68a04dd3abceee",
-            "value": "0"
-        },
-        {
-            "fieldId": "ar-field-toughness",
-            "value": "0"
-        },
-        {
-            "fieldId": "a923c2a162ad467899a0e29c0acad459",
-            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/art/ar-card-solar-053.png"
-        },
-        {
-            "fieldId": "ar-field-affinity",
-            "value": "Solar"
-        },
-        {
-            "fieldId": "ar-field-affinity-icon",
-            "value": "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/solar.png"
-        },
-        {
-            "fieldId": "ar-field-rarity",
-            "value": "Common"
-        },
-        {
-            "fieldId": "ar-field-flavor",
-            "value": "No constellation follows the same course twice."
-        },
-        {
-            "fieldId": "ar-field-collector",
-            "value": "065/240 · ARFT"
-        },
-        {
-            "fieldId": "ar-field-active",
-            "value": "true"
-        }
-    ],
-    "zoneOverrides": [],
-    "requirements": [],
-    "keywordIds": [],
-    "abilityIds": [
-        "ar-ability-unique-ar-card-solar-053"
-    ]
+    "version":  1,
+    "id":  "ar-card-solar-053",
+    "name":  "Lightweaver Riposte",
+    "cardNumber":  "053",
+    "layoutId":  "ar-layout-quickspell",
+    "backLayoutId":  "ar-layout-back",
+    "sourceBlockId":  "",
+    "sourceCardId":  "",
+    "cardType":  "QuickSpell",
+    "variantId":  "common",
+    "values":  [
+                   {
+                       "fieldId":  "5aa8e06473ef4906ad1207722c38f824",
+                       "value":  "Lightweaver Riposte"
+                   },
+                   {
+                       "fieldId":  "d3122d6a7a2e455b85aa4159a16b59dd",
+                       "value":  "3"
+                   },
+                   {
+                       "fieldId":  "3fdb6418da2c449cb610ce5ac43a97a2",
+                       "value":  "QuickSpell - Solar"
+                   },
+                   {
+                       "fieldId":  "1fa832ace0bb4ffd980ff9350beb90ed",
+                       "value":  "Fast: cast during any player turn. Gain 1 mana. Draw 1 card(s)."
+                   },
+                   {
+                       "fieldId":  "89c7fee71dd74befaa68a04dd3abceee",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "ar-field-toughness",
+                       "value":  "0"
+                   },
+                   {
+                       "fieldId":  "a923c2a162ad467899a0e29c0acad459",
+                       "value":  "Assets/CardForgeStudio/CardForgeClient/Resources/AstralRift/Illustrations/ar-card-solar-053.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity",
+                       "value":  "Solar"
+                   },
+                   {
+                       "fieldId":  "ar-field-affinity-icon",
+                       "value":  "Assets/CardForgeStudio/CardForgeData/demo/astral-rift/icons/solar.png"
+                   },
+                   {
+                       "fieldId":  "ar-field-rarity",
+                       "value":  "Common"
+                   },
+                   {
+                       "fieldId":  "ar-field-flavor",
+                       "value":  "Within the Astral Rift, no two constellations answer the same call."
+                   },
+                   {
+                       "fieldId":  "ar-field-collector",
+                       "value":  "053/240  ARFT"
+                   },
+                   {
+                       "fieldId":  "ar-field-active",
+                       "value":  "true"
+                   }
+               ],
+    "zoneOverrides":  [
+
+                      ],
+    "requirements":  [
+
+                     ],
+    "keywordIds":  [
+
+                   ],
+    "abilityIds":  [
+                       "ar-ability-unique-ar-card-solar-053"
+                   ]
 }

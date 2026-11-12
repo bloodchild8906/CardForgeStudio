@@ -1,65 +1,52 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-umbral-038",
-    "name": "Unbroken Nullblade — Nullwake Protocol",
-    "cardId": "ar-card-umbral-038",
-    "activationTriggerId": "ar-trigger-relic",
-    "actionId": "ar-install-relic",
-    "phaseId": "",
-    "condition": "After turn 1",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "deal 1 life per friendly unit; gain 1 shield; recover 1 from discard",
-    "priority": 34,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "scale_resource",
-            "target": "opponent",
-            "resourceId": "life",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": -1,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "shield",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        },
-        {
-            "kind": "reclaim",
-            "target": "",
-            "resourceId": "",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [
-        {
-            "kind": "turn_at_least",
-            "subject": "",
-            "key": "",
-            "op": "",
-            "value": "2"
-        }
-    ],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-038",
+    "name":  "Dreadwake Edict - Umbral Signature",
+    "cardId":  "ar-card-umbral-038",
+    "activationTriggerId":  "",
+    "actionId":  "ar-cast-spell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Gain 1 shield. Deal 3 damage to an enemy player. Gain 1 renown.",
+    "priority":  34,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-cast-spell",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  1
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  -3,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "renown",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

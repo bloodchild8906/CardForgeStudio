@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -303,8 +304,15 @@ namespace CardForge.Editor
             EnsureActionGraph(action);
             var body = Col("workflow-wrap"); center.Add(body);
             body.Add(Title("Action resolution graph"));
-            body.Add(Note("Define the action's checks, costs, targets, orientation changes, effects, and completion. Only steps marked as state changes or trigger emissions interact with the rules engine."));
-            var canvas = new CardForgeResolutionGraphCanvas { ViewKey = "action:" + action.id }; body.Add(canvas);
+            body.Add(Note("Map how the action resolves visually. Use the Executable server rules in the inspector to set costs, zones, targets and actual effects; the graph documents their order."));
+            var canvas = new CardForgeResolutionGraphCanvas
+            {
+                ViewKey = "action:" + action.id,
+                DescriptionProvider = node => CardForgeActionNarrator.Describe(action, node,
+                    action.graphNodes.IndexOf(node))
+            };
+            canvas.AddToClassList("cf-action-narrated");
+            body.Add(canvas);
             ShowResolutionGraph(canvas, action.graphNodes, action.graphLinks, SaveAction, () => RenderActionInspector(_inspector));
         }
 
@@ -313,7 +321,7 @@ namespace CardForge.Editor
             EnsureAbilityGraph(ability);
             var body = Col("workflow-wrap"); center.Add(body);
             body.Add(Title("Ability modification graph"));
-            body.Add(Note("Connect keyword intent to conditions, linked action or phase, operation, and effect."));
+            body.Add(Note("Map the ability's sequence. The Structured conditions and effects in the inspector are what the native rules exporter executes."));
             var canvas = new CardForgeResolutionGraphCanvas { ViewKey = "ability:" + ability.id }; body.Add(canvas);
             ShowResolutionGraph(canvas, ability.graphNodes, ability.graphLinks, SaveAbility, () => RenderAbilityInspector(_inspector));
         }
@@ -325,7 +333,18 @@ namespace CardForge.Editor
             if (action.graphNodes != null && action.graphNodes.Count > 0) return;
             string[] titles = { "Viability trigger", "Declare action", "Check condition", "Pay cost", "Choose targets", "Orient card", "Apply effect", "Emit trigger outputs", "Complete" };
             string[] details = { string.IsNullOrEmpty(action.triggerId) ? "No trigger gate" : action.triggerId, action.name, action.condition, action.cost, action.targets, action.orientationChange == CardOrientationChange.None ? "No orientation change" : action.orientationChange + " · " + action.orientationTarget, action.effect, action.causeTriggerIds == null ? "No trigger outputs" : action.causeTriggerIds.Count + " triggers", action.resolution };
-            for (int i = 0; i < titles.Length; i++) action.graphNodes.Add(new ResolutionGraphNode { title = titles[i], detail = details[i], tone = i == 0 ? "trigger" : i == 3 || i == 7 ? "effect" : "process", causesStateChange = i == 6, emitsTriggers = i == 7, x = 50 + i * 250, y = 110 });
+            for (int i = 0; i < titles.Length; i++)
+            {
+                int row = i / 3;
+                int column = row % 2 == 0 ? i % 3 : 2 - i % 3;
+                action.graphNodes.Add(new ResolutionGraphNode
+                {
+                    title = titles[i], detail = details[i],
+                    tone = i == 0 ? "trigger" : i == 3 || i == 7 ? "effect" : "process",
+                    causesStateChange = i == 6, emitsTriggers = i == 7,
+                    x = 55 + column * 335, y = 85 + row * 235
+                });
+            }
             for (int i = 1; i < action.graphNodes.Count; i++) action.graphLinks.Add(new ResolutionGraphLink { from = action.graphNodes[i - 1].id, to = action.graphNodes[i].id });
         }
 
@@ -334,8 +353,14 @@ namespace CardForge.Editor
             if (ability.graphNodes == null) ability.graphNodes = new System.Collections.Generic.List<ResolutionGraphNode>();
             if (ability.graphLinks == null) ability.graphLinks = new System.Collections.Generic.List<ResolutionGraphLink>();
             if (ability.graphNodes != null && ability.graphNodes.Count > 0) return;
-            string[] titles = { "Activation trigger", "Condition", "Target scope", "State/card rule", "Response actions", "Trigger outputs", "Resolution" };
-            string[] details = { string.IsNullOrEmpty(ability.activationTriggerId) ? "No trigger gate" : ability.activationTriggerId, ability.condition, ability.scope, ability.rules == null ? "No rules" : ability.rules.Count + " rules", ability.responseActionIds == null ? "No response actions" : ability.responseActionIds.Count + " actions", ability.causeTriggerIds == null ? "No trigger outputs" : ability.causeTriggerIds.Count + " triggers", ability.responseResolution };
+            string[] titles = { "Activation", "Conditions", "Target scope", "Executable effects", "Response actions", "Trigger outputs", "Resolution" };
+            string[] details = { !string.IsNullOrEmpty(ability.actionId) ? "Action: " + ability.actionId :
+                string.IsNullOrEmpty(ability.activationTriggerId) ? "Always eligible" : ability.activationTriggerId,
+                (ability.conditions?.Count ?? 0) + " structured conditions", ability.scope,
+                (ability.effects?.Count ?? 0) + " server effects",
+                ability.responseActionIds == null ? "No response actions" : ability.responseActionIds.Count + " actions",
+                ability.causeTriggerIds == null ? "No trigger outputs" : ability.causeTriggerIds.Count + " triggers",
+                ability.responseResolution };
             for (int i = 0; i < titles.Length; i++) ability.graphNodes.Add(new ResolutionGraphNode { title = titles[i], detail = details[i], tone = i == 0 ? "trigger" : i == 4 ? "effect" : "process", causesStateChange = i == 3, emitsTriggers = i == 5, x = 50 + i * 250, y = 110 });
             for (int i = 1; i < ability.graphNodes.Count; i++) ability.graphLinks.Add(new ResolutionGraphLink { from = ability.graphNodes[i - 1].id, to = ability.graphNodes[i].id });
         }
@@ -356,6 +381,7 @@ namespace CardForge.Editor
             TextBox(scroll, "Orientation target", Action.orientationTarget, v => { Action.orientationTarget = v; SaveAction(); });
             TextBox(scroll, "Effect", Action.effect, v => { Action.effect = v; SaveAction(); }, true);
             TextBox(scroll, "Resolution order", Action.resolution, v => { Action.resolution = v; SaveAction(); });
+            RenderExecutableAction(scroll, Action);
             RenderActionGraphControls(scroll, Action);
             if (!embedded) scroll.Add(Btn("Delete action", () => { try { _store.DeleteAction(Action.id); _actionId = null; Render(); } catch(Exception e) { Error("Action is in use",e); } }, "danger-button"));
         }
@@ -364,13 +390,26 @@ namespace CardForge.Editor
         {
             EnsureActionGraph(action);
             var group = Group("ACTION GRAPH STEPS"); parent.Add(group);
-            group.Add(Note("The graph is the complete executable action. Cost, checks, and targeting can be non-state-changing; mark only real results and trigger boundaries below."));
+            group.Add(Note("The graph explains each stage. The structured action fields above determine actual server effects; graph steps do not override the native game rules."));
+            group.Add(Btn("GENERATE STEP DESCRIPTIONS", () =>
+            {
+                for (int i = 0; i < action.graphNodes.Count; i++)
+                    action.graphNodes[i].detail = CardForgeActionNarrator.Describe(action, action.graphNodes[i], i);
+                SaveAction(); Render();
+            }, "primary-button"));
             group.Add(Btn("+ Add graph step", () => { action.graphNodes.Add(new ResolutionGraphNode { title = "New rule step", x = 100 + action.graphNodes.Count * 30, y = 300 }); SaveAction(); Render(); }, "small-button"));
             foreach (var node in action.graphNodes.ToList())
             {
                 var local = node; var editor = new Foldout { text = local.title, value = local.id == _graphNodeId }; group.Add(editor);
+                var generatedText = CardForgeActionNarrator.Describe(action, local, action.graphNodes.IndexOf(local));
+                editor.Add(Note("THIS STEP: " + generatedText));
                 TextBox(editor, "Step", local.title, v => { local.title = v; SaveAction(); Render(); });
                 TextBox(editor, "Rule", local.detail, v => { local.detail = v; SaveAction(); });
+                editor.Add(Btn("Use generated explanation", () =>
+                {
+                    local.detail = CardForgeActionNarrator.Describe(action, local, action.graphNodes.IndexOf(local));
+                    SaveAction(); Render();
+                }, "small-button"));
                 Choice(editor, "Tone", new[] { "trigger", "process", "effect" }.Select(x => new System.Collections.Generic.KeyValuePair<string,string>(x, x)), local.tone, v => { local.tone = v; SaveAction(); });
                 ToggleBox(editor, "Causes state change", local.causesStateChange, v => { local.causesStateChange = v; SaveAction(); });
                 ToggleBox(editor, "Emits triggers", local.emitsTriggers, v => { local.emitsTriggers = v; SaveAction(); });
@@ -419,8 +458,138 @@ namespace CardForge.Editor
             RenderAbilityResponses(scroll, Ability);
             RenderAbilityTriggerOutputs(scroll, Ability);
             RenderAbilityRules(scroll, Ability);
+            RenderAbilityConditions(scroll, Ability);
+            RenderAbilityEffects(scroll, Ability);
             RenderAbilityGraphControls(scroll, Ability);
             if (!embedded) scroll.Add(Btn("Delete ability", () => { _store.DeleteAbility(Ability.id); _abilityId = null; Render(); }, "danger-button"));
+        }
+
+        void RenderExecutableAction(VisualElement parent, ActionDocument action)
+        {
+            var panel = new Foldout { text = "EXECUTABLE SERVER RULES", value = true };
+            parent.Add(panel);
+            panel.Add(Note("These fields are exported to the dedicated server. The plain-language description and the resolution diagram alone do not execute effects."));
+            ToggleBox(panel, "Active player only", action.requiresActivePlayer, v => { action.requiresActivePlayer = v; SaveAction(); });
+            Choice(panel, "Effect type", new[]
+            {
+                "move_card", "draw", "modify_resource", "set_data", "emit_event",
+                "advance_phase", "end_turn", "finish_game",
+                "level_mana_source", "attack_player", "attack_creature",
+                "drain_resource", "scale_resource", "mill", "reclaim", "destroy_target"
+            }.Select(x => new System.Collections.Generic.KeyValuePair<string,string>(x, x)),
+                action.serverEffectKind, v => { action.serverEffectKind = v; SaveAction(); Render(); });
+            var zones = _store.GameDefinitions.Values
+                .SelectMany(g => g.zones ?? new System.Collections.Generic.List<GameZoneDocument>())
+                .Select(z => z.id).Distinct().OrderBy(id => id).ToArray();
+            panel.Add(Note("Available zone IDs: " + (zones.Length == 0 ? "none yet; create game zones first" : string.Join(", ", zones))));
+            TextBox(panel, "From zone ID", action.sourceZoneId, v => { action.sourceZoneId = v.Trim(); SaveAction(); });
+            TextBox(panel, "To zone ID", action.destinationZoneId, v => { action.destinationZoneId = v.Trim(); SaveAction(); });
+            TextBox(panel, "Cost resource ID", action.costResourceId, v => { action.costResourceId = v.Trim(); SaveAction(); });
+            IntBox(panel, "Cost amount", action.costAmount, v => { action.costAmount = Mathf.Max(0, v); SaveAction(); });
+            TextBox(panel, "Effect resource ID", action.resourceId, v => { action.resourceId = v.Trim(); SaveAction(); });
+            IntBox(panel, "Effect amount", action.effectAmount, v => { action.effectAmount = v; SaveAction(); });
+            TextBox(panel, "Effect target", action.effectTarget, v => { action.effectTarget = v; SaveAction(); });
+            TextBox(panel, "Condition kind", action.conditionKind, v => { action.conditionKind = v.Trim(); SaveAction(); });
+            TextBox(panel, "Condition key", action.conditionKey, v => { action.conditionKey = v; SaveAction(); });
+            TextBox(panel, "Condition value", action.conditionValue, v => { action.conditionValue = v; SaveAction(); });
+            if (action.serverEffectKind == "set_data")
+            {
+                TextBox(panel, "Data key", action.dataKey, v => { action.dataKey = v; SaveAction(); });
+                TextBox(panel, "Data value", action.dataValue, v => { action.dataValue = v; SaveAction(); });
+            }
+            if (action.serverEffectKind == "emit_event")
+                TextBox(panel, "Emitted event type", action.eventType, v => { action.eventType = v; SaveAction(); });
+        }
+
+        void RenderAbilityConditions(VisualElement parent, AbilityDocument ability)
+        {
+            if (ability.conditions == null)
+                ability.conditions = new System.Collections.Generic.List<AbilityConditionDefinition>();
+            var group = new Foldout { text = "STRUCTURED CONDITIONS  (" + ability.conditions.Count + ")", value = true };
+            parent.Add(group);
+            group.Add(Note("All conditions must pass before the ability resolves. Use the condition kind and operator supported by your native game rules."));
+            foreach (var condition in ability.conditions.ToList())
+            {
+                var local = condition;
+                var card = Group(string.IsNullOrEmpty(local.kind) ? "NEW CONDITION" : local.kind.ToUpperInvariant());
+                group.Add(card);
+                TextBox(card, "Kind", local.kind, v => { local.kind = v.Trim(); SaveAbility(); });
+                TextBox(card, "Subject", local.subject, v => { local.subject = v; SaveAbility(); });
+                TextBox(card, "Key", local.key, v => { local.key = v; SaveAbility(); });
+                TextBox(card, "Operator", local.op, v => { local.op = v; SaveAbility(); });
+                TextBox(card, "Value", local.value, v => { local.value = v; SaveAbility(); });
+                card.Add(Btn("Remove condition", () => { ability.conditions.Remove(local); SaveAbility(); Render(); }, "small-danger"));
+            }
+            group.Add(Btn("+ Condition", () =>
+            {
+                ability.conditions.Add(new AbilityConditionDefinition());
+                SaveAbility(); Render();
+            }, "small-button"));
+        }
+
+        void RenderAbilityEffects(VisualElement parent, AbilityDocument ability)
+        {
+            if (ability.effects == null)
+                ability.effects = new System.Collections.Generic.List<AbilityEffectDefinition>();
+            var group = new Foldout { text = "EXECUTABLE ABILITY EFFECTS  (" + ability.effects.Count + ")", value = true };
+            parent.Add(group);
+            group.Add(Note("These effects are exported and resolved in order by the game server. Configure resource changes, draws, targeting, zone moves and events here."));
+            foreach (var effect in ability.effects.ToList())
+            {
+                var local = effect;
+                var card = Group("EFFECT " + (ability.effects.IndexOf(local) + 1) + " · " + local.kind);
+                group.Add(card);
+                TextBox(card, "Effect kind", local.kind, v => { local.kind = v.Trim(); SaveAbility(); });
+                TextBox(card, "Target", local.target, v => { local.target = v; SaveAbility(); });
+                TextBox(card, "Resource ID", local.resourceId, v => { local.resourceId = v; SaveAbility(); });
+                var amount = new LongField("Amount") { value = local.amount, isDelayed = true };
+                amount.RegisterValueChangedCallback(ev => { local.amount = ev.newValue; SaveAbility(); });
+                card.Add(amount);
+                TextBox(card, "From zone", local.fromZone, v => { local.fromZone = v; SaveAbility(); });
+                TextBox(card, "To zone", local.toZone, v => { local.toZone = v; SaveAbility(); });
+                TextBox(card, "Event type", local.eventType, v => { local.eventType = v; SaveAbility(); });
+                TextBox(card, "Message", local.message, v => { local.message = v; SaveAbility(); });
+                if (local.parameters == null) local.parameters = new System.Collections.Generic.List<AbilityParameterDefinition>();
+                foreach (var parameter in local.parameters.ToList())
+                {
+                    var pair = parameter;
+                    var row = Group("EFFECT PARAMETER"); card.Add(row);
+                    TextBox(row, "Key", pair.key, v => { pair.key = v; SaveAbility(); });
+                    TextBox(row, "Value", pair.value, v => { pair.value = v; SaveAbility(); });
+                    row.Add(Btn("Remove parameter", () =>
+                    { local.parameters.Remove(pair); SaveAbility(); Render(); }, "small-danger"));
+                }
+                card.Add(Btn("+ Parameter", () =>
+                { local.parameters.Add(new AbilityParameterDefinition()); SaveAbility(); Render(); }, "small-button"));
+                var actions = Row("button-row"); card.Add(actions);
+                actions.Add(Btn("Move up", () =>
+                {
+                    var index = ability.effects.IndexOf(local);
+                    if (index <= 0) return;
+                    ability.effects.RemoveAt(index);
+                    ability.effects.Insert(index - 1, local);
+                    SaveAbility(); Render();
+                }, "small-button"));
+                actions.Add(Btn("Move down", () =>
+                {
+                    var index = ability.effects.IndexOf(local);
+                    if (index < 0 || index >= ability.effects.Count - 1) return;
+                    ability.effects.RemoveAt(index);
+                    ability.effects.Insert(index + 1, local);
+                    SaveAbility(); Render();
+                }, "small-button"));
+                actions.Add(Btn("Remove", () =>
+                { ability.effects.Remove(local); SaveAbility(); Render(); }, "small-danger"));
+            }
+            var presets = Row("button-row"); group.Add(presets);
+            presets.Add(Btn("+ Resource", () =>
+            { ability.effects.Add(new AbilityEffectDefinition { kind = "modify_resource", resourceId = "shield", amount = 1 }); SaveAbility(); Render(); }, "small-button"));
+            presets.Add(Btn("+ Draw", () =>
+            { ability.effects.Add(new AbilityEffectDefinition { kind = "draw", amount = 1 }); SaveAbility(); Render(); }, "small-button"));
+            presets.Add(Btn("+ Move card", () =>
+            { ability.effects.Add(new AbilityEffectDefinition { kind = "move_card" }); SaveAbility(); Render(); }, "small-button"));
+            presets.Add(Btn("+ Event", () =>
+            { ability.effects.Add(new AbilityEffectDefinition { kind = "emit_event", eventType = "cardforge_ability" }); SaveAbility(); Render(); }, "small-button"));
         }
 
         void RenderGraphConnections(VisualElement parent,

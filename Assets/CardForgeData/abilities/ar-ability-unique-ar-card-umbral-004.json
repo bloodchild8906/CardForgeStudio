@@ -1,35 +1,42 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-umbral-004",
-    "name": "Patient Shade — Nullwake Protocol",
-    "cardId": "ar-card-umbral-004",
-    "activationTriggerId": "ar-trigger-deploy",
-    "actionId": "ar-deploy",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "mill an opponent for 1",
-    "priority": 30,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "mill",
-            "target": "opponent",
-            "resourceId": "",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-004",
+    "name":  "Umbral Sanctum Mana Source - Umbral Signature",
+    "cardId":  "ar-card-umbral-004",
+    "activationTriggerId":  "turn_started",
+    "actionId":  "",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Permanent. Generates 1 mana each of your turns. Friendly creatures gain +1 power and +1 toughness, plus +1/+1 per Mana Source level. Level up (max 3): pay 2 + current level mana. Passive: Drain 1 enemy mana.",
+    "priority":  30,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On turn_started",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "drain_resource",
+                        "resourceId":  "energy",
+                        "amount":  1,
+                        "target":  "opponent"
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

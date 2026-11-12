@@ -1,46 +1,41 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-verdant-003",
-    "name": "Gilded Warden — Bloom Protocol",
-    "cardId": "ar-card-verdant-003",
-    "activationTriggerId": "ar-trigger-deploy",
-    "actionId": "ar-deploy",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "gain 5 shield; gain 1 shield",
-    "priority": 32,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "shield",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 5,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "shield",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-verdant-003",
+    "name":  "Verdant Nexus Mana Source - Verdant Signature",
+    "cardId":  "ar-card-verdant-003",
+    "activationTriggerId":  "turn_started",
+    "actionId":  "",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Permanent. Generates 1 mana each of your turns. Friendly creatures gain +1 power and +1 toughness, plus +1/+1 per Mana Source level. Level up (max 3): pay 2 + current level mana. Passive: Gain 2 shield.",
+    "priority":  32,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On turn_started",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "shield",
+                        "amount":  2
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

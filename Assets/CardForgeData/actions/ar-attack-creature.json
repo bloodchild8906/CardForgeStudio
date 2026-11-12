@@ -1,0 +1,37 @@
+{
+    "version":  1,
+    "id":  "ar-attack-creature",
+    "name":  "Attack creature",
+    "triggerId":  "",
+    "resolution":  "Validate phase, source, targets and cost; apply the server effect; evaluate victory.",
+    "effect":  "Attack creature",
+    "condition":  "Server phase and source validation",
+    "cost":  "Card cost or no fixed cost",
+    "targets":  "",
+    "orientationChange":  0,
+    "orientationTarget":  "Target card",
+    "causeTriggerIds":  [
+
+                        ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ],
+    "requiresActivePlayer":  true,
+    "serverEffectKind":  "attack_creature",
+    "sourceZoneId":  "battlefield",
+    "destinationZoneId":  "",
+    "resourceId":  "",
+    "effectAmount":  0,
+    "effectTarget":  "",
+    "eventType":  "",
+    "costResourceId":  "",
+    "costAmount":  0,
+    "conditionKind":  "",
+    "conditionKey":  "",
+    "conditionValue":  "",
+    "dataKey":  "",
+    "dataValue":  ""
+}

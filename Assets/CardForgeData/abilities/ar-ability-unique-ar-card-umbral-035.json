@@ -1,35 +1,46 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-umbral-035",
-    "name": "Radiant Nullblade — Nullwake Protocol",
-    "cardId": "ar-card-umbral-035",
-    "activationTriggerId": "ar-trigger-deploy",
-    "actionId": "ar-deploy",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "reduce 2 life against an opponent",
-    "priority": 31,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "modify_resource",
-            "target": "opponent",
-            "resourceId": "life",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": -2,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-035",
+    "name":  "Shadeglass Wyrmling - Umbral Signature",
+    "cardId":  "ar-card-umbral-035",
+    "activationTriggerId":  "",
+    "actionId":  "ar-play-creature",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Gain 1 renown. Gain 3 shield per friendly creature.",
+    "priority":  31,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-play-creature",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "renown",
+                        "amount":  1
+                    },
+                    {
+                        "kind":  "scale_resource",
+                        "resourceId":  "shield",
+                        "amount":  3
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

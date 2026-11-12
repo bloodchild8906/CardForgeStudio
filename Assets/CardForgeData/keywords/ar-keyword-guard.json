@@ -1,0 +1,13 @@
+{
+    "version":  1,
+    "id":  "ar-keyword-guard",
+    "name":  "Guard",
+    "rulesText":  "guard",
+    "reminderText":  "",
+    "abilityIds":  [
+
+                   ],
+    "tags":  [
+
+             ]
+}

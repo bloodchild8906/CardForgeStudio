@@ -17,6 +17,9 @@ namespace CardForge.Editor
         private Action<ResolutionGraphNode> selectedCallback;
         private Action<ResolutionGraphNode> movedCallback;
 
+        /// <summary>Optional live descriptions derived from the authoritative action fields.</summary>
+        public Func<ResolutionGraphNode, string> DescriptionProvider { get; set; }
+
         /// <summary>Creates the canvas and subscribes to the shared graph events.</summary>
         public CardForgeResolutionGraphCanvas()
         {
@@ -56,7 +59,7 @@ namespace CardForge.Editor
             graph.SetContent(nodes.Select(ToNodeData).ToList(), links, selectedId);
         }
 
-        private static GraphNodeData ToNodeData(ResolutionGraphNode node)
+        private GraphNodeData ToNodeData(ResolutionGraphNode node)
         {
             return new GraphNodeData
             {
@@ -65,7 +68,7 @@ namespace CardForge.Editor
                 Y = node.y,
                 Kicker = node.tone ?? "process",
                 Title = node.title,
-                Detail = node.detail,
+                Detail = DescriptionProvider?.Invoke(node) ?? node.detail,
                 Tone = ToneOf(node.tone),
                 Badges = BadgesOf(node)
             };

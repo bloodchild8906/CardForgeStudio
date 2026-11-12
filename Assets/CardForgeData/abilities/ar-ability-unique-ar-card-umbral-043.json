@@ -1,46 +1,46 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-umbral-043",
-    "name": "Restless Whisperer — Nullwake Protocol",
-    "cardId": "ar-card-umbral-043",
-    "activationTriggerId": "ar-trigger-relic",
-    "actionId": "ar-install-relic",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "retire an opposing unit; gain 1 momentum",
-    "priority": 33,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "destroy_target",
-            "target": "opponent",
-            "resourceId": "",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 0,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "momentum",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-043",
+    "name":  "Darkmirror Cataclysm - Umbral Signature",
+    "cardId":  "ar-card-umbral-043",
+    "activationTriggerId":  "",
+    "actionId":  "ar-cast-spell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Gain 3 renown. Restore 1 life.",
+    "priority":  33,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-cast-spell",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "renown",
+                        "amount":  3
+                    },
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  1
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

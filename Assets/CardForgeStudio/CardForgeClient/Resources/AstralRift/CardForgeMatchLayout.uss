@@ -1,0 +1,52 @@
+/* Astral Rift battle layout, editable in Unity UI Builder. No game logic lives here. */
+.cf-match-root {
+    flex-grow: 1; min-height: 0; flex-direction: column;
+    background-color: #171321; padding: 5px 8px 8px 8px;
+}
+.cf-match-title {
+    flex-direction: row; flex-wrap: wrap; align-items: center;
+    min-height: 47px; flex-shrink: 0;
+    padding: 5px 10px; background-color: #292039;
+    border-width: 1px; border-color: #7B6480; border-radius: 10px;
+}
+.cf-match-main {
+    flex-direction: row; flex-grow: 1; min-height: 0; padding-top: 8px;
+}
+.cf-match-field {
+    flex-direction: column; flex-grow: 1; flex-shrink: 1;
+    min-width: 0; margin-right: 10px; justify-content: space-between;
+}
+.cf-match-inspector {
+    width: 273px; min-width: 215px; flex-shrink: 0;
+    padding: 11px 10px; background-color: #272036;
+    border-width: 1px; border-color: #8A6A84; border-radius: 10px;
+}
+.cf-match-action-host {
+    flex-direction: column; height: 72px; min-height: 72px;
+    flex-shrink: 0; background-color: #39283B;
+    border-width: 1px; border-color: #B18B66; border-radius: 9px;
+    margin-top: 9px; margin-bottom: 5px; overflow: hidden;
+}
+.cf-match-log {
+    min-height: 23px; flex-shrink: 0; padding: 3px 9px;
+    background-color: #211B30; border-radius: 6px;
+}
+.cf-match-preview-title { font-size: 16px; -unity-font-style: bold; color: #E8C184; }
+.cf-match-preview-subtitle { font-size: 13px; color: #DDD6E4; margin-left: 16px; }
+.cf-match-preview-hint { font-size: 12px; color: #C8BAD2; white-space: normal; }
+.cf-match-preview-seat {
+    flex-grow: 1; justify-content: center;
+    margin-bottom: 5px; min-height: 95px;
+    padding: 15px; border-width: 1px; border-color: #65556F;
+    background-color: #29213A; border-radius: 11px;
+}
+.cf-match-preview-hand {
+    min-height: 132px; padding: 17px 13px;
+    background-color: #30243B; border-width: 1px;
+    border-color: #9D795D; border-radius: 10px;
+}
+.cf-match-divider {
+    height: 24px; align-items: center; justify-content: center;
+    background-color: #42314A; border-radius: 5px;
+    margin-bottom: 6px;
+}

@@ -378,7 +378,7 @@ namespace CardForge.Editor
 
         static string EffectKind(ActionDocument action)
         {
-            var supported = new[] { "move_card", "draw", "modify_resource", "set_data", "emit_event", "advance_phase", "end_turn", "finish_game" };
+            var supported = new[] { "move_card", "draw", "modify_resource", "set_data", "emit_event", "advance_phase", "end_turn", "finish_game", "level_mana_source", "attack_player", "attack_creature", "drain_resource", "scale_resource", "mill", "reclaim", "destroy_target" };
             if (supported.Contains(action.serverEffectKind)) return action.serverEffectKind;
             var text = ((action.name ?? "") + " " + (action.effect ?? "")).ToLowerInvariant();
             if (text.Contains("draw")) return "draw";

@@ -1,46 +1,47 @@
 {
-    "version": 1,
-    "id": "ar-ability-unique-ar-card-umbral-048",
-    "name": "Glassborn Whisperer — Nullwake Protocol",
-    "cardId": "ar-card-umbral-048",
-    "activationTriggerId": "ar-trigger-event",
-    "actionId": "ar-cast-event",
-    "phaseId": "",
-    "condition": "",
-    "operation": "Execute server-authoritative ability effects",
-    "effect": "steal 1 energy; gain 1 energy",
-    "priority": 32,
-    "scope": "Source card and game state",
-    "responseTiming": "After its source action resolves",
-    "responseResolution": "Resolve in priority order",
-    "responseActionIds": [],
-    "causeTriggerIds": [],
-    "rules": [],
-    "effects": [
-        {
-            "kind": "drain_resource",
-            "target": "opponent",
-            "resourceId": "energy",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        },
-        {
-            "kind": "modify_resource",
-            "target": "",
-            "resourceId": "energy",
-            "fromZone": "",
-            "toZone": "",
-            "eventType": "",
-            "message": "",
-            "amount": 1,
-            "parameters": []
-        }
-    ],
-    "conditions": [],
-    "graphNodes": [],
-    "graphLinks": []
+    "version":  1,
+    "id":  "ar-ability-unique-ar-card-umbral-048",
+    "name":  "Voidward Manifest - Umbral Signature",
+    "cardId":  "ar-card-umbral-048",
+    "activationTriggerId":  "",
+    "actionId":  "ar-cast-spell",
+    "phaseId":  "",
+    "condition":  "",
+    "operation":  "Resolve structured server effects",
+    "effect":  "Deal 1 damage to an enemy player. Mill 1 enemy card(s).",
+    "priority":  32,
+    "scope":  "Source card and game state",
+    "responseTiming":  "On action:ar-cast-spell",
+    "responseResolution":  "Resolve in priority order",
+    "responseActionIds":  [
+
+                          ],
+    "causeTriggerIds":  [
+
+                        ],
+    "rules":  [
+
+              ],
+    "effects":  [
+                    {
+                        "kind":  "modify_resource",
+                        "resourceId":  "life",
+                        "amount":  -1,
+                        "target":  "opponent"
+                    },
+                    {
+                        "kind":  "mill",
+                        "amount":  1,
+                        "target":  "opponent"
+                    }
+                ],
+    "conditions":  [
+
+                   ],
+    "graphNodes":  [
+
+                   ],
+    "graphLinks":  [
+
+                   ]
 }

@@ -1,0 +1,123 @@
+/* Unified CardForge Studio workbench. Hearthstone workshop palette rather than admin teal. */
+.cf-theme-dark {
+    --cf-color-bg: #151C1B;
+    --cf-color-surface: #202A28;
+    --cf-color-surface-raised: #2D3934;
+    --cf-color-border: #45554D;
+    --cf-color-text: #F2EAD9;
+    --cf-color-text-muted: #BAC5BA;
+    --cf-color-accent: #E0B96C;
+    --cf-color-accent-soft: rgba(224, 185, 108, .15);
+    --cf-color-accent-strong: #806232;
+    --cf-color-success: #8CC8B1;
+    --cf-color-warning: #F0BE71;
+    --cf-color-danger: #DD8D85;
+    --cf-color-info: #A0C3D1;
+    --cf-color-row-hover: rgba(255, 232, 178, .065);
+    --cf-color-row-selected: rgba(224, 185, 108, .16);
+}
+.cf-theme-dark.cf-library-mode .cf-workspace {
+    --cf-color-bg: #151C1B;
+    --cf-color-surface: #202A28;
+    --cf-color-surface-raised: #2D3934;
+    --cf-color-border: #45554D;
+    --cf-color-text: #F2EAD9;
+    --cf-color-text-muted: #BAC5BA;
+    --cf-color-accent: #E0B96C;
+    --cf-color-accent-soft: rgba(224, 185, 108, .15);
+    --cf-color-accent-strong: #806232;
+    background-color: #151C1B;
+}
+.cf-studio .cf-navigation { width: 203px; min-width: 203px; background-color: #172120; border-right-color: #49594D; }
+.cf-studio .cf-brand { padding: 19px 13px 14px 13px; }
+.cf-app .cf-brand__title { color: #F1E3C8; font-size: 16px; }
+.cf-app .cf-brand__subtitle { color: #BDA87D; font-size: 9px; }
+.cf-app .cf-navigation__group { color: #9DB2A2; font-size: 10px; letter-spacing: 1px; }
+.cf-studio .cf-navigation__item { min-height: 38px; border-left-width: 3px; border-radius: 7px; }
+.cf-app .cf-navigation__label { font-size: 13px; color: #D4DBCF; }
+.cf-studio .cf-navigation__item--active { background-color: #414637; border-left-color: #EAC57C; }
+.cf-studio .cf-navigation__item--active .cf-navigation__label,
+.cf-studio .cf-navigation__item--active .cf-navigation__icon { color: #F6D38D; }
+.cf-studio .cf-navigation__item:hover { background-color: #313F37; }
+.cf-studio .cf-workspace-header { min-height: 64px; background-color: #202A28; border-bottom-color: #4D5C50; }
+.cf-app .cf-workspace-header__title { font-size: 19px; color: #F3E8D7; }
+.cf-app .cf-workspace-header__context { font-size: 12px; color: #BDCAA9; }
+.cf-app .cf-workspace-header__status { font-size: 11px; color: #E3C891; background-color: #30362C; }
+.cf-library-mode .cf-grid, .cf-library-mode .cf-inspector { background-color: #202A28; border-color: #48574D; }
+.cf-library-mode .cf-toolbar { background-color: #1B2523; }
+.cf-studio .cf-art-banner { background-color: #27362E; border-bottom-color: #997747; }
+.cf-studio .cf-art-banner__tint { background-color: rgba(19, 31, 27, .60); }
+.cf-studio .cf-button--primary, .cf-studio .cf-header-create { background-color: #D7AC60; border-color: #D7AC60; color: #20241E; }
+.cf-studio .cf-button--primary:hover, .cf-studio .cf-header-create:hover { background-color: #F0CD86; }
+.cf-studio .cf-search .unity-base-text-field__input { background-color: #18211F; border-color: #506251; color: #F1E5D0; }
+.cf-studio .cf-file-menu, .cf-studio .cf-settings-menu { color: #E5D6BC; border-color: #5A6658; }
+.cf-app .cf-project-health-button { color: #F2D7A3; border-color: #A88953; }
+.cf-root { background-color: #151C1B; }
+.cf-root .sidebar, .cf-root .inspector, .cf-root .data-form { background-color: #1E2B27; border-color: #45584C; }
+.cf-root .center-pane { background-color: #192421; }
+.cf-root .list-entry-selected { background-color: #343C30; border-color: #BD9862; }
+.cf-root .design-toolbar { background-color: #29372F; border-bottom-color: #536047; }
+.cf-root .design-toolbar .design-primary-menu { background-color: #947040; border-color: #D5B074; }
+.cf-root .section-title { color: #EFE1C8; }
+.cf-root .section-kicker { color: #D5B378; }
+
+.cf-home { flex-grow: 1; min-height: 0; background-color: #151C1B; }
+.cf-home__surface {
+    padding: 19px;
+    margin-bottom: 14px;
+    border-width: 1px;
+    border-radius: 13px;
+    flex-shrink: 0;
+}
+.cf-home__row { flex-direction: row; flex-wrap: wrap; align-items: stretch; margin-top: 12px; margin-bottom: 15px; }
+.cf-home__metric { flex-grow: 1; flex-basis: 200px; min-width: 200px; margin-right: 10px; }
+.cf-home__tile { flex-grow: 1; flex-basis: 228px; min-width: 220px; margin-right: 10px; padding: 13px 15px; }
+.cf-home__primary, .cf-home__button {
+    min-height: 40px;
+    margin-right: 9px;
+    margin-bottom: 8px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 13px;
+    -unity-font-style: bold;
+    white-space: normal;
+}
+.cf-home__primary { background-color: #DAB46F; border-color: #E3C68D; color: #20251F; }
+.cf-home__primary:hover, .cf-home__primary:focus { background-color: #F3D18C; border-color: #F8E3B0; }
+.cf-home__button { background-color: #33443A; border-color: #607660; color: #F4E5CB; }
+.cf-home__button:hover, .cf-home__button:focus { background-color: #456150; border-color: #D9B878; color: #FFF3DC; }
+.cf-home__tile .cf-home__button { align-self: stretch; font-size: 15px; min-height: 43px; }
+
+/* Home is the primary surface; file operations are deliberately secondary. */
+.cf-home .unity-scroll-view__content-container { min-width: 0; }
+.cf-dashboard-return {
+    min-width: 102px; min-height: 34px; margin-right: 13px;
+    padding: 7px 11px; background-color: #DAB46F; color: #21251E;
+    border-color: #E6C781; border-width: 1px; border-radius: 8px;
+    font-size: 12px; -unity-font-style: bold;
+}
+.cf-dashboard-return:hover { background-color: #F5D495; }
+.cf-home__surface { border-radius: 14px; }
+.cf-home__tile { flex-basis: 248px; min-width: 214px; max-width: 520px; }
+.cf-home__row { flex-wrap: wrap; }
+.cf-file-menu { font-size: 11px; opacity: .88; }
+
+/* Keep home tiles inside the editor viewport, even when Unity is docked narrowly. */
+.cf-home__row {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-shrink: 1;
+}
+.cf-home__metric { min-width: 220px; flex-basis: 260px; flex-grow: 1; flex-shrink: 1; max-width: 620px; }
+.cf-home__tile { min-width: 235px; flex-basis: 260px; flex-grow: 1; flex-shrink: 1; max-width: 450px; }
+.cf-home__featured {
+    width: 244px; min-width: 220px; flex-shrink: 0;
+    align-items: center; justify-content: center;
+    padding: 10px; margin-left: 10px; margin-bottom: 8px;
+    border-width: 1px; border-color: #B89355; border-radius: 12px;
+    background-color: #151B19;
+}
+.cf-home__featured .unity-image { border-radius: 8px; margin-bottom: 10px; }
