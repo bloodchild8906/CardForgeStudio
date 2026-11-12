@@ -244,8 +244,8 @@ namespace TcgServer.Client
             {
                 case "Play": ShowPlay(); break;
                 case "Matchmaking": ShowPlay(); break;
-                case "Decks": StartCoroutine(LoadDecks()); break;
-                case "Inventory": StartCoroutine(LoadInventory()); break;
+                case "Decks": ShowLoadingState("Decks"); StartCoroutine(LoadDecks()); break;
+                case "Inventory": ShowLoadingState("Inventory"); StartCoroutine(LoadInventory()); break;
                 case "Friends": StartCoroutine(LoadFriends()); break;
                 case "Messages": StartCoroutine(LoadMessages()); break;
                 case "Store": StartCoroutine(LoadStore()); break;
@@ -394,9 +394,9 @@ namespace TcgServer.Client
                     StartCoroutine(api.GameRulesSync(settings.DefaultRulePackId, rules =>
                     {
                         if (page == "Decks") BuildDeckEditor(decks, inventory, rules, null);
-                    }, error => SetNotice(error.ToString())));
-                }, error => SetNotice(error.ToString())));
-            }, error => SetNotice(error.ToString()));
+                    }, error => ShowLoadError("Decks", "Rules: " + error)));
+                }, error => ShowLoadError("Decks", "Inventory: " + error)));
+            }, error => ShowLoadError("Decks", "Saved decks: " + error));
         }
 
         private void BuildDeckEditor(DeckDto[] decks, InventoryDto inventory,
@@ -410,8 +410,8 @@ namespace TcgServer.Client
                 StartCoroutine(api.GameRulesSync(settings.DefaultRulePackId, rules =>
                 {
                     if (page == "Inventory") ShowCollectionGallery(inventory, rules);
-                }, error => SetNotice("Collection rules unavailable: " + error)));
-            }, error => SetNotice("Collection unavailable: " + error));
+                }, error => ShowLoadError("Inventory", "Rules: " + error)));
+            }, error => ShowLoadError("Inventory", "Collection: " + error));
         }
 
         private IEnumerator LoadFriends()

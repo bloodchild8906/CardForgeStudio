@@ -11,6 +11,53 @@ namespace TcgServer.Client
     {
         private string selectedDeckName;
 
+        private void ShowLoadingState(string section)
+        {
+            var panel = UiSurface();
+            panel.style.marginTop = 15;
+            panel.style.maxWidth = 660;
+            panel.Add(Label("LOADING " + section.ToUpperInvariant(), 18, CommandTone));
+            var message = Label(
+                "Retrieving your saved cards and match data from the dedicated server. " +
+                "Your existing decks and matches are not being changed.", 13, Soft);
+            message.style.marginTop = 8;
+            message.style.marginBottom = 14;
+            panel.Add(message);
+            var controls = Flex(true);
+            controls.style.flexWrap = Wrap.Wrap;
+            controls.Add(UiButton("RETRY LOAD", () => Show(section)));
+            controls.Add(UiButton("BACK TO PLAY", () => Show("Play")));
+            panel.Add(controls);
+            content.Add(panel);
+        }
+
+        private void ShowLoadError(string section, string error)
+        {
+            if (page != section) return;
+            content.Clear();
+            content.Add(Label(section.ToUpperInvariant(), 23, CommandTone));
+            var panel = UiSurface();
+            panel.style.maxWidth = 680;
+            panel.style.marginTop = 12;
+            panel.Add(Label("CONNECTION INTERRUPTED", 19, QuickTone));
+            var detail = Label(
+                "The dedicated server is unavailable or did not return the required " +
+                "data. Nothing has been deleted.\n\n" + error, 13, Pale);
+            detail.style.marginTop = 10;
+            detail.style.marginBottom = 15;
+            panel.Add(detail);
+            var controls = Flex(true);
+            controls.style.flexWrap = Wrap.Wrap;
+            controls.Add(UiButton("TRY AGAIN", () => Show(section), true));
+            controls.Add(UiButton("RECONNECT SERVER", () => StartCoroutine(ConnectDemo())));
+            controls.Add(UiButton("BACK TO PLAY", () => Show("Play")));
+            panel.Add(controls);
+            content.Add(panel);
+            SetNotice(section + " unavailable. Retry or reconnect.");
+        }
+
+
+
         private static Button UiButton(string title, Action onClick, bool primary = false)
         {
             var button = new Button(onClick) { text = title };
@@ -109,6 +156,7 @@ namespace TcgServer.Client
             hero.style.minHeight = 302;
             hero.style.marginBottom = 15;
             var heroRow = Flex(true);
+            heroRow.style.flexWrap = Wrap.Wrap;
             heroRow.style.alignItems = Align.Center;
             hero.Add(heroRow);
             var copy = Flex();
@@ -135,6 +183,7 @@ namespace TcgServer.Client
             copy.Add(stats);
 
             var art = Flex(true);
+            art.style.flexWrap = Wrap.Wrap;
             art.style.justifyContent = Justify.FlexEnd;
             art.style.flexShrink = 0;
             art.Add(UiArt("ar-card-solar-001", 134, 213));
@@ -347,7 +396,7 @@ namespace TcgServer.Client
             right.style.minWidth = 0;
             layout.Add(right);
             right.Add(Label("CARD LIBRARY", 22, Pale));
-            right.Add(Label("Select a card to add it to the draft. Hover to read its full ability.", 12, Soft));
+            right.Add(Label("Select a card to inspect it. Use ADD to include an owned copy in your draft.", 12, Soft));
             var search = new TextField("Search cards");
             search.AddToClassList("cf-textfield");
             search.style.marginTop = 12;
@@ -355,29 +404,40 @@ namespace TcgServer.Client
             var filters = Flex(true);
             filters.style.flexWrap = Wrap.Wrap;
             right.Add(filters);
+            var galleryWorkspace = Flex(true);
+            galleryWorkspace.style.flexGrow = 1;
+            galleryWorkspace.style.minHeight = 0;
+            galleryWorkspace.style.marginTop = 8;
+            right.Add(galleryWorkspace);
             var browse = new ScrollView(ScrollViewMode.Vertical);
             browse.style.flexGrow = 1;
+            browse.style.flexShrink = 1;
+            browse.style.minWidth = 0;
             browse.style.minHeight = 0;
-            right.Add(browse);
+            galleryWorkspace.Add(browse);
             var gallery = Flex(true);
             gallery.style.flexWrap = Wrap.Wrap;
             browse.Add(gallery);
+            var cardPreview = UiSurface();
+            cardPreview.style.width = 258;
+            cardPreview.style.flexShrink = 0;
+            cardPreview.style.marginLeft = 8;
+            cardPreview.Add(Label("CARD DETAILS", 14, CommandTone));
+            cardPreview.Add(Label("Hover or select an owned card to read its full rules.", 11, Soft));
+            galleryWorkspace.Add(cardPreview);
             var resultsLabel = Label("", 11, Soft);
             right.Add(resultsLabel);
             string activeType = "ALL";
             int visibleLimit = 24;
             var definitions = rules.cards.ToDictionary(c => c.id, StringComparer.OrdinalIgnoreCase);
             Button loadMore = null;
-            Label preview = null;
             loadMore = UiButton("LOAD MORE CARDS", () =>
             {
                 visibleLimit += 24;
                 RenderGallery();
             });
             right.Add(loadMore);
-            preview = Label("HOVER A CARD  /  FULL RULES AND OWNED COPIES", 11, Soft);
-            preview.style.minHeight = 34;
-            right.Add(preview);
+
             foreach (var choice in new[] { "ALL", "CREATURE", "SPELL", "QUICKSPELL", "MANASOURCE", "COMMANDER" })
             {
                 var type = choice;
@@ -425,6 +485,25 @@ namespace TcgServer.Client
                     entries.Add(row);
                 }
             }
+            void InspectBrowserCard(CardDefinitionDto definition, int ownedCount)
+            {
+                cardPreview.Clear();
+                cardPreview.Add(Label("CARD DETAILS", 14, CommandTone));
+                var category = Label(CardKind(definition) + "  â€¢  " + definition.type, 10,
+                    TypeColor(CardKind(definition)));
+                category.style.marginBottom = 6;
+                cardPreview.Add(category);
+                cardPreview.Add(MakeCardFace(definition, 207, null));
+                cardPreview.Add(Label("OWNED " + ownedCount + " COPY/COPIES", 11, CommandTone));
+                var rulesScroll = new ScrollView(ScrollViewMode.Vertical);
+                rulesScroll.style.flexGrow = 1;
+                rulesScroll.style.minHeight = 0;
+                var fullText = Label(definition.name.ToUpperInvariant() + "\n\n" +
+                    (definition.text ?? "No additional rules text."), 12, Pale);
+                fullText.style.whiteSpace = WhiteSpace.Normal;
+                rulesScroll.Add(fullText);
+                cardPreview.Add(rulesScroll);
+            }
             void RenderGallery()
             {
                 gallery.Clear();
@@ -446,7 +525,12 @@ namespace TcgServer.Client
                     var tile = Flex();
                     tile.style.marginRight = 11;
                     tile.style.marginBottom = 9;
-                    var cardFace = MakeCardFace(def, 137, () =>
+                    var cardFace = MakeCardFace(def, 137, () => InspectBrowserCard(def, ownedCount));
+                    cardFace.RegisterCallback<PointerEnterEvent>(_ =>
+                        InspectBrowserCard(def, ownedCount));
+                    tile.Add(cardFace);
+                    tile.Add(Label("OWNED  " + ownedCount, 10, CommandTone));
+                    var add = UiButton("ADD TO DECK  +", () =>
                     {
                         if (draft.Count(id => string.Equals(id, cardId, StringComparison.OrdinalIgnoreCase)) >= ownedCount)
                         {
@@ -459,16 +543,26 @@ namespace TcgServer.Client
                             return;
                         }
                         draft.Add(cardId);
+                        InspectBrowserCard(def, ownedCount);
                         RefreshDraft();
-                    });
-                    cardFace.RegisterCallback<PointerEnterEvent>(_ =>
-                        preview.text = def.name.ToUpperInvariant() + "   /   OWNED " + ownedCount +
-                            "\n" + (def.text ?? ""));
-                    tile.Add(cardFace);
-                    tile.Add(Label("OWNED  " + ownedCount, 10, CommandTone));
+                    }, true);
+                    add.style.minWidth = 135;
+                    add.style.height = 33;
+                    add.style.fontSize = 11;
+                    tile.Add(add);
                     gallery.Add(tile);
                 }
                 resultsLabel.text = groups.Count + " MATCHES  /  SHOWING " + Math.Min(visibleLimit, groups.Count);
+                if (groups.Count > 0)
+                {
+                    var first = groups[0];
+                    InspectBrowserCard(definitions[first.id], first.owned);
+                }
+                else
+                {
+                    cardPreview.Clear();
+                    cardPreview.Add(Label("NO MATCHING CARDS", 13, Soft));
+                }
                 loadMore.style.display = visibleLimit < groups.Count ? DisplayStyle.Flex : DisplayStyle.None;
             }
             search.RegisterValueChangedCallback(_ =>
